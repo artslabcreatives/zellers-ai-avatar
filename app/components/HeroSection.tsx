@@ -15,7 +15,6 @@ const floatVariants = {
   },
 };
 
-// Deterministic sizes — Math.random() would cause SSR/client hydration mismatch
 const STAR_SIZES = [
   { w: 2.1, h: 1.8 }, { w: 1.5, h: 2.3 }, { w: 2.8, h: 1.4 },
   { w: 1.2, h: 2.7 }, { w: 3.0, h: 1.6 }, { w: 2.4, h: 1.9 },
@@ -34,29 +33,20 @@ const fadeUp = {
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-transparent px-4 pt-24 pb-16">
+    /* Reduced pt-24 to pt-12 to pull the whole section up */
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-transparent px-4 pt-12 pb-16">
       
-      {/* ─── EXPERT UI: Extracted Poster Mesh Gradient ─── */}
+      {/* ─── Mesh Gradient Background ─── */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden bg-[#1E0B4B]" // Deep violet/indigo base
+        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden bg-[#1E0B4B]"
       >
-        {/* Top Right Bright Cyan Glow */}
-        <div className="absolute -top-[20%] -right-[10%] w-150 h-150 sm:w-200 sm:h-200 rounded-full bg-[#00E5FF]/35 blur-[120px] sm:blur-[160px]" />
-        
-        {/* Bottom Left Bright Cyan Glow */}
+        {/* Adjusted top positions from -20% to -25% to account for reduced section padding */}
+        <div className="absolute -top-[25%] -right-[10%] w-150 h-150 sm:w-200 sm:h-200 rounded-full bg-[#00E5FF]/35 blur-[120px] sm:blur-[160px]" />
         <div className="absolute -bottom-[20%] -left-[10%] w-150 h-150 sm:w-200 sm:h-200 rounded-full bg-[#00E5FF]/35 blur-[120px] sm:blur-[160px]" />
-        
-        {/* Center/Top-Left Deep Magenta Blend */}
-        <div className="absolute top-[10%] left-[20%] w-125 h-125 rounded-full bg-[#9D00FF]/30 blur-[140px]" />
-
-        {/* Center/Bottom-Right Deep Purple Blend */}
+        <div className="absolute top-[5%] left-[20%] w-125 h-125 rounded-full bg-[#9D00FF]/30 blur-[140px]" />
         <div className="absolute bottom-[20%] right-[20%] w-125 h-125 rounded-full bg-[#6A00F4]/30 blur-[140px]" />
-
-        {/* Subtle Central Golden ambient glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-100 h-100 rounded-full bg-yellow-500/10 blur-[100px]" />
-
-        {/* Grain overlay for cinematic film feel */}
         <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
       </div>
 
@@ -77,23 +67,20 @@ export default function HeroSection() {
       ))}
 
       {/* Layout Grid */}
-      <div className="relative z-10 flex items-center md:items-end justify-center gap-4 md:gap-12 w-full max-w-7xl mx-auto min-h-150">
+      <div className="relative z-10 flex items-center md:items-end justify-center gap-4 md:gap-12 w-full max-w-7xl mx-auto min-h-150 mt-4 md:mt-0">
         
-        {/* Left Avatar (Male) - LIFTED SAFELY ON DESKTOP */}
+        {/* Left Avatar (Male) */}
         <motion.div
           variants={floatVariants}
           animate="animate"
-          // Removed md:mb-16 to keep the bottom anchored.
           className="absolute -left-4 sm:-left-2 top-1/2 -translate-y-1/2 md:relative md:left-auto md:top-auto md:translate-y-0 shrink-0 group z-0 md:z-10 opacity-30 md:opacity-100 pointer-events-none md:pointer-events-auto"
         >
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-37.5 md:w-55 h-100 bg-yellow-500/20 blur-[80px] rounded-full -z-10 transition-opacity duration-700 group-hover:opacity-100 opacity-60" />
-          {/* Increased container height to md:h-[680px] to push the image up natively */}
           <div className="relative w-45 h-85 md:w-87.5 md:h-170 mask-[linear-gradient(to_bottom,black_50%,transparent_100%)]">
             <Image
               src="/avatar-4.png"
               alt="Male Avatar"
               fill
-              // Added md:object-top so the avatar aligns to the top of our newly taller container
               className="object-contain md:object-top drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)]" 
               priority
             />
@@ -101,16 +88,11 @@ export default function HeroSection() {
         </motion.div>
 
         {/* Center Content */}
-        <div className="relative flex flex-col items-center text-center gap-6 sm:gap-7 flex-1 max-w-2xl px-2 sm:px-4 z-20 md:pb-24 mt-8 md:mt-0">
+        {/* Reduced md:pb-24 to md:pb-12 to pull content upward */}
+        <div className="relative flex flex-col items-center text-center gap-6 sm:gap-7 flex-1 max-w-2xl px-2 sm:px-4 z-20 md:pb-12 mt-4 md:mt-0">
           
-          <motion.div custom={0.1} initial="hidden" animate="visible" variants={fadeUp}>
-            <span className="inline-block text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase text-yellow-300 border border-yellow-400/50 bg-[#1E0B4B]/60 rounded-full px-4 sm:px-5 py-2 backdrop-blur-md shadow-[0_4px_15px_rgba(0,0,0,0.2)]">
-              ✦ Avurudu Subha Pathum ✦
-            </span>
-          </motion.div>
-
           <motion.div custom={0.25} initial="hidden" animate="visible" variants={fadeUp} className="w-full flex justify-center py-2 sm:py-4">
-            <div className="relative w-64 sm:w-72 md:w-80 lg:w-96 aspect-video">
+            <div className="relative w-64 sm:w-72 md:w-80 lg:w-96 h-48 sm:h-56 md:h-64 lg:h-72">
               <Image
                 src="/Avrudu-logo.png"
                 alt="AI Avurudu with Zellers Chocolates"
@@ -160,22 +142,19 @@ export default function HeroSection() {
           </motion.div>
         </div>
 
-        {/* Right Avatar (Female) - LIFTED SAFELY ON DESKTOP */}
+        {/* Right Avatar (Female) */}
         <motion.div
           variants={floatVariants}
           animate="animate"
           style={{ animationDelay: "1.5s" }}
-          // Removed md:mb-16
           className="absolute -right-4 sm:-right-2 top-1/2 -translate-y-1/2 md:relative md:right-auto md:top-auto md:translate-y-0 shrink-0 group z-0 md:z-10 opacity-30 md:opacity-100 pointer-events-none md:pointer-events-auto"
         >
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-37.5 md:w-55 h-100 bg-purple-600/30 blur-[80px] rounded-full -z-10 transition-opacity duration-700 group-hover:opacity-100 opacity-60" />
-          {/* Increased container height to md:h-[680px] */}
           <div className="relative w-45 h-85 md:w-87.5 md:h-170 mask-[linear-gradient(to_bottom,black_50%,transparent_100%)]">
             <Image
               src="/avatar-3.png"
               alt="Female Avatar"
               fill
-              // Added md:object-top
               className="object-contain md:object-top drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)]"
               priority
             />
