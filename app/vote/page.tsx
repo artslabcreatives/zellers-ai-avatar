@@ -153,7 +153,7 @@ function AvatarCard({ avatar, voted, onVote }: { avatar: Avatar; voted: boolean;
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.4, ease: "easeOut" as const }}
-      className="group relative flex flex-col bg-[#120828] border border-white/10 rounded-2xl overflow-hidden hover:border-yellow-500/30 transition-all duration-300"
+      className="group relative flex flex-col bg-[#0D0B38]/80 border border-white/10 rounded-2xl overflow-hidden hover:border-yellow-500/30 transition-all duration-300"
       style={voted ? { boxShadow: "0 0 20px rgba(234,179,8,0.12)" } : undefined}
     >
       {/* Image */}
@@ -166,7 +166,7 @@ function AvatarCard({ avatar, voted, onVote }: { avatar: Avatar; voted: boolean;
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-linear-to-t from-[#120828]/95 via-[#120828]/20 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-[#0D0B38]/95 via-[#0D0B38]/20 to-transparent" />
 
         {/* Rank badge */}
         <div className="absolute top-2.5 left-2.5">
@@ -243,7 +243,7 @@ export default function VotePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B041C] flex flex-col">
+    <div className="min-h-screen bg-transparent flex flex-col">
       <Navbar />
       {/* Ambient glow */}
       <div aria-hidden className="pointer-events-none fixed inset-0 overflow-hidden">
@@ -398,7 +398,7 @@ export default function VotePage() {
       </div>
 
       {/* ── Footer ──────────────────────────────────────────────────────────── */}
-      <footer className="relative z-10 bg-[#05020A] border-t border-white/5 py-10">
+      <footer className="relative z-10 bg-[#07051C]/95 border-t border-white/5 py-10">
         <div className="max-w-5xl mx-auto px-4 flex flex-col items-center gap-5">
           {/* Logo + tagline */}
           <div className="flex flex-col items-center gap-1">

@@ -362,7 +362,7 @@ export default function CampaignPage() {
   function goNext() { setDir(1); setStep((s) => Math.min(s + 1, 4)); }
 
   return (
-    <div className="min-h-screen bg-[#0B041C] flex items-start justify-center px-4 py-12 pt-28">
+    <div className="min-h-screen bg-transparent flex items-start justify-center px-4 py-12 pt-28">
       {/* Ambient glow */}
       <div aria-hidden className="pointer-events-none fixed inset-0 flex items-center justify-center overflow-hidden">
         <div className="w-175 h-175 rounded-full bg-purple-800/15 blur-[140px]" />
@@ -377,7 +377,7 @@ export default function CampaignPage() {
           transition={{ duration: 0.6, ease: "easeOut" as const }}
           className="mb-8 flex justify-center"
         >
-          <div className="relative w-48 border border-white/15 rounded-xl overflow-hidden bg-[#100828]">
+          <div className="relative w-48 border border-white/15 rounded-xl overflow-hidden bg-[#0D0B38]">
             {/* Poster top glow */}
             <div className="absolute inset-0 bg-linear-to-b from-yellow-500/5 to-transparent pointer-events-none" />
             <div className="flex flex-col items-center px-5 py-6 gap-1 text-center">

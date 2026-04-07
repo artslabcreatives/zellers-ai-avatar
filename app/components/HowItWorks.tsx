@@ -53,7 +53,7 @@ const cardVariants = {
 
 export default function HowItWorks() {
   return (
-    <section className="relative bg-[#0B041C] py-24 px-4 overflow-hidden">
+    <section className="relative bg-transparent py-24 px-4 overflow-hidden">
       {/* Background glow */}
       <div
         aria-hidden

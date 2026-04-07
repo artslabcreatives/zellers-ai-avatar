@@ -48,7 +48,7 @@ const cardVariants = {
 
 export default function MeetTheAvatars() {
   return (
-    <section className="relative bg-[#0B041C] py-24 px-4 overflow-hidden">
+    <section className="relative bg-transparent py-24 px-4 overflow-hidden">
       {/* Background glow */}
       <div
         aria-hidden
@@ -115,7 +115,7 @@ export default function MeetTheAvatars() {
               </div>
 
               {/* Bottom gradient overlay */}
-              <div className="absolute inset-0 bg-linear-to-t from-[#0B041C]/95 via-[#0B041C]/30 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-linear-to-t from-[#0f0830]/95 via-[#0f0830]/30 to-transparent pointer-events-none" />
 
               {/* Top badge */}
               <div className="absolute top-3 left-3">

@@ -40,7 +40,7 @@ const prizes = [
 
 export default function AvuruduPrizes() {
   return (
-    <section className="relative bg-[#0B041C] py-24 px-4 overflow-hidden">
+    <section className="relative bg-transparent py-24 px-4 overflow-hidden">
       {/* Background glow */}
       <div
         aria-hidden
@@ -106,7 +106,7 @@ export default function AvuruduPrizes() {
               }}
               className={[
                 "relative flex flex-col items-center text-center rounded-2xl p-6 sm:p-8 border transition-all duration-300",
-                "bg-[#1A0E35] border-white/10",
+                "bg-[#0D0B40]/80 border-white/10",
                 prize.highlight
                   ? [
                       "flex-[1.35] min-w-0 sm:min-w-65",

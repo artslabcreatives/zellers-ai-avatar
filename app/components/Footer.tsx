@@ -11,7 +11,7 @@ const footerLinks = [
 
 export default function Footer() {
   return (
-    <footer className="relative bg-[#05020A] border-t border-white/5 overflow-hidden">
+    <footer className="relative bg-[#07051C]/95 border-t border-white/5 overflow-hidden">
       {/* Ambient glow behind CTA */}
       <div
         aria-hidden
