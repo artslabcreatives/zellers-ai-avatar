@@ -35,14 +35,28 @@ export default function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-transparent px-4 pt-24 pb-16">
       
-      {/* Cinematic Environment Lighting */}
+      {/* ─── EXPERT UI: Extracted Poster Mesh Gradient ─── */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 flex items-center justify-center -z-10"
+        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden bg-[#1E0B4B]" // Deep violet/indigo base
       >
-        <div className="absolute w-150 h-150 rounded-full bg-purple-900/40 blur-[150px]" />
-        <div className="absolute w-100 h-100 rounded-full bg-yellow-500/15 blur-[120px] translate-y-12" />
-        <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+        {/* Top Right Bright Cyan Glow */}
+        <div className="absolute -top-[20%] -right-[10%] w-[600px] h-[600px] sm:w-[800px] sm:h-[800px] rounded-full bg-[#00E5FF]/35 blur-[120px] sm:blur-[160px]" />
+        
+        {/* Bottom Left Bright Cyan Glow */}
+        <div className="absolute -bottom-[20%] -left-[10%] w-[600px] h-[600px] sm:w-[800px] sm:h-[800px] rounded-full bg-[#00E5FF]/35 blur-[120px] sm:blur-[160px]" />
+        
+        {/* Center/Top-Left Deep Magenta Blend */}
+        <div className="absolute top-[10%] left-[20%] w-[500px] h-[500px] rounded-full bg-[#9D00FF]/30 blur-[140px]" />
+
+        {/* Center/Bottom-Right Deep Purple Blend */}
+        <div className="absolute bottom-[20%] right-[20%] w-[500px] h-[500px] rounded-full bg-[#6A00F4]/30 blur-[140px]" />
+
+        {/* Subtle Central Golden ambient glow (Crucial: keeps the yellow text popping against the blues!) */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-100 h-100 rounded-full bg-yellow-500/10 blur-[100px]" />
+
+        {/* Grain overlay for cinematic film feel */}
+        <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
       </div>
 
       {/* Decorative star particles */}
@@ -88,7 +102,7 @@ export default function HeroSection() {
         <div className="relative flex flex-col items-center text-center gap-6 sm:gap-7 flex-1 max-w-2xl px-2 sm:px-4 z-20 md:pb-24 mt-8 md:mt-0">
           
           <motion.div custom={0.1} initial="hidden" animate="visible" variants={fadeUp}>
-            <span className="inline-block text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase text-yellow-300 border border-yellow-400/50 bg-yellow-400/10 rounded-full px-4 sm:px-5 py-2 backdrop-blur-md shadow-[0_4px_15px_rgba(0,0,0,0.2)]">
+            <span className="inline-block text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase text-yellow-300 border border-yellow-400/50 bg-[#1E0B4B]/60 rounded-full px-4 sm:px-5 py-2 backdrop-blur-md shadow-[0_4px_15px_rgba(0,0,0,0.2)]">
               ✦ Avurudu Subha Pathum ✦
             </span>
           </motion.div>
