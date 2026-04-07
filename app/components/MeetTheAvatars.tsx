@@ -5,25 +5,25 @@ import { motion } from "framer-motion";
 
 const avatars = [
   {
-    src: "/avatar-1.jpg",
+    src: "/1.png",
     flavor: "MINT CHOCOLATE",
     title: "The Green Spirit",
     alt: "Mint Chocolate Avatar",
   },
   {
-    src: "/avatar-2.jpg",
+    src: "/2.png",
     flavor: "DARK VELVET",
     title: "The Shadow Prince",
     alt: "Dark Velvet Avatar",
   },
   {
-    src: "/avatar-3.png",
+    src: "/3.png",
     flavor: "GOLDEN CARAMEL",
     title: "The Sun Rani",
     alt: "Golden Caramel Avatar",
   },
   {
-    src: "/avatar-4.png",
+    src: "/4.png",
     flavor: "CHERRY BLISS",
     title: "The Rose Kumariya",
     alt: "Cherry Bliss Avatar",
