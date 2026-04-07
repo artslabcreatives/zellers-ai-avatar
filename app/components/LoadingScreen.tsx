@@ -11,19 +11,16 @@ const MESSAGES = [
 ];
 
 export default function LoadingScreen() {
-  // 1. Start as TRUE so it covers the screen immediately
   const [isVisible, setIsVisible] = useState(true);
   const [progress, setProgress] = useState(0);
   const [msgIndex, setMsgIndex] = useState(0);
   const rafRef = useRef<number | null>(null);
-  
-  // 2. Hydration safeguard
+
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
 
-    // If they already loaded it, immediately hide it
     if (sessionStorage.getItem("zellers_loaded")) {
       setIsVisible(false);
       return;
@@ -35,7 +32,6 @@ export default function LoadingScreen() {
     const tick = (now: number) => {
       const elapsed = now - start;
       const raw = Math.min(elapsed / DURATION, 1);
-      // Ease-in-out quad so it accelerates then decelerates (dramatic effect)
       const eased =
         raw < 0.5
           ? 2 * raw * raw
@@ -62,7 +58,6 @@ export default function LoadingScreen() {
     };
   }, []);
 
-  // Prevent hydration mismatch errors by waiting for client mount
   if (!isMounted) return null;
 
   return (
@@ -73,23 +68,37 @@ export default function LoadingScreen() {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, scale: 1.05 }}
           transition={{ duration: 0.9, ease: "easeInOut" as const }}
-          // 3. FIXED: z-[9999] ensures it stays above everything in layout.tsx
           className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden"
         >
-          {/* ── Background Image ── */}
-          <div className="absolute inset-0 bg-[#0A0515]">
+          {/* ── EXPERT UI: AMBIENT PILLARBOX BACKGROUND ── */}
+          <div className="absolute inset-0 bg-[#0A0515] overflow-hidden">
+            {/* 1. Ambient Blurred Backdrop (Fills the empty sides on desktop) */}
             <Image
               src="/loading.jpeg"
               alt=""
               fill
-              className="object-cover opacity-80"
+              className="object-cover opacity-30 blur-[80px] scale-110"
               priority
               aria-hidden
             />
+
+            {/* 2. Main Portrait Image (Cover on mobile, Contain on desktop) */}
+            <Image
+              src="/loading.jpeg"
+              alt=""
+              fill
+              className="object-cover md:object-contain opacity-80 md:opacity-95"
+              priority
+              aria-hidden
+            />
+
+            {/* 3. Seamless Blending Gradients (Fades the edges into the dark theme) */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0A0515]/40 via-transparent to-[#0A0515] pointer-events-none" aria-hidden />
+            <div className="hidden md:block absolute inset-0 bg-gradient-to-r from-[#0A0515] via-transparent to-[#0A0515] opacity-80 pointer-events-none" aria-hidden />
           </div>
 
-          {/* ── Subtle dark veil for overlay contrast ── */}
-          <div className="absolute inset-0 bg-black/40" aria-hidden />
+          {/* ── Subtle dark veil for overlay text contrast ── */}
+          <div className="absolute inset-0 bg-black/30 pointer-events-none" aria-hidden />
 
           {/* ── Hero-matching cinematic glow blobs ── */}
           <div aria-hidden className="pointer-events-none absolute inset-0">
