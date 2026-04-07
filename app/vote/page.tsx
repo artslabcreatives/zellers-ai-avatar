@@ -398,8 +398,12 @@ export default function VotePage() {
       </div>
 
       {/* ── Footer ──────────────────────────────────────────────────────────── */}
-      <footer className="relative z-10 bg-[#07051C]/95 border-t border-white/5 py-10">
-        <div className="max-w-5xl mx-auto px-4 flex flex-col items-center gap-5">
+      <footer className="relative z-10 bg-transparent border-t border-purple-500/15 py-10">
+        {/* Blob glow matching page palette */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-150 h-40 rounded-full bg-purple-900/30 blur-[100px]" />
+        </div>
+        <div className="relative z-10 max-w-5xl mx-auto px-4 flex flex-col items-center gap-5">
           {/* Logo + tagline */}
           <div className="flex flex-col items-center gap-1">
             <span className="text-xl font-black tracking-widest text-yellow-400">Zellers</span>
@@ -408,19 +412,24 @@ export default function VotePage() {
 
           {/* Links */}
           <nav aria-label="Vote page footer">
-            <ul className="flex items-center gap-6">
-              {["TERMS", "PRIVACY", "CONTACT"].map((l) => (
-                <li key={l}>
-                  <a href="#" className="text-[11px] text-gray-600 hover:text-gray-400 tracking-widest transition-colors duration-200">
-                    {l}
-                  </a>
+            <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+              {[
+                { label: "TERMS",   href: "/terms"   },
+                { label: "PRIVACY", href: "/privacy" },
+                { label: "FAQ",     href: "/faq"     },
+                { label: "CONTACT", href: "/contact" },
+              ].map((l) => (
+                <li key={l.label}>
+                  <Link href={l.href} className="text-[11px] text-gray-500 hover:text-yellow-400 tracking-widest transition-colors duration-200">
+                    {l.label}
+                  </Link>
                 </li>
               ))}
             </ul>
           </nav>
 
-          <p className="text-[11px] text-gray-700 tracking-wide text-center">
-            © 2024 Zellers Chocolates. All rights reserved. · Campaign subject to terms & conditions.
+          <p className="text-[11px] text-gray-600 tracking-wide text-center">
+            © 2026 Zellers Chocolates. All rights reserved. · Campaign subject to terms & conditions.
           </p>
         </div>
       </footer>
