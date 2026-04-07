@@ -153,7 +153,7 @@ function AvatarCard({ avatar, voted, onVote }: { avatar: Avatar; voted: boolean;
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.4, ease: "easeOut" as const }}
-      className="group relative flex flex-col bg-[#120828] border border-white/10 rounded-2xl overflow-hidden hover:border-yellow-500/30 transition-all duration-300"
+      className="group relative flex flex-col bg-[#0D0B38]/80 border border-white/10 rounded-2xl overflow-hidden hover:border-yellow-500/30 transition-all duration-300"
       style={voted ? { boxShadow: "0 0 20px rgba(234,179,8,0.12)" } : undefined}
     >
       {/* Image */}
@@ -166,7 +166,7 @@ function AvatarCard({ avatar, voted, onVote }: { avatar: Avatar; voted: boolean;
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-linear-to-t from-[#120828]/95 via-[#120828]/20 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-[#0D0B38]/95 via-[#0D0B38]/20 to-transparent" />
 
         {/* Rank badge */}
         <div className="absolute top-2.5 left-2.5">
@@ -243,7 +243,7 @@ export default function VotePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B041C] flex flex-col">
+    <div className="min-h-screen bg-transparent flex flex-col">
       <Navbar />
       {/* Ambient glow */}
       <div aria-hidden className="pointer-events-none fixed inset-0 overflow-hidden">
@@ -292,7 +292,7 @@ export default function VotePage() {
             transition={{ duration: 0.4, delay: 0.2 }}
             className="text-xl font-bold text-yellow-400"
           >
-            ඔබේ ප්‍රිය Avatar එකට ජන්දය දෙන්න
+            ඔබේ ප්‍රියතම Avatar එකට ජන්දය දෙන්න
           </motion.p>
 
           <motion.p
@@ -384,7 +384,7 @@ export default function VotePage() {
           className="mt-20 flex flex-col items-center gap-4"
         >
           <p className="text-base font-bold text-gray-300">
-            ඔබේ Avatar සාමයි ද?
+            ඔබේ Avatar එකක් නොමතිද?
           </p>
           <Link
             href="/campaign"
@@ -398,8 +398,12 @@ export default function VotePage() {
       </div>
 
       {/* ── Footer ──────────────────────────────────────────────────────────── */}
-      <footer className="relative z-10 bg-[#05020A] border-t border-white/5 py-10">
-        <div className="max-w-5xl mx-auto px-4 flex flex-col items-center gap-5">
+      <footer className="relative z-10 bg-transparent border-t border-purple-500/15 py-10">
+        {/* Blob glow matching page palette */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-150 h-40 rounded-full bg-purple-900/30 blur-[100px]" />
+        </div>
+        <div className="relative z-10 max-w-5xl mx-auto px-4 flex flex-col items-center gap-5">
           {/* Logo + tagline */}
           <div className="flex flex-col items-center gap-1">
             <span className="text-xl font-black tracking-widest text-yellow-400">Zellers</span>
@@ -408,19 +412,24 @@ export default function VotePage() {
 
           {/* Links */}
           <nav aria-label="Vote page footer">
-            <ul className="flex items-center gap-6">
-              {["TERMS", "PRIVACY", "CONTACT"].map((l) => (
-                <li key={l}>
-                  <a href="#" className="text-[11px] text-gray-600 hover:text-gray-400 tracking-widest transition-colors duration-200">
-                    {l}
-                  </a>
+            <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+              {[
+                { label: "TERMS",   href: "/terms"   },
+                { label: "PRIVACY", href: "/privacy" },
+                { label: "FAQ",     href: "/faq"     },
+                { label: "CONTACT", href: "/contact" },
+              ].map((l) => (
+                <li key={l.label}>
+                  <Link href={l.href} className="text-[11px] text-gray-500 hover:text-yellow-400 tracking-widest transition-colors duration-200">
+                    {l.label}
+                  </Link>
                 </li>
               ))}
             </ul>
           </nav>
 
-          <p className="text-[11px] text-gray-700 tracking-wide text-center">
-            © 2024 Zellers Chocolates. All rights reserved. · Campaign subject to terms & conditions.
+          <p className="text-[11px] text-gray-600 tracking-wide text-center">
+            © 2026 Zellers Chocolates. All rights reserved. · Campaign subject to terms & conditions.
           </p>
         </div>
       </footer>
