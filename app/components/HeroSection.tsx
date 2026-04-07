@@ -60,7 +60,7 @@ export default function HeroSection() {
         >
           <div className="absolute inset-0 rounded-2xl bg-linear-to-t from-yellow-500/20 to-transparent blur-xl" />
           <Image
-            src="https://via.placeholder.com/300x500/1a1a2e/ffffff?text=Male+Avatar"
+            src="/avatar-4.png"
             alt="Male Avatar"
             width={260}
             height={440}
@@ -158,7 +158,7 @@ export default function HeroSection() {
         >
           <div className="absolute inset-0 rounded-2xl bg-linear-to-t from-purple-600/20 to-transparent blur-xl" />
           <Image
-            src="https://via.placeholder.com/300x500/1a1a2e/ffffff?text=Female+Avatar"
+            src="/avatar-3.png"
             alt="Female Avatar"
             width={260}
             height={440}
