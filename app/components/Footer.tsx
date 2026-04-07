@@ -11,12 +11,12 @@ const footerLinks = [
 
 export default function Footer() {
   return (
-    <footer className="relative bg-[#07051C]/95 border-t border-white/5 overflow-hidden">
-      {/* Ambient glow behind CTA */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-175 h-75 rounded-full bg-yellow-800/10 blur-[120px]"
-      />
+    <footer className="relative bg-transparent border-t border-white/5 overflow-hidden">
+      {/* Cinematic blobs — mirrors HeroSection lighting */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full bg-purple-900/40 blur-[150px]" />
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[420px] h-[420px] rounded-full bg-yellow-500/12 blur-[120px]" />
+      </div>
 
       {/* ── Final CTA Block ── */}
       <div className="relative z-10 max-w-4xl mx-auto px-4 pt-24 pb-20 flex flex-col items-center text-center gap-8">

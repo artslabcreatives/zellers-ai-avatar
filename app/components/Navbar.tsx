@@ -10,7 +10,7 @@ export default function Navbar() {
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 md:px-12 backdrop-blur-md bg-[#0f0830]/75 border-b border-white/10"
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 md:px-12 backdrop-blur-md bg-[#160B45]/80 border-b border-purple-500/15"
     >
       {/* Logo */}
       <Link href="/" className="flex items-center">

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, Smartphone, User, Star, Sparkles, CheckCircle2 } from "lucide-react";
+import Navbar from "../components/Navbar";
 
 // ─── Step definitions ─────────────────────────────────────────────────────────
 const STEPS = [
@@ -362,7 +363,9 @@ export default function CampaignPage() {
   function goNext() { setDir(1); setStep((s) => Math.min(s + 1, 4)); }
 
   return (
-    <div className="min-h-screen bg-transparent flex items-start justify-center px-4 py-12 pt-28">
+    <div className="min-h-screen bg-transparent flex flex-col">
+      <Navbar />
+      <div className="flex-1 flex items-start justify-center px-4 py-12 pt-28">
       {/* Ambient glow */}
       <div aria-hidden className="pointer-events-none fixed inset-0 flex items-center justify-center overflow-hidden">
         <div className="w-175 h-175 rounded-full bg-purple-800/15 blur-[140px]" />
@@ -463,6 +466,7 @@ export default function CampaignPage() {
             ← BACK TO HOME
           </a>
         </motion.div>
+      </div>
       </div>
     </div>
   );
