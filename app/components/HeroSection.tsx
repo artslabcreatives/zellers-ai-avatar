@@ -52,7 +52,7 @@ export default function HeroSection() {
         {/* Center/Bottom-Right Deep Purple Blend */}
         <div className="absolute bottom-[20%] right-[20%] w-[500px] h-[500px] rounded-full bg-[#6A00F4]/30 blur-[140px]" />
 
-        {/* Subtle Central Golden ambient glow (Crucial: keeps the yellow text popping against the blues!) */}
+        {/* Subtle Central Golden ambient glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-100 h-100 rounded-full bg-yellow-500/10 blur-[100px]" />
 
         {/* Grain overlay for cinematic film feel */}
@@ -78,27 +78,28 @@ export default function HeroSection() {
       {/* Layout Grid */}
       <div className="relative z-10 flex items-center md:items-end justify-center gap-4 md:gap-12 w-full max-w-7xl mx-auto min-h-150">
         
-        {/* Left Avatar (Male) - REDUCED MOBILE MARGINS */}
+        {/* Left Avatar (Male) - LIFTED SAFELY ON DESKTOP */}
         <motion.div
           variants={floatVariants}
           animate="animate"
-          // Switched to a gentle -left-4 to reduce clipping without overlapping the center text
-          className="absolute -left-4 sm:-left-2 top-1/2 -translate-y-1/2 md:relative md:left-auto md:top-auto md:translate-y-0 md:mb-16 shrink-0 group z-0 md:z-10 opacity-30 md:opacity-100 pointer-events-none md:pointer-events-auto"
+          // Removed md:mb-16 to keep the bottom anchored.
+          className="absolute -left-4 sm:-left-2 top-1/2 -translate-y-1/2 md:relative md:left-auto md:top-auto md:translate-y-0 shrink-0 group z-0 md:z-10 opacity-30 md:opacity-100 pointer-events-none md:pointer-events-auto"
         >
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-37.5 md:w-55 h-100 bg-yellow-500/20 blur-[80px] rounded-full -z-10 transition-opacity duration-700 group-hover:opacity-100 opacity-60" />
-          <div className="relative w-45 h-85 md:w-87.5 md:h-145 mask-[linear-gradient(to_bottom,black_60%,transparent_100%)]">
+          {/* Increased container height to md:h-[680px] to push the image up natively */}
+          <div className="relative w-45 h-85 md:w-87.5 md:h-[680px] mask-[linear-gradient(to_bottom,black_50%,transparent_100%)]">
             <Image
               src="/avatar-4.png"
               alt="Male Avatar"
               fill
-              className="object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)]" 
+              // Added md:object-top so the avatar aligns to the top of our newly taller container
+              className="object-contain md:object-top drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)]" 
               priority
             />
           </div>
         </motion.div>
 
-        {/* Center Content - LIFTED UP ON DESKTOP */}
-        {/* Changed md:pb-12 to md:pb-24 to act as a cushion pushing the content up on web view */}
+        {/* Center Content */}
         <div className="relative flex flex-col items-center text-center gap-6 sm:gap-7 flex-1 max-w-2xl px-2 sm:px-4 z-20 md:pb-24 mt-8 md:mt-0">
           
           <motion.div custom={0.1} initial="hidden" animate="visible" variants={fadeUp}>
@@ -107,13 +108,16 @@ export default function HeroSection() {
             </span>
           </motion.div>
 
-          <motion.div custom={0.25} initial="hidden" animate="visible" variants={fadeUp} className="space-y-1 sm:space-y-2">
-            <h1 className="text-5xl sm:text-7xl md:text-8xl font-black leading-tight tracking-tight text-transparent bg-clip-text bg-linear-to-b from-yellow-300 to-yellow-600 drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] pb-3">
-              AI අවුරුදු
-            </h1>
-            <p className="text-xl sm:text-3xl md:text-4xl font-bold text-white tracking-wide drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]">
-              with Zellers <span className="text-transparent bg-clip-text bg-linear-to-r from-yellow-400 to-amber-500 font-extrabold tracking-wider block sm:inline mt-1 sm:mt-0">CHOCOLATES</span>
-            </p>
+          <motion.div custom={0.25} initial="hidden" animate="visible" variants={fadeUp} className="w-full flex justify-center py-2 sm:py-4">
+            <div className="relative w-64 sm:w-72 md:w-80 lg:w-96 aspect-[16/9]">
+              <Image
+                src="/Avrudu-logo.png"
+                alt="AI Avurudu with Zellers Chocolates"
+                fill
+                className="object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.7)]"
+                priority
+              />
+            </div>
           </motion.div>
 
           <motion.p custom={0.4} initial="hidden" animate="visible" variants={fadeUp} className="text-base sm:text-xl text-blue-50/90 leading-relaxed max-w-lg font-light drop-shadow-md px-4 sm:px-0">
@@ -152,21 +156,23 @@ export default function HeroSection() {
           </motion.div>
         </div>
 
-        {/* Right Avatar (Female) - REDUCED MOBILE MARGINS */}
+        {/* Right Avatar (Female) - LIFTED SAFELY ON DESKTOP */}
         <motion.div
           variants={floatVariants}
           animate="animate"
           style={{ animationDelay: "1.5s" }}
-          // Switched to a gentle -right-4
-          className="absolute -right-4 sm:-right-2 top-1/2 -translate-y-1/2 md:relative md:right-auto md:top-auto md:translate-y-0 md:mb-16 shrink-0 group z-0 md:z-10 opacity-30 md:opacity-100 pointer-events-none md:pointer-events-auto"
+          // Removed md:mb-16
+          className="absolute -right-4 sm:-right-2 top-1/2 -translate-y-1/2 md:relative md:right-auto md:top-auto md:translate-y-0 shrink-0 group z-0 md:z-10 opacity-30 md:opacity-100 pointer-events-none md:pointer-events-auto"
         >
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-37.5 md:w-55 h-100 bg-purple-600/30 blur-[80px] rounded-full -z-10 transition-opacity duration-700 group-hover:opacity-100 opacity-60" />
-          <div className="relative w-45 h-85 md:w-87.5 md:h-145 mask-[linear-gradient(to_bottom,black_60%,transparent_100%)]">
+          {/* Increased container height to md:h-[680px] */}
+          <div className="relative w-45 h-85 md:w-87.5 md:h-[680px] mask-[linear-gradient(to_bottom,black_50%,transparent_100%)]">
             <Image
               src="/avatar-3.png"
               alt="Female Avatar"
               fill
-              className="object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)]"
+              // Added md:object-top
+              className="object-contain md:object-top drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)]"
               priority
             />
           </div>

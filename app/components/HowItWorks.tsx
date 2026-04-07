@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Smartphone, Camera, Star, Sparkles } from "lucide-react";
+import { Smartphone, Camera, Star, Sparkles, Trophy } from "lucide-react";
 
 const steps = [
   {
@@ -21,7 +21,7 @@ const steps = [
   {
     icon: Star, 
     step: "03",
-    title: "රස ප්‍රතිචාරය",
+    title: "රස ප්‍රශ්නාවලිය",
     subtitle: "Pick Your Flavor",
     text: "Find your favorite Zellers chocolate flavor.",
   },
@@ -31,6 +31,13 @@ const steps = [
     title: "AI Avatar අත්විඳින්න",
     subtitle: "Experience AI",
     text: "View, download, and share your royal avatar!",
+  },
+  {
+    icon: Trophy,
+    step: "05",
+    title: "ජන්දය දී ජය ගන්න",
+    subtitle: "Vote & Win",
+    text: "Vote for your favourite avatar and stand a chance to win amazing Zellers prizes!",
   },
 ];
 
@@ -60,15 +67,15 @@ export default function HowItWorks() {
         aria-hidden
         className="pointer-events-none absolute inset-0 flex items-center justify-center"
       >
-        <div className="w-[800px] h-[300px] rounded-full bg-blue-900/20 blur-[120px]" />
+        <div className="w-200 h-75 rounded-full bg-blue-900/20 blur-[120px]" />
       </div>
 
       {/* Separator line */}
       <div className="relative z-10 max-w-6xl mx-auto">
         <div className="flex items-center gap-4 mb-12 opacity-60">
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent to-yellow-500/50" />
+          <div className="h-px flex-1 bg-linear-to-r from-transparent to-yellow-500/50" />
           <Sparkles className="w-5 h-5 text-yellow-400" />
-          <div className="h-px flex-1 bg-gradient-to-l from-transparent to-yellow-500/50" />
+          <div className="h-px flex-1 bg-linear-to-l from-transparent to-yellow-500/50" />
         </div>
 
         {/* Section header */}
@@ -108,16 +115,16 @@ export default function HowItWorks() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5"
         >
           {steps.map((step, index) => (
             <motion.div
               key={step.step}
               variants={cardVariants}
-              className="group relative flex flex-col gap-6 bg-white/[0.03] border border-white/10 rounded-2xl p-6 md:p-8 hover:bg-white/[0.06] hover:border-yellow-500/30 transition-all duration-500 cursor-default overflow-hidden shadow-xl"
+              className="group relative flex flex-col gap-6 bg-white/3 border border-white/10 rounded-2xl p-6 md:p-8 hover:bg-white/6 hover:border-yellow-500/30 transition-all duration-500 cursor-default overflow-hidden shadow-xl"
             >
               {/* Card glow on hover */}
-              <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-yellow-500/5 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-linear-to-br from-yellow-500/5 to-transparent pointer-events-none" />
 
               {/* Icon & Step number */}
               <div className="flex items-center justify-between relative z-10">
@@ -127,7 +134,7 @@ export default function HowItWorks() {
                 </div>
                 
                 {/* Massive subtle number */}
-                <span className="text-6xl font-black text-white/[0.03] group-hover:text-yellow-500/10 transition-colors duration-500 leading-none select-none tracking-tighter">
+                <span className="text-6xl font-black text-white/3 group-hover:text-yellow-500/10 transition-colors duration-500 leading-none select-none tracking-tighter">
                   {step.step}
                 </span>
               </div>
@@ -136,7 +143,7 @@ export default function HowItWorks() {
               {index < steps.length - 1 && (
                 <div
                   aria-hidden
-                  className="hidden lg:block absolute top-14 -right-3 w-6 h-px bg-gradient-to-r from-yellow-500/30 to-transparent z-20"
+                  className="hidden lg:block absolute top-14 -right-3 w-6 h-px bg-linear-to-r from-yellow-500/30 to-transparent z-20"
                 />
               )}
 
@@ -155,16 +162,16 @@ export default function HowItWorks() {
               </p>
 
               {/* Bottom accent bar that grows on hover */}
-              <div className="absolute bottom-0 left-0 h-1 w-0 group-hover:w-full bg-gradient-to-r from-yellow-500 to-amber-300 transition-all duration-700 ease-out" />
+              <div className="absolute bottom-0 left-0 h-1 w-0 group-hover:w-full bg-linear-to-r from-yellow-500 to-amber-300 transition-all duration-700 ease-out" />
             </motion.div>
           ))}
         </motion.div>
 
         {/* Bottom divider */}
         <div className="flex items-center gap-4 mt-20 opacity-40">
-          <div className="h-px flex-1 bg-gradient-to-r from-transparent to-white/20" />
+          <div className="h-px flex-1 bg-linear-to-r from-transparent to-white/20" />
           <Sparkles className="w-4 h-4 text-white/40" />
-          <div className="h-px flex-1 bg-gradient-to-l from-transparent to-white/20" />
+          <div className="h-px flex-1 bg-linear-to-l from-transparent to-white/20" />
         </div>
       </div>
     </section>

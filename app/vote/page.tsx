@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin } from "lucide-react";
+import { MapPin, Search, X } from "lucide-react";
 import Navbar from "../components/Navbar";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -222,16 +222,24 @@ export default function VotePage() {
   const [filter, setFilter]     = useState<Filter>("all");
   const [shown, setShown]       = useState(PAGE_SIZE);
   const [voted, setVoted]       = useState<Set<number>>(new Set());
+  const [query, setQuery]       = useState("");
 
   function handleVote(id: number) {
     setVoted((prev) => new Set(prev).add(id));
   }
 
+  const q = query.trim().toLowerCase();
   const filtered = ALL_AVATARS.filter((a) => {
-    if (filter === "kumara")   return a.type === "kumara";
-    if (filter === "kumariya") return a.type === "kumariya";
-    if (filter === "top")      return a.votes >= 1500;
-    return true;
+    if (filter === "kumara")   if (a.type !== "kumara")   return false;
+    if (filter === "kumariya") if (a.type !== "kumariya") return false;
+    if (filter === "top")      if (a.votes < 1500)        return false;
+    if (!q) return true;
+    return (
+      a.name.toLowerCase().includes(q) ||
+      a.flavor.toLowerCase().includes(q) ||
+      a.lover.toLowerCase().includes(q) ||
+      a.badge.toLowerCase().includes(q)
+    );
   });
 
   const visible = filtered.slice(0, shown);
@@ -337,6 +345,50 @@ export default function VotePage() {
               {f.label}
             </button>
           ))}
+        </motion.div>
+
+        {/* ── Search Bar ─────────────────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.5 }}
+          className="relative max-w-md mx-auto mb-8"
+        >
+          <div className="relative flex items-center">
+            <Search
+              size={15}
+              className="absolute left-4 text-gray-500 pointer-events-none shrink-0"
+            />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => { setQuery(e.target.value); setShown(PAGE_SIZE); }}
+              placeholder="Search by name, flavor, badge…"
+              className="w-full bg-white/5 border border-white/10 rounded-full pl-10 pr-10 py-2.5 text-sm text-gray-200 placeholder-gray-600 tracking-wide focus:outline-none focus:border-yellow-500/50 focus:bg-white/8 transition-all duration-200"
+            />
+            <AnimatePresence>
+              {query && (
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.7 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.7 }}
+                  transition={{ duration: 0.15 }}
+                  onClick={() => { setQuery(""); setShown(PAGE_SIZE); }}
+                  className="absolute right-3.5 text-gray-500 hover:text-gray-300 transition-colors duration-150"
+                  aria-label="Clear search"
+                >
+                  <X size={14} />
+                </motion.button>
+              )}
+            </AnimatePresence>
+          </div>
+          {q && (
+            <p className="text-center text-[11px] text-gray-600 mt-2 tracking-wide">
+              {filtered.length === 0
+                ? `No avatars match "${query}"`
+                : `${filtered.length} avatar${filtered.length !== 1 ? "s" : ""} found`}
+            </p>
+          )}
         </motion.div>
 
         {/* ── Avatar Grid ────────────────────────────────────────────────── */}
