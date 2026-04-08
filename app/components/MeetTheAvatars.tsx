@@ -151,7 +151,7 @@ export default function MeetTheAvatars() {
                   {avatar.title}
                 </p>
                 {/* Vote bar */}
-                <div className="mt-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="mt-3 flex items-center gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
                   <button className="flex-1 text-xs font-bold tracking-widest text-black bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full py-1.5 hover:brightness-110 transition-all duration-200 shadow-[0_0_15px_rgba(234,179,8,0.4)]">
                     VOTE ✦
                   </button>

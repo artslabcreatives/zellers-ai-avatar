@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 const MESSAGES = [
-  "Preparing the kingdom\u2026",
+  "සුබ අලුත් අවුරුද්දක් වේවා!\u2026",
   "Summoning your royal avatar\u2026",
   "Almost ready\u2026",
 ];

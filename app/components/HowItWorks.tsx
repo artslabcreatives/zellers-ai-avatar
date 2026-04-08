@@ -21,7 +21,7 @@ const steps = [
   {
     icon: Star, 
     step: "03",
-    title: "Pick Your Flavor",
+    title: "Flavour Quiz",
     subtitle: "රස ප්‍රශ්නාවලිය",
     text: "Find your favorite Zellers chocolate flavor.",
   },

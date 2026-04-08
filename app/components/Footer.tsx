@@ -63,7 +63,7 @@ export default function Footer() {
           READY TO BECOME AN{" "}
           <span className="text-yellow-400 drop-shadow-[0_0_15px_rgba(234,179,8,0.5)]">AI</span>{" "}
           <span className="text-yellow-400 drop-shadow-[0_0_15px_rgba(234,179,8,0.5)]">
-            අවුරුදු කුමාරයා / කුමාරිය?
+            අවුරුදු කුමරා / කුමරිය?
           </span>
         </motion.h2>
 

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, Search, X } from "lucide-react";
+import { MapPin, Search, X, Smartphone, CheckCircle2, ShieldCheck } from "lucide-react";
 import Navbar from "../components/Navbar";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -101,7 +101,23 @@ function useCountdown(target: Date) {
 
 // ─── Countdown display ────────────────────────────────────────────────────────
 function CountdownTimer() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const { days, hours, minutes, seconds } = useCountdown(TARGET_DATE);
+
+  if (!mounted) return (
+    <div className="flex items-center gap-0.5 sm:gap-1 justify-center">
+      {["DAYS", "HOURS", "MINUTES", "SECONDS"].map((label, i) => (
+        <div key={label} className="flex items-center gap-0.5 sm:gap-1">
+          <div className="flex flex-col items-center">
+            <span className="text-2xl sm:text-3xl md:text-4xl font-black tabular-nums w-10 sm:w-14 text-center text-gray-100">00</span>
+            <span className="text-[8px] sm:text-[9px] tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mt-0.5">{label}</span>
+          </div>
+          {i < 3 && <span className="text-xl sm:text-2xl font-black text-gray-600 mb-4 mx-0.5">:</span>}
+        </div>
+      ))}
+    </div>
+  );
   const units = [
     { label: "HOURS",   value: hours },
     { label: "MINUTES", value: minutes },
@@ -109,30 +125,218 @@ function CountdownTimer() {
   ];
   return (
     <div className="flex flex-col items-center gap-3">
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-0.5 sm:gap-1">
+        {/* DAYS — first position */}
+        <div className="flex flex-col items-center">
+          <span className="text-2xl sm:text-3xl md:text-4xl font-black text-yellow-400 tabular-nums w-10 sm:w-14 text-center drop-shadow-[0_0_10px_rgba(234,179,8,0.5)]">
+            {String(days).padStart(2, "0")}
+          </span>
+          <span className="text-[8px] sm:text-[9px] tracking-[0.15em] sm:tracking-[0.2em] text-yellow-500 mt-0.5">DAYS</span>
+        </div>
+        {/* separator */}
+        <span className="text-xl sm:text-2xl font-black text-gray-600 mb-4 mx-0.5">:</span>
         {units.map((u, i) => (
-          <div key={u.label} className="flex items-center gap-1">
+          <div key={u.label} className="flex items-center gap-0.5 sm:gap-1">
             <div className="flex flex-col items-center">
-              <span className="text-3xl sm:text-4xl font-black text-gray-100 tabular-nums w-14 text-center drop-shadow-md">
+              <span className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-100 tabular-nums w-10 sm:w-14 text-center drop-shadow-md">
                 {String(u.value).padStart(2, "0")}
               </span>
-              <span className="text-[9px] tracking-[0.2em] text-gray-400 mt-0.5">{u.label}</span>
+              <span className="text-[8px] sm:text-[9px] tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mt-0.5">{u.label}</span>
             </div>
             {i < units.length - 1 && (
-              <span className="text-2xl font-black text-gray-600 mb-4 mx-0.5">:</span>
+              <span className="text-xl sm:text-2xl font-black text-gray-600 mb-4 mx-0.5">:</span>
             )}
           </div>
         ))}
-        {/* separator */}
-        <span className="text-2xl font-black text-gray-600 mb-4 mx-1">:</span>
-        <div className="flex flex-col items-center">
-          <span className="text-3xl sm:text-4xl font-black text-yellow-400 tabular-nums w-14 text-center drop-shadow-[0_0_10px_rgba(234,179,8,0.5)]">
-            {String(days).padStart(2, "0")}
-          </span>
-          <span className="text-[9px] tracking-[0.2em] text-yellow-500 mt-0.5">DAYS</span>
-        </div>
       </div>
     </div>
+  );
+}
+
+// ─── Vote Modal ──────────────────────────────────────────────────────────────
+type VoteModalProps = {
+  avatar: Avatar | null;
+  onClose: () => void;
+  onSuccess: (id: number) => void;
+};
+
+function VoteModal({ avatar, onClose, onSuccess }: VoteModalProps) {
+  const [phase, setPhase] = useState<"phone" | "otp" | "success">("phone");
+  const [phone, setPhone] = useState("");
+  const [otp, setOtp] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  function handleSendOtp() {
+    if (phone.length < 9) return;
+    setLoading(true);
+    // TODO: call backend to send OTP
+    setTimeout(() => { setLoading(false); setPhase("otp"); }, 1200);
+  }
+
+  function handleVerify() {
+    if (otp.length < 4 || !avatar) return;
+    setLoading(true);
+    // TODO: call backend to verify OTP and cast vote
+    setTimeout(() => {
+      setLoading(false);
+      setPhase("success");
+      setTimeout(() => { onSuccess(avatar.id); onClose(); }, 1600);
+    }, 1200);
+  }
+
+  // Close on backdrop click
+  function handleBackdrop(e: React.MouseEvent<HTMLDivElement>) {
+    if (e.target === e.currentTarget) onClose();
+  }
+
+  if (!avatar) return null;
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        key="vote-modal-backdrop"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25 }}
+        className="fixed inset-0 z-200 flex items-center justify-center px-4"
+        style={{ backgroundColor: "rgba(10,5,30,0.85)", backdropFilter: "blur(8px)" }}
+        onClick={handleBackdrop}
+      >
+        <motion.div
+          key="vote-modal-card"
+          initial={{ opacity: 0, scale: 0.92, y: 24 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.92, y: 24 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="relative w-full max-w-sm bg-[#1a0f4e] border border-purple-500/20 rounded-3xl p-6 sm:p-8 shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden"
+        >
+          {/* Top gold accent line */}
+          <div className="absolute top-0 left-8 right-8 h-px bg-linear-to-r from-transparent via-yellow-400/60 to-transparent" />
+
+          {/* Close button */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-200"
+            aria-label="Close"
+          >
+            <X size={14} />
+          </button>
+
+          <AnimatePresence mode="wait">
+
+            {/* ── Phase: Phone ── */}
+            {phase === "phone" && (
+              <motion.div key="phone" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }} className="space-y-5">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-full bg-yellow-500/15 border border-yellow-500/30 flex items-center justify-center shrink-0">
+                    <Smartphone size={18} className="text-yellow-400" />
+                  </div>
+                  <div>
+                    <p className="text-base font-black text-gray-100 leading-tight">Verify to Vote</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Voting for <span className="text-yellow-400 font-bold">{avatar.name}</span></p>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold tracking-[0.25em] uppercase text-gray-400">
+                    Mobile Number <span className="text-yellow-500/70">• දුරකථන අංකය</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <div className="flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-sm text-gray-300 font-semibold shrink-0 select-none">
+                      <span>🇱🇰</span>
+                      <span>+94</span>
+                    </div>
+                    <input
+                      type="tel"
+                      inputMode="numeric"
+                      maxLength={10}
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
+                      placeholder="7X XXX XXXX"
+                      className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-200 placeholder-gray-600 outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-all duration-300"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleSendOtp}
+                  disabled={phone.length < 9 || loading}
+                  className="w-full bg-linear-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl py-3.5 hover:brightness-110 hover:scale-[1.01] shadow-[0_4px_15px_rgba(234,179,8,0.3)] disabled:opacity-40 disabled:scale-100 disabled:cursor-not-allowed transition-all duration-300"
+                >
+                  {loading ? "SENDING OTP…" : "SEND OTP"}
+                </button>
+
+                <p className="text-center text-[10px] text-gray-600 tracking-wide">
+                  One vote per day, per number.
+                </p>
+              </motion.div>
+            )}
+
+            {/* ── Phase: OTP ── */}
+            {phase === "otp" && (
+              <motion.div key="otp" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }} className="space-y-5">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-full bg-yellow-500/15 border border-yellow-500/30 flex items-center justify-center shrink-0">
+                    <ShieldCheck size={18} className="text-yellow-400" />
+                  </div>
+                  <div>
+                    <p className="text-base font-black text-gray-100 leading-tight">Enter OTP</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Sent to +94 {phone}</p>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold tracking-[0.25em] uppercase text-gray-400">
+                    OTP Code <span className="text-yellow-500/70">• කේතය</span>
+                  </label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={6}
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+                    placeholder="• • • • • •"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-xl text-yellow-400 placeholder-gray-600 outline-none focus:border-yellow-500/50 transition-all duration-300 tracking-[0.5em] text-center font-black"
+                  />
+                </div>
+
+                <button
+                  onClick={handleVerify}
+                  disabled={otp.length < 4 || loading}
+                  className="w-full bg-linear-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl py-3.5 hover:brightness-110 hover:scale-[1.01] shadow-[0_4px_15px_rgba(234,179,8,0.3)] disabled:opacity-40 disabled:scale-100 disabled:cursor-not-allowed transition-all duration-300"
+                >
+                  {loading ? "VERIFYING…" : "VERIFY & VOTE"}
+                </button>
+
+                <button
+                  onClick={() => { setPhase("phone"); setOtp(""); }}
+                  className="w-full text-[11px] font-bold tracking-widest text-gray-500 hover:text-yellow-400 transition-colors duration-200 text-center"
+                >
+                  ← Change number
+                </button>
+              </motion.div>
+            )}
+
+            {/* ── Phase: Success ── */}
+            {phase === "success" && (
+              <motion.div key="success" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, ease: "easeOut" }} className="flex flex-col items-center gap-4 py-6 text-center">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.1 }}
+                >
+                  <CheckCircle2 size={56} className="text-yellow-400" strokeWidth={1.5} />
+                </motion.div>
+                <p className="text-xl font-black text-transparent bg-clip-text bg-linear-to-r from-yellow-300 to-amber-500">Vote Cast!</p>
+                <p className="text-sm text-gray-400">Thanks for voting for <span className="text-yellow-400 font-bold">{avatar.name}</span>!</p>
+              </motion.div>
+            )}
+
+          </AnimatePresence>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
@@ -144,7 +348,6 @@ const FILTERS: { key: Filter; label: string; dot?: string }[] = [
   { key: "top",      label: "Top Voted",dot: "bg-yellow-400"},
 ];
 
-// ─── Avatar Card ──────────────────────────────────────────────────────────────
 function AvatarCard({ avatar, voted, onVote }: { avatar: Avatar; voted: boolean; onVote: () => void }) {
   return (
     <motion.div
@@ -219,12 +422,13 @@ function AvatarCard({ avatar, voted, onVote }: { avatar: Avatar; voted: boolean;
 const PAGE_SIZE = 8; // Increased slightly for better grid fill
 
 export default function VotePage() {
-  const [filter, setFilter]     = useState<Filter>("all");
-  const [shown, setShown]       = useState(PAGE_SIZE);
-  const [voted, setVoted]       = useState<Set<number>>(new Set());
-  const [query, setQuery]       = useState("");
+  const [filter, setFilter]       = useState<Filter>("all");
+  const [page, setPage]           = useState(1);
+  const [voted, setVoted]         = useState<Set<number>>(new Set());
+  const [query, setQuery]         = useState("");
+  const [voteTarget, setVoteTarget] = useState<Avatar | null>(null);
 
-  function handleVote(id: number) {
+  function handleVoteSuccess(id: number) {
     setVoted((prev) => new Set(prev).add(id));
   }
 
@@ -242,8 +446,9 @@ export default function VotePage() {
     );
   });
 
-  const visible = filtered.slice(0, shown);
-  const hasMore = shown < filtered.length;
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const visible = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
   const cardVariants = {
     hidden: {},
@@ -327,7 +532,7 @@ export default function VotePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.35 }}
-          className="bg-white/5 backdrop-blur-md border border-white/10 rounded-[2rem] px-8 py-8 mb-12 max-w-md mx-auto text-center shadow-2xl"
+          className="bg-white/5 backdrop-blur-md border border-white/10 rounded-[2rem] px-4 sm:px-8 py-8 mb-12 max-w-md mx-auto text-center shadow-2xl"
         >
           <CountdownTimer />
         </motion.div>
@@ -342,7 +547,7 @@ export default function VotePage() {
           {FILTERS.map((f) => (
             <button
               key={f.key}
-              onClick={() => { setFilter(f.key); setShown(PAGE_SIZE); }}
+              onClick={() => { setFilter(f.key); setPage(1); }}
               className={[
                 "inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase rounded-full px-5 py-2.5 border transition-all duration-300",
                 filter === f.key
@@ -371,7 +576,7 @@ export default function VotePage() {
             <input
               type="text"
               value={query}
-              onChange={(e) => { setQuery(e.target.value); setShown(PAGE_SIZE); }}
+              onChange={(e) => { setQuery(e.target.value); setPage(1); }}
               placeholder="Search by name, flavor, badge…"
               className="w-full bg-white/5 border border-white/10 backdrop-blur-md rounded-full pl-12 pr-12 py-3.5 text-sm text-white placeholder-white/40 tracking-wide focus:outline-none focus:border-yellow-400/50 focus:bg-white/10 focus:ring-4 focus:ring-yellow-400/10 transition-all duration-300"
             />
@@ -382,7 +587,7 @@ export default function VotePage() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.7 }}
                   transition={{ duration: 0.15 }}
-                  onClick={() => { setQuery(""); setShown(PAGE_SIZE); }}
+                  onClick={() => { setQuery(""); setPage(1); }}
                   className="absolute right-4 text-white/40 hover:text-white transition-colors duration-150 bg-white/10 rounded-full p-1"
                   aria-label="Clear search"
                 >
@@ -413,26 +618,55 @@ export default function VotePage() {
                 key={avatar.id}
                 avatar={avatar}
                 voted={voted.has(avatar.id)}
-                onVote={() => handleVote(avatar.id)}
+                onVote={() => setVoteTarget(avatar)}
               />
             ))}
           </AnimatePresence>
         </motion.div>
 
-        {/* Load more */}
+        {/* Pagination */}
         <div className="mt-16 flex flex-col items-center gap-4">
-          {hasMore && (
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              onClick={() => setShown((s) => s + PAGE_SIZE)}
-              className="text-xs font-bold tracking-widest text-white border-2 border-white/20 bg-white/5 backdrop-blur-md rounded-full px-10 py-4 hover:bg-white/10 hover:border-white/40 transition-all duration-300 uppercase"
-            >
-              Load More Avatars
-            </motion.button>
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2 flex-wrap">
+              {/* Prev */}
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={safePage === 1}
+                className="w-10 h-10 flex items-center justify-center rounded-full border border-white/20 bg-white/5 text-white text-sm font-bold hover:bg-white/10 hover:border-white/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+                aria-label="Previous page"
+              >
+                ‹
+              </button>
+
+              {/* Page numbers */}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  className={[
+                    "w-10 h-10 flex items-center justify-center rounded-full text-xs font-extrabold tracking-widest border transition-all duration-200",
+                    p === safePage
+                      ? "bg-yellow-500/20 border-yellow-400/50 text-yellow-400 shadow-[0_0_12px_rgba(234,179,8,0.25)]"
+                      : "border-white/15 bg-white/5 text-gray-300 hover:bg-white/10 hover:border-white/30 hover:text-white",
+                  ].join(" ")}
+                >
+                  {p}
+                </button>
+              ))}
+
+              {/* Next */}
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={safePage === totalPages}
+                className="w-10 h-10 flex items-center justify-center rounded-full border border-white/20 bg-white/5 text-white text-sm font-bold hover:bg-white/10 hover:border-white/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+                aria-label="Next page"
+              >
+                ›
+              </button>
+            </div>
           )}
           <p className="text-[11px] font-bold text-white/30 tracking-widest uppercase">
-            Showing {visible.length} of {filtered.length} entries
+            Page {safePage} of {totalPages} · {filtered.length} entries
           </p>
         </div>
 
@@ -457,7 +691,14 @@ export default function VotePage() {
 
       </div>
 
-      {/* ── Footer ──────────────────────────────────────────────────────────── */}
+      {/* ── Vote Modal ──────────────────────────────────────────────────────── */}
+      <VoteModal
+        avatar={voteTarget}
+        onClose={() => setVoteTarget(null)}
+        onSuccess={handleVoteSuccess}
+      />
+
+      {/* ── Footer ───────────────────────────────────────────────────────────── */}
       <footer className="relative z-10 bg-transparent border-t border-white/10 py-12 mt-auto">
         <div className="relative z-10 max-w-6xl mx-auto px-4 flex flex-col items-center gap-6">
           {/* Logo */}

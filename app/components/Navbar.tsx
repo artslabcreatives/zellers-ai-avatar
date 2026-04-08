@@ -10,7 +10,7 @@ export default function Navbar() {
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-3 md:px-12 backdrop-blur-md bg-[#1E0B4B]/85 border-b border-[#9D00FF]/15"
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-6 py-3 md:px-12 backdrop-blur-md bg-[#1E0B4B]/85 border-b border-[#9D00FF]/15"
     >
       {/* Logo */}
       <Link href="/" className="flex items-center">
@@ -34,7 +34,7 @@ export default function Navbar() {
         </Link>
         <Link
           href="/campaign"
-          className="text-sm font-bold tracking-wide text-black bg-linear-to-r from-yellow-500 to-amber-400 rounded-full px-6 py-2 hover:scale-105 transition-transform duration-200 glow-gold-box shadow-lg"
+          className="text-sm font-bold tracking-wide text-black bg-linear-to-r from-yellow-500 to-amber-400 rounded-full px-4 sm:px-6 py-2 hover:scale-105 transition-transform duration-200 glow-gold-box shadow-lg"
         >
           ENTER NOW
         </Link>

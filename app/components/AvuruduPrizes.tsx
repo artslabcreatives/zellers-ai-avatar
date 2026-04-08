@@ -77,7 +77,7 @@ export default function AvuruduPrizes() {
             viewport={{ once: true }}
             className="text-4xl md:text-5xl lg:text-7xl font-black text-white tracking-tight drop-shadow-lg"
           >
-            ROYAL <span className="text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 via-yellow-400 to-amber-600 drop-shadow-[0_4px_15px_rgba(234,179,8,0.3)]">REWARDS</span>
+            Avurudu<span className="text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 via-yellow-400 to-amber-600 drop-shadow-[0_4px_15px_rgba(234,179,8,0.3)]"> Prizes</span>
           </motion.h2>
         </div>
 
