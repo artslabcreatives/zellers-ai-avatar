@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, Smartphone, User, Star, Sparkles, CheckCircle2, Camera, ArrowLeft } from "lucide-react";
+import { ChevronRight, Smartphone, User, Star, Sparkles, CheckCircle2, Camera, ArrowLeft, Check } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import Image from "next/image";
 
 // ─── Step Definitions ─────────────────────────────────────────────────────────
 const STEPS = [
@@ -17,46 +18,41 @@ const STEPS = [
 const QUIZ_QUESTIONS = [
   {
     id: "q1",
-    question: "What is your favorite chocolate flavor?",
-    sinhala: "ඔබේ ප්‍රියතම චොකලට් රසය කුමක්ද?",
+    question: "What is your favorite Awurudu Kevili?",
+    sinhala: "ඔබේ ප්‍රියතම අවුරුදු කැවිලි වර්ගය කුමක්ද?",
     options: [
-      { id: "dark", label: "Dark Velvet", emoji: "🍫" },
-      { id: "mint", label: "Mint Crunch", emoji: "🌿" },
-      { id: "white", label: "White Dream", emoji: "🤍" },
-      { id: "hazel", label: "Hazelnut", emoji: "🌰" },
+      { id: "kavum", label: "Konda Kavum", image: "/quiz/kavum.jpg" },
+      { id: "kokis", label: "Kokis", image: "/quiz/kokis.jpg" },
+      { id: "aluwa", label: "Aluwa", image: "/quiz/aluwa.jpg" },
+      { id: "mun", label: "Mun Kavum", image: "/quiz/munkavum.jpg" },
+      { id: "aasmi", label: "Aasmi", image: "/quiz/aasmi.jpg" },
+      { id: "undu", label: "Undu Walalu", image: "/quiz/unduwalalu.jpg" },
     ],
   },
   {
     id: "q2",
-    question: "Which Avurudu tradition excites you most?",
-    sinhala: "ඔබ වඩාත් ප්‍රිය කරන අවුරුදු චාරිත්‍රය?",
+    question: "What is your favorite Awurudu Krida?",
+    sinhala: "ඔබ වඩාත් ප්‍රිය කරන අවුරුදු ක්‍රීඩාව කුමක්ද?",
     options: [
-      { id: "sweets", label: "Sweetmeats", emoji: "🍯" },
-      { id: "games", label: "Avurudu Games", emoji: "🎯" },
-      { id: "family", label: "Visiting Family", emoji: "👨‍👩‍👧‍👦" },
-      { id: "clothes", label: "New Clothes", emoji: "👘" },
+      { id: "kotta", label: "Kotta Pora", image: "/quiz/kotta-pora.jpg" },
+      { id: "mutti", label: "Kana Mutti", image: "/quiz/kana-mutti.png" },
+      { id: "lissana", label: "Lissana Gaha", image: "/quiz/lissana-gaha.png" },
+      { id: "kamba", label: "Kamba Adeema", image: "/quiz/kamba-adeema.png" },
+      { id: "pancha", label: "Pancha Dameema", image: "/quiz/pancha.jpg" },
+      { id: "olinda", label: "Olinda Keliya", image: "/quiz/olinda.png" },
     ],
   },
   {
     id: "q3",
-    question: "Choose your royal Avatar vibe:",
-    sinhala: "ඔබේ Avatar හි ස්වභාවය තෝරන්න:",
+    question: "Choose your favorite Zellers flavor:",
+    sinhala: "ඔබේ ප්‍රියතම Zellers රසය තෝරන්න:",
     options: [
-      { id: "majestic", label: "Majestic Royal", emoji: "👑" },
-      { id: "warrior", label: "Fierce Warrior", emoji: "⚔️" },
-      { id: "classic", label: "Classic Village", emoji: "🌾" },
-      { id: "modern", label: "Modern Fusion", emoji: "✨" },
-    ],
-  },
-  {
-    id: "q4",
-    question: "Pick your lucky Avurudu color palette:",
-    sinhala: "ඔබේ වාසනාවන්ත වර්ණය තෝරන්න:",
-    options: [
-      { id: "gold", label: "Gold & Ruby", emoji: "🔴" },
-      { id: "blue", label: "Sapphire Blue", emoji: "🔵" },
-      { id: "green", label: "Emerald Green", emoji: "🟢" },
-      { id: "pearl", label: "Pearl White", emoji: "⚪" },
+      { id: "pistachio", label: "Pistachio Kunafa", image: "/quiz/pistachio-and-kunafa.png" },
+      { id: "redvelvet", label: "Red Velvet", image: "/quiz/red-velvet.png" },
+      { id: "coconut", label: "Coconut Cream", image: "/quiz/zellers-chocolate-coconut-cream.jpg" },
+      { id: "cookie", label: "Cookie Cream", image: "/quiz/zellers-chocolate-cookie-cream-filled.jpg" }, 
+      { id: "mixnut", label: "Mix Nut Cream", image: "/quiz/zellers-chocolate-mix-nut-cream.jpg" },
+      { id: "strawberry", label: "Strawberry", image: "/quiz/zellers-chocolate-strawberry.jpg" },
     ],
   },
 ];
@@ -117,16 +113,68 @@ function StepVerify({ onNext }: { onNext: () => void }) {
   const [otpSent, setOtpSent]   = useState(false);
   const [otp, setOtp]           = useState("");
   const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState("");
+  const [cooldown, setCooldown] = useState(0);
 
-  function handleSendOtp() {
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
+
+  async function handleSendOtp() {
     if (phone.length < 9) return;
+    setError("");
     setLoading(true);
-    setTimeout(() => { setLoading(false); setOtpSent(true); }, 1200);
+    const formattedPhone = `+94${phone}`;
+    console.log("[StepVerify] Sending OTP to:", formattedPhone);
+    try {
+      const res = await fetch("/api/auth/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: formattedPhone }),
+      });
+      const data = await res.json();
+      if (res.status === 429) {
+        setError(data.message || "Too many requests. Please wait 30 seconds.");
+        setCooldown(30);
+      } else if (!res.ok) {
+        setError(data.message || "Failed to send OTP. Please try again.");
+      } else {
+        setOtpSent(true);
+      }
+    } catch (err) {
+      setError("Network error. Please check your connection and try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function handleVerify() {
+  async function handleVerify() {
     if (otp.length < 4) return;
-    onNext();
+    setError("");
+    setLoading(true);
+    const formattedPhone = `+94${phone}`;
+    try {
+      const res = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: formattedPhone, otp }),
+      });
+      const data = await res.json();
+      if (res.status === 429) {
+        setError(data.message || "Too many attempts. Please wait before trying again.");
+      } else if (!res.ok) {
+        setError(data.message || "Invalid OTP. Please try again.");
+      } else {
+        if (data.token) sessionStorage.setItem("auth_token", data.token);
+        onNext();
+      }
+    } catch (err) {
+      setError("Network error. Please check your connection and try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -145,21 +193,17 @@ function StepVerify({ onNext }: { onNext: () => void }) {
             inputMode="numeric"
             maxLength={10}
             value={phone}
-            onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
+            onChange={(e) => { setPhone(e.target.value.replace(/\D/g, "")); setError(""); }}
             placeholder="7X XXX XXXX"
-            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-base text-gray-200 placeholder-gray-500 outline-none focus:border-yellow-500/50 focus:bg-white/10 focus:shadow-[0_0_15px_rgba(234,179,8,0.1)] transition-all duration-300 backdrop-blur-md"
+            disabled={otpSent}
+            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-base text-gray-200 placeholder-gray-500 outline-none focus:border-yellow-500/50 focus:bg-white/10 focus:shadow-[0_0_15px_rgba(234,179,8,0.1)] transition-all duration-300 backdrop-blur-md disabled:opacity-50"
           />
         </div>
       </div>
 
       <AnimatePresence>
         {otpSent && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="space-y-2 overflow-hidden"
-          >
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="space-y-2 overflow-hidden">
             <label className="block text-[10px] font-bold tracking-[0.25em] uppercase text-gray-400 mt-2">
               OTP CODE <span className="text-yellow-500/70">• කේතය</span>
             </label>
@@ -168,7 +212,7 @@ function StepVerify({ onNext }: { onNext: () => void }) {
               inputMode="numeric"
               maxLength={6}
               value={otp}
-              onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+              onChange={(e) => { setOtp(e.target.value.replace(/\D/g, "")); setError(""); }}
               placeholder="• • • • • •"
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-xl text-yellow-400 placeholder-gray-500 outline-none focus:border-yellow-500/50 transition-all duration-300 tracking-[0.5em] text-center font-bold backdrop-blur-md shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)]"
             />
@@ -176,22 +220,35 @@ function StepVerify({ onNext }: { onNext: () => void }) {
         )}
       </AnimatePresence>
 
+      <AnimatePresence>
+        {error && (
+          <motion.p initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="text-xs text-red-400 text-center font-semibold bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2">
+            {error}
+          </motion.p>
+        )}
+      </AnimatePresence>
+
       {!otpSent ? (
         <button
           onClick={handleSendOtp}
-          disabled={phone.length < 9 || loading}
+          disabled={phone.length < 9 || loading || cooldown > 0}
           className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl py-4 hover:scale-[1.02] shadow-[0_4px_15px_rgba(234,179,8,0.3)] disabled:opacity-40 disabled:scale-100 disabled:cursor-not-allowed transition-all duration-300"
         >
-          {loading ? "SENDING…" : "SEND OTP"}
+          {loading ? "SENDING…" : cooldown > 0 ? `WAIT ${cooldown}s` : "SEND OTP"}
         </button>
       ) : (
-        <button
-          onClick={handleVerify}
-          disabled={otp.length < 4}
-          className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl py-4 hover:scale-[1.02] shadow-[0_4px_15px_rgba(234,179,8,0.3)] disabled:opacity-40 disabled:scale-100 transition-all duration-300"
-        >
-          VERIFY
-        </button>
+        <div className="space-y-3">
+          <button
+            onClick={handleVerify}
+            disabled={otp.length < 4 || loading}
+            className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl py-4 hover:scale-[1.02] shadow-[0_4px_15px_rgba(234,179,8,0.3)] disabled:opacity-40 disabled:scale-100 transition-all duration-300"
+          >
+            {loading ? "VERIFYING…" : "VERIFY"}
+          </button>
+          <button onClick={() => { setOtpSent(false); setOtp(""); setError(""); }} className="w-full text-xs text-gray-400 hover:text-yellow-400 transition-colors py-1">
+            ← Change number
+          </button>
+        </div>
       )}
     </div>
   );
@@ -199,18 +256,60 @@ function StepVerify({ onNext }: { onNext: () => void }) {
 
 // ─── Step 2: Profile ──────────────────────────────────────────────────────────
 function StepProfile({ onNext }: { onNext: () => void }) {
-  const [form, setForm] = useState({ name: "", displayName: "" });
+  const [form, setForm] = useState({
+    name: "",
+    displayName: "",
+    gender: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const isComplete = Object.values(form).every((val) => val.trim() !== "");
+
+  async function handleSubmit() {
+    if (!isComplete) return;
+    setError("");
+    setIsLoading(true);
+    const token = sessionStorage.getItem("auth_token");
+    console.log("[StepProfile] Submitting profile:", form);
+    try {
+      const res = await fetch("/api/user/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: form.name,
+          displayName: form.displayName,
+          gender: form.gender,
+        }),
+      });
+      const data = await res.json();
+      console.log("[StepProfile] profile response:", res.status, data);
+      if (!res.ok) {
+        setError(data.message || "Failed to save profile. Please try again.");
+      } else {
+        onNext();
+      }
+    } catch (err) {
+      console.error("[StepProfile] network error:", err);
+      setError("Network error. Please check your connection and try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <div className="space-y-5">
       <div className="space-y-1.5">
-        <label className="text-[10px] font-bold tracking-widest text-gray-400 uppercase ml-1">Full Name</label>
+        <label className="text-[10px] font-bold tracking-widest text-gray-400 uppercase ml-1">
+          Full Name
+        </label>
         <input
           type="text"
           value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          onChange={(e) => { setForm({ ...form, name: e.target.value }); setError(""); }}
           placeholder="shashith perera"
           className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-200 outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-all backdrop-blur-md placeholder-gray-500"
         />
@@ -218,32 +317,71 @@ function StepProfile({ onNext }: { onNext: () => void }) {
 
       <div className="space-y-1.5">
         <label className="text-[10px] font-bold tracking-widest text-gray-400 uppercase ml-1 block">
-          Display Name for Character <span className="text-yellow-500/70 normal-case tracking-normal hidden sm:inline">• Shown on your Avatar</span>
+          Display Name for Character{" "}
+          <span className="text-yellow-500/70 normal-case tracking-normal hidden sm:inline">
+            • Shown on your Avatar
+          </span>
         </label>
         <input
           type="text"
           value={form.displayName}
-          onChange={(e) => setForm({ ...form, displayName: e.target.value })}
+          onChange={(e) => { setForm({ ...form, displayName: e.target.value }); setError(""); }}
           placeholder="e.g. The Golden Prince"
           className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-200 outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-all backdrop-blur-md placeholder-gray-500"
         />
       </div>
 
+      <div className="space-y-1.5">
+        <label className="text-[10px] font-bold tracking-widest text-gray-400 uppercase ml-1">
+          Gender
+        </label>
+        <select
+          value={form.gender}
+          onChange={(e) => { setForm({ ...form, gender: e.target.value }); setError(""); }}
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-200 outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-all backdrop-blur-md"
+        >
+          <option value="" className="bg-gray-900 text-gray-500">
+            Select Gender
+          </option>
+          <option value="male" className="bg-gray-900">
+            Male
+          </option>
+          <option value="female" className="bg-gray-900">
+            Female
+          </option>
+        </select>
+      </div>
+
+      <AnimatePresence>
+        {error && (
+          <motion.p
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="text-xs text-red-400 text-center font-semibold bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2"
+          >
+            {error}
+          </motion.p>
+        )}
+      </AnimatePresence>
+
       <button
-        onClick={onNext}
-        disabled={!isComplete}
+        onClick={handleSubmit}
+        disabled={!isComplete || isLoading}
         className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl py-4 hover:scale-[1.02] shadow-[0_4px_15px_rgba(234,179,8,0.3)] disabled:opacity-40 disabled:scale-100 transition-all mt-4 flex justify-center items-center gap-2"
       >
-        CONTINUE <ChevronRight size={18} strokeWidth={3} />
+        {isLoading ? "SAVING…" : <>CONTINUE <ChevronRight size={18} strokeWidth={3} /></>}
       </button>
     </div>
   );
 }
 
-// ─── Step 3: Quiz (Dynamic Flow) ──────────────────────────────────────────────
+// ─── Step 3: Quiz (Upgraded Image Grid) ───────────────────────────────────────
 function StepQuiz({ onNext }: { onNext: () => void }) {
   const [currentQIndex, setCurrentQIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const currentQ = QUIZ_QUESTIONS[currentQIndex];
   const isLastQ = currentQIndex === QUIZ_QUESTIONS.length - 1;
@@ -251,13 +389,54 @@ function StepQuiz({ onNext }: { onNext: () => void }) {
   function handleSelect(optionId: string) {
     setAnswers({ ...answers, [currentQ.id]: optionId });
     if (!isLastQ) {
-      setTimeout(() => setCurrentQIndex((prev) => prev + 1), 300);
+      setTimeout(() => setCurrentQIndex((prev) => prev + 1), 600);
+    }
+  }
+
+  async function handleSubmitQuiz() {
+    setError("");
+    setIsLoading(true);
+    const token = sessionStorage.getItem("auth_token");
+
+    // Translate internal { qId: optionId } map → [{ q, answer }] array for backend
+    const formattedAnswers = Object.entries(answers).map(([qId, optionId]) => {
+      const questionObj = QUIZ_QUESTIONS.find((q) => q.id === qId);
+      const optionObj = questionObj?.options.find((o) => o.id === optionId);
+      return {
+        q: questionObj?.question ?? qId,
+        answer: optionObj?.label ?? optionId,
+      };
+    });
+
+    console.log("[StepQuiz] Submitting formatted answers:", JSON.stringify(formattedAnswers, null, 2));
+
+    try {
+      const res = await fetch("/api/quiz/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ answers: formattedAnswers }),
+      });
+      const data = await res.json();
+      console.log("[StepQuiz] quiz/submit response:", res.status, data);
+      if (!res.ok) {
+        setError(data.message || "Failed to save quiz. Please try again.");
+      } else {
+        onNext();
+      }
+    } catch (err) {
+      console.error("[StepQuiz] network error:", err);
+      setError("Network error. Please check your connection and try again.");
+    } finally {
+      setIsLoading(false);
     }
   }
 
   return (
-    <div className="relative min-h-[300px] flex flex-col">
-      {/* Quiz Progress */}
+    <div className="relative min-h-[420px] flex flex-col w-full">
+      {/* Quiz Progress Header */}
       <div className="flex justify-between items-center mb-6">
         <button
           onClick={() => setCurrentQIndex((p) => Math.max(0, p - 1))}
@@ -270,9 +449,10 @@ function StepQuiz({ onNext }: { onNext: () => void }) {
             <div key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === currentQIndex ? "w-6 bg-yellow-400 shadow-[0_0_8px_rgba(234,179,8,0.6)]" : i < currentQIndex ? "w-2 bg-yellow-400/50" : "w-2 bg-white/10"}`} />
           ))}
         </div>
-        <div className="w-5" /> {/* Spacer for alignment */}
+        <div className="w-5" /> 
       </div>
 
+      {/* Quiz Content */}
       <AnimatePresence mode="wait">
         <motion.div
           key={currentQ.id}
@@ -280,28 +460,58 @@ function StepQuiz({ onNext }: { onNext: () => void }) {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.3 }}
-          className="flex-1"
+          className="flex-1 w-full"
         >
-          <h3 className="font-playfair text-lg sm:text-xl font-normal text-gray-100 text-center mb-1 drop-shadow-sm">{currentQ.question}</h3>
+          <h3 className="font-playfair text-lg sm:text-xl font-normal text-gray-100 text-center mb-1 drop-shadow-sm px-2">
+            {currentQ.question}
+          </h3>
           <p className="text-xs text-yellow-400/80 text-center mb-6">{currentQ.sinhala}</p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* Expert UI: Image Options Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
             {currentQ.options.map((opt) => {
               const isSelected = answers[currentQ.id] === opt.id;
               return (
                 <button
                   key={opt.id}
                   onClick={() => handleSelect(opt.id)}
-                  className={`flex items-center gap-3 p-4 rounded-xl border text-left transition-all duration-300 ${
-                    isSelected
-                      ? "border-yellow-400 bg-yellow-400/10 shadow-[0_0_15px_rgba(234,179,8,0.15)]"
-                      : "border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/30 backdrop-blur-md"
-                  }`}
+                  className="group relative w-full aspect-square rounded-2xl overflow-hidden focus:outline-none"
                 >
-                  <span className="text-2xl drop-shadow-md">{opt.emoji}</span>
-                  <span className={`font-semibold text-sm ${isSelected ? "text-yellow-400" : "text-gray-200"}`}>
+                  {/* Option Image */}
+                  <Image 
+                    src={opt.image} 
+                    alt={opt.label} 
+                    fill 
+                    sizes="(max-width: 640px) 50vw, 33vw"
+                    className={`object-cover transition-transform duration-500 ${isSelected ? "scale-105" : "group-hover:scale-110"}`}
+                    // Fallback background color incase images are missing initially
+                    style={{ backgroundColor: '#1E0B4B' }}
+                  />
+
+                  {/* Dark Vignette Overlay to make text readable */}
+                  <div className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-300 ${isSelected ? "opacity-80" : "opacity-100"}`} />
+
+                  {/* Label */}
+                  <p className="absolute bottom-3 left-2 right-2 text-center text-xs font-bold text-white tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] z-10 leading-tight">
                     {opt.label}
-                  </span>
+                  </p>
+
+                  {/* Selection Indicator Overlay */}
+                  <div className={`absolute inset-0 border-2 rounded-2xl transition-all duration-300 pointer-events-none ${isSelected ? "border-yellow-400 scale-100 bg-yellow-400/10" : "border-white/10 scale-105 opacity-0 group-hover:opacity-100 group-hover:scale-100 group-hover:border-white/30"}`} />
+
+                  {/* Checkmark Badge */}
+                  <AnimatePresence>
+                    {isSelected && (
+                      <motion.div 
+                        initial={{ scale: 0, opacity: 0 }} 
+                        animate={{ scale: 1, opacity: 1 }} 
+                        className="absolute top-2 right-2 bg-yellow-400 rounded-full p-1 shadow-lg z-20"
+                      >
+                        <Check size={14} strokeWidth={4} className="text-black" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
                 </button>
               );
             })}
@@ -309,13 +519,26 @@ function StepQuiz({ onNext }: { onNext: () => void }) {
         </motion.div>
       </AnimatePresence>
 
-      <div className="mt-8">
+      <AnimatePresence>
+        {error && (
+          <motion.p
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="mt-4 text-xs text-red-400 text-center font-semibold bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2"
+          >
+            {error}
+          </motion.p>
+        )}
+      </AnimatePresence>
+
+      <div className="mt-4">
         <button
-          onClick={onNext}
-          disabled={Object.keys(answers).length < QUIZ_QUESTIONS.length}
+          onClick={handleSubmitQuiz}
+          disabled={Object.keys(answers).length < QUIZ_QUESTIONS.length || isLoading}
           className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl py-4 hover:scale-[1.02] shadow-[0_4px_15px_rgba(234,179,8,0.3)] disabled:opacity-40 disabled:scale-100 transition-all flex justify-center items-center gap-2"
         >
-          COMPLETE QUIZ <CheckCircle2 size={18} strokeWidth={3} />
+          {isLoading ? "SAVING QUIZ…" : <>{"COMPLETE QUIZ"} <CheckCircle2 size={18} strokeWidth={3} /></>}
         </button>
       </div>
     </div>
@@ -328,7 +551,6 @@ function StepGenerate() {
   const [file, setFile] = useState<boolean>(false);
 
   function handleFakeUpload() {
-    // Simulate file selection
     setFile(true);
   }
 
@@ -404,7 +626,6 @@ function StepGenerate() {
             <div className="relative w-56 h-72 p-1 rounded-2xl bg-gradient-to-br from-yellow-300 via-amber-600 to-yellow-800 shadow-[0_10px_30px_rgba(234,179,8,0.3)] mb-6">
               <div className="w-full h-full rounded-xl bg-[#0D0B38] overflow-hidden flex flex-col items-center justify-center relative">
                  <div className="absolute inset-0 bg-[url('https://via.placeholder.com/400x600/1a1a2e/ffffff?text=AI+Avatar')] bg-cover bg-center opacity-80 mix-blend-screen" />
-                 {/* Fallback text if image doesn't load visually */}
                  <span className="relative z-10 text-xs font-bold tracking-widest text-yellow-400/50">YOUR PORTRAIT</span>
               </div>
             </div>
@@ -440,7 +661,7 @@ export default function CampaignPage() {
       {/* ─── EXPERT UI: Unified Fixed Mesh Gradient Background ─── */}
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#1E0B4B]" // Deep violet/indigo base
+        className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#1E0B4B]"
       >
         <div className="absolute -top-[20%] -right-[10%] w-[600px] h-[600px] sm:w-[800px] sm:h-[800px] rounded-full bg-[#00E5FF]/35 blur-[120px] sm:blur-[160px]" />
         <div className="absolute -bottom-[20%] -left-[10%] w-[600px] h-[600px] sm:w-[800px] sm:h-[800px] rounded-full bg-[#00E5FF]/35 blur-[120px] sm:blur-[160px]" />
@@ -452,9 +673,10 @@ export default function CampaignPage() {
 
       <Navbar />
       
-      <div className="flex-1 flex items-center justify-center px-4 py-16 pt-28 relative z-10">
+      <div className="flex-1 flex items-center justify-center px-4 py-16 pt-28 relative z-10 w-full">
         
-        <div className="relative w-full max-w-md">
+        {/* Adjusted width to max-w-lg to safely fit the 3-column image grid */}
+        <div className="relative w-full max-w-lg">
           
           {/* Header Title Area */}
           <motion.div
@@ -470,7 +692,7 @@ export default function CampaignPage() {
             <h1 className="font-playfair text-3xl md:text-4xl font-normal tracking-wide text-white mb-2 drop-shadow-lg">
               REVEAL YOUR <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-500">ROYAL</span> SELF
             </h1>
-            <p className="text-sm text-gray-300 px-4 font-medium">
+            <p className="text-sm text-gray-300 px-4 font-medium max-w-md mx-auto">
               Complete the steps below to generate your legendary AI Avatar and enter the Zellers competition.
             </p>
           </motion.div>
@@ -480,12 +702,12 @@ export default function CampaignPage() {
             <StepIndicator current={step} />
           </motion.div>
 
-          {/* Interactive Form Card (Frosted Glassmorphism Upgrade) */}
+          {/* Interactive Form Card */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white/5 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-[2rem] p-6 md:p-8 backdrop-blur-2xl overflow-hidden mt-4"
+            className="bg-white/5 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-[2rem] p-4 sm:p-8 backdrop-blur-2xl overflow-hidden mt-4 w-full"
           >
             <AnimatePresence mode="wait" custom={dir}>
               <motion.div
@@ -495,6 +717,7 @@ export default function CampaignPage() {
                 initial="enter"
                 animate="center"
                 exit="exit"
+                className="w-full"
               >
                 {step === 1 && <StepVerify  onNext={goNext} />}
                 {step === 2 && <StepProfile onNext={goNext} />}
@@ -507,9 +730,8 @@ export default function CampaignPage() {
         </div>
       </div>
       
-      {/* Set footer z-index so it sits correctly on top of fixed background */}
       <div className="relative z-10">
-         <Footer />
+         {/* <Footer /> */}
       </div>
     </div>
   );
