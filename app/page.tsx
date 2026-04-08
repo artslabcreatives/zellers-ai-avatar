@@ -4,6 +4,7 @@ import HowItWorks from "./components/HowItWorks";
 import MeetTheAvatars from "./components/MeetTheAvatars";
 import AvuruduPrizes from "./components/AvuruduPrizes";
 import Footer from "./components/Footer";
+import RegistrationReminder from "./components/RegistrationReminder";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <MeetTheAvatars />
       <AvuruduPrizes />
       <Footer />
+      <RegistrationReminder />
     </main>
   );
 }
