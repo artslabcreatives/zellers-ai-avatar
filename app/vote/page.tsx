@@ -502,7 +502,7 @@ export default function VotePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.1, ease: "easeOut" as const }}
-            className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-tight drop-shadow-lg"
+            className="font-playfair text-4xl sm:text-5xl md:text-6xl font-normal text-white tracking-tight leading-tight drop-shadow-lg"
           >
             VOTE FOR YOUR{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-500">FAVOURITE</span>

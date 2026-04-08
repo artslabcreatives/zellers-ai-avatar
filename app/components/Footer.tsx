@@ -58,7 +58,7 @@ export default function Footer() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.65, delay: 0.1, ease: "easeOut" as const }}
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-gray-100 leading-tight tracking-tight"
+          className="font-playfair text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal text-gray-100 leading-tight tracking-tight"
         >
           READY TO BECOME AN{" "}
           <span className="text-yellow-400 drop-shadow-[0_0_15px_rgba(234,179,8,0.5)]">AI</span>{" "}

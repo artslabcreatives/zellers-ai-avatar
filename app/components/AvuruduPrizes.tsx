@@ -75,7 +75,7 @@ export default function AvuruduPrizes() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-4xl md:text-5xl lg:text-7xl font-black text-white tracking-tight drop-shadow-lg"
+            className="font-playfair text-4xl md:text-5xl lg:text-7xl font-normal text-white tracking-tight drop-shadow-lg"
           >
             Avurudu<span className="text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 via-yellow-400 to-amber-600 drop-shadow-[0_4px_15px_rgba(234,179,8,0.3)]"> Prizes</span>
           </motion.h2>
@@ -125,7 +125,7 @@ export default function AvuruduPrizes() {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-2xl md:text-3xl font-bold text-gray-100 mb-10 leading-tight tracking-tight min-h-[4rem] flex items-center justify-center group-hover:text-white transition-colors duration-500 drop-shadow-sm">
+                <h3 className="font-playfair text-2xl md:text-3xl font-normal text-gray-100 mb-10 leading-tight tracking-tight min-h-[4rem] flex items-center justify-center group-hover:text-white transition-colors duration-500 drop-shadow-sm">
                   {prize.title}
                 </h3>
 

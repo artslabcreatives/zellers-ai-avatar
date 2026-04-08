@@ -282,7 +282,7 @@ function StepQuiz({ onNext }: { onNext: () => void }) {
           transition={{ duration: 0.3 }}
           className="flex-1"
         >
-          <h3 className="text-lg sm:text-xl font-bold text-gray-100 text-center mb-1 drop-shadow-sm">{currentQ.question}</h3>
+          <h3 className="font-playfair text-lg sm:text-xl font-normal text-gray-100 text-center mb-1 drop-shadow-sm">{currentQ.question}</h3>
           <p className="text-xs text-yellow-400/80 text-center mb-6">{currentQ.sinhala}</p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -344,7 +344,7 @@ function StepGenerate() {
         {/* PHASE 1: UPLOAD */}
         {phase === "upload" && (
           <motion.div key="upload" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full">
-            <h3 className="text-xl font-bold text-gray-100 mb-1 drop-shadow-sm">Upload your Selfie</h3>
+            <h3 className="font-playfair text-xl font-normal text-gray-100 mb-1 drop-shadow-sm">Upload your Selfie</h3>
             <p className="text-xs text-gray-400 mb-6">We need a clear, front-facing photo to generate your Avatar.</p>
             
             <button 
@@ -467,7 +467,7 @@ export default function CampaignPage() {
               <Sparkles size={14} className="text-yellow-400" />
               <span className="text-[10px] font-bold tracking-[0.25em] text-yellow-400 uppercase">Avurudu Campaign</span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-black tracking-wide text-white mb-2 drop-shadow-lg">
+            <h1 className="font-playfair text-3xl md:text-4xl font-normal tracking-wide text-white mb-2 drop-shadow-lg">
               REVEAL YOUR <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-500">ROYAL</span> SELF
             </h1>
             <p className="text-sm text-gray-300 px-4 font-medium">

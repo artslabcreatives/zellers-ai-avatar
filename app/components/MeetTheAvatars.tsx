@@ -92,7 +92,7 @@ export default function MeetTheAvatars() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-100 tracking-tight leading-tight"
+            className="font-playfair text-3xl sm:text-4xl md:text-5xl font-normal text-gray-100 tracking-tight leading-tight"
           >
             MEET THE AVATARS
           </motion.h2>

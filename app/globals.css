@@ -12,6 +12,12 @@
   --font-mono: var(--font-geist-mono);
 }
 
+@layer utilities {
+  .font-playfair {
+    font-family: var(--font-playfair-var), "Playfair Display", serif;
+  }
+}
+
 body {
   /* HeroSection mesh gradient — base #1E0B4B + cyan (top-right/bottom-left) + magenta (top-left) + deep-purple (bottom-right) + gold (center) */
   background-color: #1E0B4B;

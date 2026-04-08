@@ -64,7 +64,7 @@ export default function TermsPage() {
           <p className="text-[10px] font-bold tracking-[0.35em] uppercase text-yellow-400/60 mb-3">
             LEGAL
           </p>
-          <h1 className="text-4xl sm:text-5xl font-black text-gray-100 tracking-tight">
+          <h1 className="font-playfair text-4xl sm:text-5xl font-normal text-gray-100 tracking-tight">
             Terms &amp; <span className="text-yellow-400">Conditions</span>
           </h1>
           <p className="text-sm text-gray-500 mt-3">Last updated: April 1, 2026</p>
@@ -79,7 +79,7 @@ export default function TermsPage() {
               transition={{ duration: 0.45, delay: i * 0.06, ease: "easeOut" as const }}
               className="bg-purple-950/30 border border-purple-500/15 rounded-2xl px-6 py-5 backdrop-blur-sm"
             >
-              <h2 className="text-sm font-extrabold text-yellow-400 tracking-wide mb-2">{s.title}</h2>
+              <h2 className="font-playfair text-sm font-normal text-yellow-400 tracking-wide mb-2">{s.title}</h2>
               <p className="text-sm text-gray-400 leading-relaxed">{s.body}</p>
             </motion.div>
           ))}

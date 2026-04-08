@@ -112,7 +112,7 @@ export default function FAQPage() {
           <p className="text-[10px] font-bold tracking-[0.35em] uppercase text-yellow-400/60 mb-3">
             HELP
           </p>
-          <h1 className="text-4xl sm:text-5xl font-black text-gray-100 tracking-tight">
+          <h1 className="font-playfair text-4xl sm:text-5xl font-normal text-gray-100 tracking-tight">
             Frequently Asked <span className="text-yellow-400">Questions</span>
           </h1>
           <p className="text-sm text-gray-500 mt-3">Everything you need to know about the AI Avurudu Campaign.</p>

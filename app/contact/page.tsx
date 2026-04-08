@@ -51,7 +51,7 @@ export default function ContactPage() {
           <p className="text-[10px] font-bold tracking-[0.35em] uppercase text-yellow-400/60 mb-3">
             GET IN TOUCH
           </p>
-          <h1 className="text-4xl sm:text-5xl font-black text-gray-100 tracking-tight">
+          <h1 className="font-playfair text-4xl sm:text-5xl font-normal text-gray-100 tracking-tight">
             Contact <span className="text-yellow-400">Us</span>
           </h1>
           <p className="text-sm text-gray-500 mt-3 max-w-sm mx-auto">
