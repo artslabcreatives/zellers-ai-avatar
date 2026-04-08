@@ -96,25 +96,25 @@ export default function LoadingScreen() {
           </div>
 
           {/* ── CENTRAL CONTENT ── */}
-          <div className="relative z-20 flex flex-col items-center">
+          <div className="relative z-20 flex flex-col items-center w-full h-full justify-center">
             
-            {/* Top Badge */}
+            {/* Top Badge (HIDDEN ON MOBILE) */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-8 px-5 py-1.5 rounded-full border border-yellow-400/30 bg-yellow-400/5 backdrop-blur-md"
+              className="hidden md:block mb-8 px-5 py-1.5 rounded-full border border-yellow-400/30 bg-yellow-400/5 backdrop-blur-md"
             >
               <span className="text-[10px] font-black tracking-[0.4em] uppercase text-yellow-400">
                 ✦ Avurudu 2026 ✦
               </span>
             </motion.div>
 
-            {/* Logo: Refined and Pulsing */}
+            {/* Logo: Refined and Pulsing (HIDDEN ON MOBILE) */}
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: [0.9, 1, 0.95], opacity: 1 }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="relative w-48 h-32 md:w-64 md:h-40 mb-10"
+              className="hidden md:block relative w-48 h-32 md:w-64 md:h-40 mb-10"
             >
               <Image
                 src="/Avrudu-logo.png"
@@ -125,22 +125,22 @@ export default function LoadingScreen() {
               />
             </motion.div>
 
-            {/* Progress UI */}
-            <div className="flex flex-col items-center gap-4 w-64">
+            {/* Progress UI (Anchored to bottom on mobile so it doesn't block the poster art) */}
+            <div className="absolute bottom-16 md:static flex flex-col items-center gap-4 w-64">
               <AnimatePresence mode="wait">
                 <motion.p
                   key={msgIndex}
                   initial={{ opacity: 0, y: 5 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -5 }}
-                  className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/50 text-center"
+                  className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/70 md:text-white/50 text-center drop-shadow-md"
                 >
                   {MESSAGES[msgIndex]}
                 </motion.p>
               </AnimatePresence>
 
               {/* Minimalist Gold Track */}
-              <div className="relative w-full h-[2px] bg-white/10 rounded-full overflow-hidden">
+              <div className="relative w-full h-[2px] bg-white/20 md:bg-white/10 rounded-full overflow-hidden shadow-sm">
                 <motion.div
                   className="absolute inset-y-0 left-0 bg-gradient-to-r from-yellow-600 via-yellow-400 to-yellow-200"
                   style={{ width: `${progress}%` }}
@@ -148,7 +148,7 @@ export default function LoadingScreen() {
               </div>
 
               {/* Percentage */}
-              <div className="flex items-baseline gap-1">
+              <div className="flex items-baseline gap-1 drop-shadow-md">
                 <span className="text-lg font-black text-white tabular-nums">{progress}</span>
                 <span className="text-[10px] font-bold text-yellow-500/80">%</span>
               </div>
