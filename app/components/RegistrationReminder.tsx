@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Crown, X } from "lucide-react";
 import Link from "next/link";
@@ -8,27 +8,27 @@ import Image from "next/image";
 
 export default function RegistrationReminder() {
   const [visible, setVisible] = useState(false);
-  const [hasDismissed, setHasDismissed] = useState(false);
+  
+  // We use a ref to remember if they closed it during THIS specific page view.
+  // When the page refreshes, this resets to false automatically.
+  const hasDismissed = useRef(false);
 
   useEffect(() => {
-    // 1. Check if user already dismissed it this session
-    if (sessionStorage.getItem("hide_center_popup")) {
-      setHasDismissed(true);
-      return;
-    }
-
-    // 2. Use setTimeout (NOT setInterval) so it only triggers ONCE
+    // Start a 12-second timer exactly once when the page loads/refreshes.
     const timer = setTimeout(() => {
-      if (!hasDismissed) setVisible(true);
-    }, 12000); // Triggers after 12 seconds of browsing
+      // Only show it if they haven't already dismissed it before the 12 seconds hit
+      if (!hasDismissed.current) {
+        setVisible(true);
+      }
+    }, 12000); 
 
+    // Cleanup the timer if the component unmounts
     return () => clearTimeout(timer);
-  }, [hasDismissed]);
+  }, []);
 
   function handleClose() {
     setVisible(false);
-    setHasDismissed(true);
-    sessionStorage.setItem("hide_center_popup", "true");
+    hasDismissed.current = true; // Mark as dismissed for this page load
   }
 
   return (
@@ -43,7 +43,7 @@ export default function RegistrationReminder() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
             className="absolute inset-0 bg-[#0A0515]/70 backdrop-blur-md"
-            onClick={handleClose} // Closes when clicking outside
+            onClick={handleClose} // Closes when clicking the background
           />
 
           {/* ─── MODAL CARD ─── */}
@@ -65,21 +65,20 @@ export default function RegistrationReminder() {
 
             {/* ─── IMAGE SECTION WITH SEAMLESS FADE ─── */}
             <div className="relative w-full h-48 sm:h-56">
-              {/* Replace '/loading.jpeg' with your actual campaign/avatar image */}
+              {/* Note: Update this src to your actual promotional image */}
               <Image
                 src="/loading.jpeg" 
                 alt="Avurudu Campaign"
                 fill
                 className="object-cover opacity-80"
               />
-              {/* This gradient perfectly blends the image into the background color */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#160A30] via-[#160A30]/40 to-transparent" />
             </div>
 
             {/* ─── CONTENT SECTION ─── */}
             <div className="relative px-8 pb-8 pt-2 text-center z-10">
               
-              {/* Floating Crown Badge (Overlaps the image slightly) */}
+              {/* Floating Crown Badge */}
               <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center shadow-[0_0_20px_rgba(234,179,8,0.5)] -mt-14 mb-4 border-4 border-[#160A30]">
                 <Crown size={28} className="text-[#160A30] drop-shadow-sm" />
               </div>
@@ -96,12 +95,13 @@ export default function RegistrationReminder() {
               {/* Call to Action Button */}
               <Link
                 href="/campaign"
-                onClick={handleClose} // Closes modal when navigating
+                onClick={handleClose} // Closes modal when navigating away
                 className="mt-8 flex items-center justify-center w-full bg-gradient-to-r from-yellow-400 to-amber-500 text-[#160A30] text-sm font-black tracking-widest uppercase rounded-xl py-4 hover:scale-[1.03] active:scale-[0.97] transition-all duration-200 shadow-[0_0_20px_rgba(234,179,8,0.3)]"
               >
                 ENTER THE CAMPAIGN ✦
               </Link>
 
+              {/* Secondary Dismiss Action */}
               <button 
                 onClick={handleClose}
                 className="mt-4 text-[11px] font-bold tracking-widest text-white/30 hover:text-white/60 uppercase transition-colors"
