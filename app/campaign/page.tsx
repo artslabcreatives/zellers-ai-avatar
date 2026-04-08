@@ -256,17 +256,60 @@ function StepVerify({ onNext }: { onNext: () => void }) {
 
 // ─── Step 2: Profile ──────────────────────────────────────────────────────────
 function StepProfile({ onNext }: { onNext: () => void }) {
-  const [form, setForm] = useState({ name: "", displayName: "" });
+  const [form, setForm] = useState({
+    name: "",
+    displayName: "",
+    gender: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const isComplete = Object.values(form).every((val) => val.trim() !== "");
+
+  async function handleSubmit() {
+    if (!isComplete) return;
+    setError("");
+    setIsLoading(true);
+    const token = sessionStorage.getItem("auth_token");
+    console.log("[StepProfile] Submitting profile:", form);
+    try {
+      const res = await fetch("/api/user/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: form.name,
+          displayName: form.displayName,
+          gender: form.gender,
+        }),
+      });
+      const data = await res.json();
+      console.log("[StepProfile] profile response:", res.status, data);
+      if (!res.ok) {
+        setError(data.message || "Failed to save profile. Please try again.");
+      } else {
+        onNext();
+      }
+    } catch (err) {
+      console.error("[StepProfile] network error:", err);
+      setError("Network error. Please check your connection and try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <div className="space-y-5">
       <div className="space-y-1.5">
-        <label className="text-[10px] font-bold tracking-widest text-gray-400 uppercase ml-1">Full Name</label>
+        <label className="text-[10px] font-bold tracking-widest text-gray-400 uppercase ml-1">
+          Full Name
+        </label>
         <input
           type="text"
           value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
+          onChange={(e) => { setForm({ ...form, name: e.target.value }); setError(""); }}
           placeholder="shashith perera"
           className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-200 outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-all backdrop-blur-md placeholder-gray-500"
         />
@@ -274,23 +317,60 @@ function StepProfile({ onNext }: { onNext: () => void }) {
 
       <div className="space-y-1.5">
         <label className="text-[10px] font-bold tracking-widest text-gray-400 uppercase ml-1 block">
-          Display Name for Character <span className="text-yellow-500/70 normal-case tracking-normal hidden sm:inline">• Shown on your Avatar</span>
+          Display Name for Character{" "}
+          <span className="text-yellow-500/70 normal-case tracking-normal hidden sm:inline">
+            • Shown on your Avatar
+          </span>
         </label>
         <input
           type="text"
           value={form.displayName}
-          onChange={(e) => setForm({ ...form, displayName: e.target.value })}
+          onChange={(e) => { setForm({ ...form, displayName: e.target.value }); setError(""); }}
           placeholder="e.g. The Golden Prince"
           className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-200 outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-all backdrop-blur-md placeholder-gray-500"
         />
       </div>
 
+      <div className="space-y-1.5">
+        <label className="text-[10px] font-bold tracking-widest text-gray-400 uppercase ml-1">
+          Gender
+        </label>
+        <select
+          value={form.gender}
+          onChange={(e) => { setForm({ ...form, gender: e.target.value }); setError(""); }}
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-200 outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-all backdrop-blur-md"
+        >
+          <option value="" className="bg-gray-900 text-gray-500">
+            Select Gender
+          </option>
+          <option value="male" className="bg-gray-900">
+            Male
+          </option>
+          <option value="female" className="bg-gray-900">
+            Female
+          </option>
+        </select>
+      </div>
+
+      <AnimatePresence>
+        {error && (
+          <motion.p
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="text-xs text-red-400 text-center font-semibold bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2"
+          >
+            {error}
+          </motion.p>
+        )}
+      </AnimatePresence>
+
       <button
-        onClick={onNext}
-        disabled={!isComplete}
+        onClick={handleSubmit}
+        disabled={!isComplete || isLoading}
         className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl py-4 hover:scale-[1.02] shadow-[0_4px_15px_rgba(234,179,8,0.3)] disabled:opacity-40 disabled:scale-100 transition-all mt-4 flex justify-center items-center gap-2"
       >
-        CONTINUE <ChevronRight size={18} strokeWidth={3} />
+        {isLoading ? "SAVING…" : <>CONTINUE <ChevronRight size={18} strokeWidth={3} /></>}
       </button>
     </div>
   );
@@ -300,6 +380,8 @@ function StepProfile({ onNext }: { onNext: () => void }) {
 function StepQuiz({ onNext }: { onNext: () => void }) {
   const [currentQIndex, setCurrentQIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const currentQ = QUIZ_QUESTIONS[currentQIndex];
   const isLastQ = currentQIndex === QUIZ_QUESTIONS.length - 1;
@@ -307,7 +389,48 @@ function StepQuiz({ onNext }: { onNext: () => void }) {
   function handleSelect(optionId: string) {
     setAnswers({ ...answers, [currentQ.id]: optionId });
     if (!isLastQ) {
-      setTimeout(() => setCurrentQIndex((prev) => prev + 1), 600); // Slightly longer delay to let them see the selection animation
+      setTimeout(() => setCurrentQIndex((prev) => prev + 1), 600);
+    }
+  }
+
+  async function handleSubmitQuiz() {
+    setError("");
+    setIsLoading(true);
+    const token = sessionStorage.getItem("auth_token");
+
+    // Translate internal { qId: optionId } map → [{ q, answer }] array for backend
+    const formattedAnswers = Object.entries(answers).map(([qId, optionId]) => {
+      const questionObj = QUIZ_QUESTIONS.find((q) => q.id === qId);
+      const optionObj = questionObj?.options.find((o) => o.id === optionId);
+      return {
+        q: questionObj?.question ?? qId,
+        answer: optionObj?.label ?? optionId,
+      };
+    });
+
+    console.log("[StepQuiz] Submitting formatted answers:", JSON.stringify(formattedAnswers, null, 2));
+
+    try {
+      const res = await fetch("/api/quiz/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ answers: formattedAnswers }),
+      });
+      const data = await res.json();
+      console.log("[StepQuiz] quiz/submit response:", res.status, data);
+      if (!res.ok) {
+        setError(data.message || "Failed to save quiz. Please try again.");
+      } else {
+        onNext();
+      }
+    } catch (err) {
+      console.error("[StepQuiz] network error:", err);
+      setError("Network error. Please check your connection and try again.");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -396,13 +519,26 @@ function StepQuiz({ onNext }: { onNext: () => void }) {
         </motion.div>
       </AnimatePresence>
 
-      <div className="mt-8">
+      <AnimatePresence>
+        {error && (
+          <motion.p
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="mt-4 text-xs text-red-400 text-center font-semibold bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2"
+          >
+            {error}
+          </motion.p>
+        )}
+      </AnimatePresence>
+
+      <div className="mt-4">
         <button
-          onClick={onNext}
-          disabled={Object.keys(answers).length < QUIZ_QUESTIONS.length}
+          onClick={handleSubmitQuiz}
+          disabled={Object.keys(answers).length < QUIZ_QUESTIONS.length || isLoading}
           className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl py-4 hover:scale-[1.02] shadow-[0_4px_15px_rgba(234,179,8,0.3)] disabled:opacity-40 disabled:scale-100 transition-all flex justify-center items-center gap-2"
         >
-          COMPLETE QUIZ <CheckCircle2 size={18} strokeWidth={3} />
+          {isLoading ? "SAVING QUIZ…" : <>{"COMPLETE QUIZ"} <CheckCircle2 size={18} strokeWidth={3} /></>}
         </button>
       </div>
     </div>
@@ -595,7 +731,7 @@ export default function CampaignPage() {
       </div>
       
       <div className="relative z-10">
-         <Footer />
+         {/* <Footer /> */}
       </div>
     </div>
   );
