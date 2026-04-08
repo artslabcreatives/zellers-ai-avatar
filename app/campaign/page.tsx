@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, Smartphone, User, Star, Sparkles, CheckCircle2, Camera, ArrowLeft } from "lucide-react";
+import { ChevronRight, Smartphone, User, Star, Sparkles, CheckCircle2, Camera, ArrowLeft, Check } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import Image from "next/image";
 
 // ─── Step Definitions ─────────────────────────────────────────────────────────
 const STEPS = [
@@ -17,46 +18,41 @@ const STEPS = [
 const QUIZ_QUESTIONS = [
   {
     id: "q1",
-    question: "What is your favorite chocolate flavor?",
-    sinhala: "ඔබේ ප්‍රියතම චොකලට් රසය කුමක්ද?",
+    question: "What is your favorite Awurudu Kevili?",
+    sinhala: "ඔබේ ප්‍රියතම අවුරුදු කැවිලි වර්ගය කුමක්ද?",
     options: [
-      { id: "dark", label: "Dark Velvet", emoji: "🍫" },
-      { id: "mint", label: "Mint Crunch", emoji: "🌿" },
-      { id: "white", label: "White Dream", emoji: "🤍" },
-      { id: "hazel", label: "Hazelnut", emoji: "🌰" },
+      { id: "kavum", label: "Konda Kavum", image: "/quiz/kavum.jpg" },
+      { id: "kokis", label: "Kokis", image: "/quiz/kokis.jpg" },
+      { id: "aluwa", label: "Aluwa", image: "/quiz/aluwa.jpg" },
+      { id: "mun", label: "Mun Kavum", image: "/quiz/munkavum.jpg" },
+      { id: "aasmi", label: "Aasmi", image: "/quiz/aasmi.jpg" },
+      { id: "undu", label: "Undu Walalu", image: "/quiz/unduwalalu.jpg" },
     ],
   },
   {
     id: "q2",
-    question: "Which Avurudu tradition excites you most?",
-    sinhala: "ඔබ වඩාත් ප්‍රිය කරන අවුරුදු චාරිත්‍රය?",
+    question: "What is your favorite Awurudu Krida?",
+    sinhala: "ඔබ වඩාත් ප්‍රිය කරන අවුරුදු ක්‍රීඩාව කුමක්ද?",
     options: [
-      { id: "sweets", label: "Sweetmeats", emoji: "🍯" },
-      { id: "games", label: "Avurudu Games", emoji: "🎯" },
-      { id: "family", label: "Visiting Family", emoji: "👨‍👩‍👧‍👦" },
-      { id: "clothes", label: "New Clothes", emoji: "👘" },
+      { id: "kotta", label: "Kotta Pora", image: "/quiz/kotta-pora.jpg" },
+      { id: "mutti", label: "Kana Mutti", image: "/quiz/kana-mutti.png" },
+      { id: "lissana", label: "Lissana Gaha", image: "/quiz/lissana-gaha.png" },
+      { id: "kamba", label: "Kamba Adeema", image: "/quiz/kamba-adeema.png" },
+      { id: "pancha", label: "Pancha Dameema", image: "/quiz/pancha.jpg" },
+      { id: "olinda", label: "Olinda Keliya", image: "/quiz/olinda.png" },
     ],
   },
   {
     id: "q3",
-    question: "Choose your royal Avatar vibe:",
-    sinhala: "ඔබේ Avatar හි ස්වභාවය තෝරන්න:",
+    question: "Choose your favorite Zellers flavor:",
+    sinhala: "ඔබේ ප්‍රියතම Zellers රසය තෝරන්න:",
     options: [
-      { id: "majestic", label: "Majestic Royal", emoji: "👑" },
-      { id: "warrior", label: "Fierce Warrior", emoji: "⚔️" },
-      { id: "classic", label: "Classic Village", emoji: "🌾" },
-      { id: "modern", label: "Modern Fusion", emoji: "✨" },
-    ],
-  },
-  {
-    id: "q4",
-    question: "Pick your lucky Avurudu color palette:",
-    sinhala: "ඔබේ වාසනාවන්ත වර්ණය තෝරන්න:",
-    options: [
-      { id: "gold", label: "Gold & Ruby", emoji: "🔴" },
-      { id: "blue", label: "Sapphire Blue", emoji: "🔵" },
-      { id: "green", label: "Emerald Green", emoji: "🟢" },
-      { id: "pearl", label: "Pearl White", emoji: "⚪" },
+      { id: "pistachio", label: "Pistachio Kunafa", image: "/quiz/pistachio-and-kunafa.png" },
+      { id: "redvelvet", label: "Red Velvet", image: "/quiz/red-velvet.png" },
+      { id: "coconut", label: "Coconut Cream", image: "/quiz/zellers-chocolate-coconut-cream.jpg" },
+      { id: "cookie", label: "Cookie Cream", image: "/quiz/zellers-chocolate-cookie-cream-filled.jpg" }, 
+      { id: "mixnut", label: "Mix Nut Cream", image: "/quiz/zellers-chocolate-mix-nut-cream.jpg" },
+      { id: "strawberry", label: "Strawberry", image: "/quiz/zellers-chocolate-strawberry.jpg" },
     ],
   },
 ];
@@ -120,7 +116,6 @@ function StepVerify({ onNext }: { onNext: () => void }) {
   const [error, setError]       = useState("");
   const [cooldown, setCooldown] = useState(0);
 
-  // Decrement cooldown every second
   useEffect(() => {
     if (cooldown <= 0) return;
     const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
@@ -140,7 +135,6 @@ function StepVerify({ onNext }: { onNext: () => void }) {
         body: JSON.stringify({ phone: formattedPhone }),
       });
       const data = await res.json();
-      console.log("[StepVerify] send-otp response:", res.status, data);
       if (res.status === 429) {
         setError(data.message || "Too many requests. Please wait 30 seconds.");
         setCooldown(30);
@@ -150,7 +144,6 @@ function StepVerify({ onNext }: { onNext: () => void }) {
         setOtpSent(true);
       }
     } catch (err) {
-      console.error("[StepVerify] send-otp network error:", err);
       setError("Network error. Please check your connection and try again.");
     } finally {
       setLoading(false);
@@ -162,7 +155,6 @@ function StepVerify({ onNext }: { onNext: () => void }) {
     setError("");
     setLoading(true);
     const formattedPhone = `+94${phone}`;
-    console.log("[StepVerify] Verifying OTP for:", formattedPhone);
     try {
       const res = await fetch("/api/auth/verify-otp", {
         method: "POST",
@@ -170,20 +162,15 @@ function StepVerify({ onNext }: { onNext: () => void }) {
         body: JSON.stringify({ phone: formattedPhone, otp }),
       });
       const data = await res.json();
-      console.log("[StepVerify] verify-otp response:", res.status, data);
       if (res.status === 429) {
         setError(data.message || "Too many attempts. Please wait before trying again.");
       } else if (!res.ok) {
         setError(data.message || "Invalid OTP. Please try again.");
       } else {
-        if (data.token) {
-          sessionStorage.setItem("auth_token", data.token);
-          console.log("[StepVerify] JWT token saved to sessionStorage.");
-        }
+        if (data.token) sessionStorage.setItem("auth_token", data.token);
         onNext();
       }
     } catch (err) {
-      console.error("[StepVerify] verify-otp network error:", err);
       setError("Network error. Please check your connection and try again.");
     } finally {
       setLoading(false);
@@ -216,12 +203,7 @@ function StepVerify({ onNext }: { onNext: () => void }) {
 
       <AnimatePresence>
         {otpSent && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="space-y-2 overflow-hidden"
-          >
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="space-y-2 overflow-hidden">
             <label className="block text-[10px] font-bold tracking-[0.25em] uppercase text-gray-400 mt-2">
               OTP CODE <span className="text-yellow-500/70">• කේතය</span>
             </label>
@@ -238,15 +220,9 @@ function StepVerify({ onNext }: { onNext: () => void }) {
         )}
       </AnimatePresence>
 
-      {/* Error message */}
       <AnimatePresence>
         {error && (
-          <motion.p
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="text-xs text-red-400 text-center font-semibold bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2"
-          >
+          <motion.p initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="text-xs text-red-400 text-center font-semibold bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2">
             {error}
           </motion.p>
         )}
@@ -269,10 +245,7 @@ function StepVerify({ onNext }: { onNext: () => void }) {
           >
             {loading ? "VERIFYING…" : "VERIFY"}
           </button>
-          <button
-            onClick={() => { setOtpSent(false); setOtp(""); setError(""); }}
-            className="w-full text-xs text-gray-400 hover:text-yellow-400 transition-colors py-1"
-          >
+          <button onClick={() => { setOtpSent(false); setOtp(""); setError(""); }} className="w-full text-xs text-gray-400 hover:text-yellow-400 transition-colors py-1">
             ← Change number
           </button>
         </div>
@@ -284,7 +257,6 @@ function StepVerify({ onNext }: { onNext: () => void }) {
 // ─── Step 2: Profile ──────────────────────────────────────────────────────────
 function StepProfile({ onNext }: { onNext: () => void }) {
   const [form, setForm] = useState({ name: "", displayName: "" });
-
   const isComplete = Object.values(form).every((val) => val.trim() !== "");
 
   return (
@@ -324,7 +296,7 @@ function StepProfile({ onNext }: { onNext: () => void }) {
   );
 }
 
-// ─── Step 3: Quiz (Dynamic Flow) ──────────────────────────────────────────────
+// ─── Step 3: Quiz (Upgraded Image Grid) ───────────────────────────────────────
 function StepQuiz({ onNext }: { onNext: () => void }) {
   const [currentQIndex, setCurrentQIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -335,13 +307,13 @@ function StepQuiz({ onNext }: { onNext: () => void }) {
   function handleSelect(optionId: string) {
     setAnswers({ ...answers, [currentQ.id]: optionId });
     if (!isLastQ) {
-      setTimeout(() => setCurrentQIndex((prev) => prev + 1), 300);
+      setTimeout(() => setCurrentQIndex((prev) => prev + 1), 600); // Slightly longer delay to let them see the selection animation
     }
   }
 
   return (
-    <div className="relative min-h-[300px] flex flex-col">
-      {/* Quiz Progress */}
+    <div className="relative min-h-[420px] flex flex-col w-full">
+      {/* Quiz Progress Header */}
       <div className="flex justify-between items-center mb-6">
         <button
           onClick={() => setCurrentQIndex((p) => Math.max(0, p - 1))}
@@ -354,9 +326,10 @@ function StepQuiz({ onNext }: { onNext: () => void }) {
             <div key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === currentQIndex ? "w-6 bg-yellow-400 shadow-[0_0_8px_rgba(234,179,8,0.6)]" : i < currentQIndex ? "w-2 bg-yellow-400/50" : "w-2 bg-white/10"}`} />
           ))}
         </div>
-        <div className="w-5" /> {/* Spacer for alignment */}
+        <div className="w-5" /> 
       </div>
 
+      {/* Quiz Content */}
       <AnimatePresence mode="wait">
         <motion.div
           key={currentQ.id}
@@ -364,28 +337,58 @@ function StepQuiz({ onNext }: { onNext: () => void }) {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.3 }}
-          className="flex-1"
+          className="flex-1 w-full"
         >
-          <h3 className="font-playfair text-lg sm:text-xl font-normal text-gray-100 text-center mb-1 drop-shadow-sm">{currentQ.question}</h3>
+          <h3 className="font-playfair text-lg sm:text-xl font-normal text-gray-100 text-center mb-1 drop-shadow-sm px-2">
+            {currentQ.question}
+          </h3>
           <p className="text-xs text-yellow-400/80 text-center mb-6">{currentQ.sinhala}</p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* Expert UI: Image Options Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
             {currentQ.options.map((opt) => {
               const isSelected = answers[currentQ.id] === opt.id;
               return (
                 <button
                   key={opt.id}
                   onClick={() => handleSelect(opt.id)}
-                  className={`flex items-center gap-3 p-4 rounded-xl border text-left transition-all duration-300 ${
-                    isSelected
-                      ? "border-yellow-400 bg-yellow-400/10 shadow-[0_0_15px_rgba(234,179,8,0.15)]"
-                      : "border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/30 backdrop-blur-md"
-                  }`}
+                  className="group relative w-full aspect-square rounded-2xl overflow-hidden focus:outline-none"
                 >
-                  <span className="text-2xl drop-shadow-md">{opt.emoji}</span>
-                  <span className={`font-semibold text-sm ${isSelected ? "text-yellow-400" : "text-gray-200"}`}>
+                  {/* Option Image */}
+                  <Image 
+                    src={opt.image} 
+                    alt={opt.label} 
+                    fill 
+                    sizes="(max-width: 640px) 50vw, 33vw"
+                    className={`object-cover transition-transform duration-500 ${isSelected ? "scale-105" : "group-hover:scale-110"}`}
+                    // Fallback background color incase images are missing initially
+                    style={{ backgroundColor: '#1E0B4B' }}
+                  />
+
+                  {/* Dark Vignette Overlay to make text readable */}
+                  <div className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-300 ${isSelected ? "opacity-80" : "opacity-100"}`} />
+
+                  {/* Label */}
+                  <p className="absolute bottom-3 left-2 right-2 text-center text-xs font-bold text-white tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] z-10 leading-tight">
                     {opt.label}
-                  </span>
+                  </p>
+
+                  {/* Selection Indicator Overlay */}
+                  <div className={`absolute inset-0 border-2 rounded-2xl transition-all duration-300 pointer-events-none ${isSelected ? "border-yellow-400 scale-100 bg-yellow-400/10" : "border-white/10 scale-105 opacity-0 group-hover:opacity-100 group-hover:scale-100 group-hover:border-white/30"}`} />
+
+                  {/* Checkmark Badge */}
+                  <AnimatePresence>
+                    {isSelected && (
+                      <motion.div 
+                        initial={{ scale: 0, opacity: 0 }} 
+                        animate={{ scale: 1, opacity: 1 }} 
+                        className="absolute top-2 right-2 bg-yellow-400 rounded-full p-1 shadow-lg z-20"
+                      >
+                        <Check size={14} strokeWidth={4} className="text-black" />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
                 </button>
               );
             })}
@@ -412,7 +415,6 @@ function StepGenerate() {
   const [file, setFile] = useState<boolean>(false);
 
   function handleFakeUpload() {
-    // Simulate file selection
     setFile(true);
   }
 
@@ -488,7 +490,6 @@ function StepGenerate() {
             <div className="relative w-56 h-72 p-1 rounded-2xl bg-gradient-to-br from-yellow-300 via-amber-600 to-yellow-800 shadow-[0_10px_30px_rgba(234,179,8,0.3)] mb-6">
               <div className="w-full h-full rounded-xl bg-[#0D0B38] overflow-hidden flex flex-col items-center justify-center relative">
                  <div className="absolute inset-0 bg-[url('https://via.placeholder.com/400x600/1a1a2e/ffffff?text=AI+Avatar')] bg-cover bg-center opacity-80 mix-blend-screen" />
-                 {/* Fallback text if image doesn't load visually */}
                  <span className="relative z-10 text-xs font-bold tracking-widest text-yellow-400/50">YOUR PORTRAIT</span>
               </div>
             </div>
@@ -524,7 +525,7 @@ export default function CampaignPage() {
       {/* ─── EXPERT UI: Unified Fixed Mesh Gradient Background ─── */}
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#1E0B4B]" // Deep violet/indigo base
+        className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#1E0B4B]"
       >
         <div className="absolute -top-[20%] -right-[10%] w-[600px] h-[600px] sm:w-[800px] sm:h-[800px] rounded-full bg-[#00E5FF]/35 blur-[120px] sm:blur-[160px]" />
         <div className="absolute -bottom-[20%] -left-[10%] w-[600px] h-[600px] sm:w-[800px] sm:h-[800px] rounded-full bg-[#00E5FF]/35 blur-[120px] sm:blur-[160px]" />
@@ -536,9 +537,10 @@ export default function CampaignPage() {
 
       <Navbar />
       
-      <div className="flex-1 flex items-center justify-center px-4 py-16 pt-28 relative z-10">
+      <div className="flex-1 flex items-center justify-center px-4 py-16 pt-28 relative z-10 w-full">
         
-        <div className="relative w-full max-w-md">
+        {/* Adjusted width to max-w-lg to safely fit the 3-column image grid */}
+        <div className="relative w-full max-w-lg">
           
           {/* Header Title Area */}
           <motion.div
@@ -554,7 +556,7 @@ export default function CampaignPage() {
             <h1 className="font-playfair text-3xl md:text-4xl font-normal tracking-wide text-white mb-2 drop-shadow-lg">
               REVEAL YOUR <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-500">ROYAL</span> SELF
             </h1>
-            <p className="text-sm text-gray-300 px-4 font-medium">
+            <p className="text-sm text-gray-300 px-4 font-medium max-w-md mx-auto">
               Complete the steps below to generate your legendary AI Avatar and enter the Zellers competition.
             </p>
           </motion.div>
@@ -564,12 +566,12 @@ export default function CampaignPage() {
             <StepIndicator current={step} />
           </motion.div>
 
-          {/* Interactive Form Card (Frosted Glassmorphism Upgrade) */}
+          {/* Interactive Form Card */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white/5 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-[2rem] p-6 md:p-8 backdrop-blur-2xl overflow-hidden mt-4"
+            className="bg-white/5 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-[2rem] p-4 sm:p-8 backdrop-blur-2xl overflow-hidden mt-4 w-full"
           >
             <AnimatePresence mode="wait" custom={dir}>
               <motion.div
@@ -579,6 +581,7 @@ export default function CampaignPage() {
                 initial="enter"
                 animate="center"
                 exit="exit"
+                className="w-full"
               >
                 {step === 1 && <StepVerify  onNext={goNext} />}
                 {step === 2 && <StepProfile onNext={goNext} />}
@@ -591,7 +594,6 @@ export default function CampaignPage() {
         </div>
       </div>
       
-      {/* Set footer z-index so it sits correctly on top of fixed background */}
       <div className="relative z-10">
          <Footer />
       </div>
