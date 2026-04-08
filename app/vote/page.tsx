@@ -77,7 +77,7 @@ const ALL_AVATARS: Avatar[] = [
 // Campaign ends April 14, 2026
 const TARGET_DATE = new Date("2026-04-14T23:59:59");
 
-// ─── Countdown hook ───────────────────────────────────────────────────────────
+// ─── Countdown hook time ───────────────────────────────────────────────────────────
 function useCountdown(target: Date) {
   const calc = useCallback(() => {
     const diff = Math.max(0, target.getTime() - Date.now());
