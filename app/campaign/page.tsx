@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, Smartphone, User, Star, Sparkles, CheckCircle2, Camera, ArrowLeft } from "lucide-react";
 import Navbar from "../components/Navbar";
@@ -117,16 +117,77 @@ function StepVerify({ onNext }: { onNext: () => void }) {
   const [otpSent, setOtpSent]   = useState(false);
   const [otp, setOtp]           = useState("");
   const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState("");
+  const [cooldown, setCooldown] = useState(0);
 
-  function handleSendOtp() {
+  // Decrement cooldown every second
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
+
+  async function handleSendOtp() {
     if (phone.length < 9) return;
+    setError("");
     setLoading(true);
-    setTimeout(() => { setLoading(false); setOtpSent(true); }, 1200);
+    const formattedPhone = `+94${phone}`;
+    console.log("[StepVerify] Sending OTP to:", formattedPhone);
+    try {
+      const res = await fetch("/api/auth/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: formattedPhone }),
+      });
+      const data = await res.json();
+      console.log("[StepVerify] send-otp response:", res.status, data);
+      if (res.status === 429) {
+        setError(data.message || "Too many requests. Please wait 30 seconds.");
+        setCooldown(30);
+      } else if (!res.ok) {
+        setError(data.message || "Failed to send OTP. Please try again.");
+      } else {
+        setOtpSent(true);
+      }
+    } catch (err) {
+      console.error("[StepVerify] send-otp network error:", err);
+      setError("Network error. Please check your connection and try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function handleVerify() {
+  async function handleVerify() {
     if (otp.length < 4) return;
-    onNext();
+    setError("");
+    setLoading(true);
+    const formattedPhone = `+94${phone}`;
+    console.log("[StepVerify] Verifying OTP for:", formattedPhone);
+    try {
+      const res = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: formattedPhone, otp }),
+      });
+      const data = await res.json();
+      console.log("[StepVerify] verify-otp response:", res.status, data);
+      if (res.status === 429) {
+        setError(data.message || "Too many attempts. Please wait before trying again.");
+      } else if (!res.ok) {
+        setError(data.message || "Invalid OTP. Please try again.");
+      } else {
+        if (data.token) {
+          sessionStorage.setItem("auth_token", data.token);
+          console.log("[StepVerify] JWT token saved to sessionStorage.");
+        }
+        onNext();
+      }
+    } catch (err) {
+      console.error("[StepVerify] verify-otp network error:", err);
+      setError("Network error. Please check your connection and try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -145,9 +206,10 @@ function StepVerify({ onNext }: { onNext: () => void }) {
             inputMode="numeric"
             maxLength={10}
             value={phone}
-            onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
+            onChange={(e) => { setPhone(e.target.value.replace(/\D/g, "")); setError(""); }}
             placeholder="7X XXX XXXX"
-            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-base text-gray-200 placeholder-gray-500 outline-none focus:border-yellow-500/50 focus:bg-white/10 focus:shadow-[0_0_15px_rgba(234,179,8,0.1)] transition-all duration-300 backdrop-blur-md"
+            disabled={otpSent}
+            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-base text-gray-200 placeholder-gray-500 outline-none focus:border-yellow-500/50 focus:bg-white/10 focus:shadow-[0_0_15px_rgba(234,179,8,0.1)] transition-all duration-300 backdrop-blur-md disabled:opacity-50"
           />
         </div>
       </div>
@@ -168,7 +230,7 @@ function StepVerify({ onNext }: { onNext: () => void }) {
               inputMode="numeric"
               maxLength={6}
               value={otp}
-              onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+              onChange={(e) => { setOtp(e.target.value.replace(/\D/g, "")); setError(""); }}
               placeholder="• • • • • •"
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-xl text-yellow-400 placeholder-gray-500 outline-none focus:border-yellow-500/50 transition-all duration-300 tracking-[0.5em] text-center font-bold backdrop-blur-md shadow-[inset_0_2px_10px_rgba(0,0,0,0.2)]"
             />
@@ -176,22 +238,44 @@ function StepVerify({ onNext }: { onNext: () => void }) {
         )}
       </AnimatePresence>
 
+      {/* Error message */}
+      <AnimatePresence>
+        {error && (
+          <motion.p
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="text-xs text-red-400 text-center font-semibold bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2"
+          >
+            {error}
+          </motion.p>
+        )}
+      </AnimatePresence>
+
       {!otpSent ? (
         <button
           onClick={handleSendOtp}
-          disabled={phone.length < 9 || loading}
+          disabled={phone.length < 9 || loading || cooldown > 0}
           className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl py-4 hover:scale-[1.02] shadow-[0_4px_15px_rgba(234,179,8,0.3)] disabled:opacity-40 disabled:scale-100 disabled:cursor-not-allowed transition-all duration-300"
         >
-          {loading ? "SENDING…" : "SEND OTP"}
+          {loading ? "SENDING…" : cooldown > 0 ? `WAIT ${cooldown}s` : "SEND OTP"}
         </button>
       ) : (
-        <button
-          onClick={handleVerify}
-          disabled={otp.length < 4}
-          className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl py-4 hover:scale-[1.02] shadow-[0_4px_15px_rgba(234,179,8,0.3)] disabled:opacity-40 disabled:scale-100 transition-all duration-300"
-        >
-          VERIFY
-        </button>
+        <div className="space-y-3">
+          <button
+            onClick={handleVerify}
+            disabled={otp.length < 4 || loading}
+            className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl py-4 hover:scale-[1.02] shadow-[0_4px_15px_rgba(234,179,8,0.3)] disabled:opacity-40 disabled:scale-100 transition-all duration-300"
+          >
+            {loading ? "VERIFYING…" : "VERIFY"}
+          </button>
+          <button
+            onClick={() => { setOtpSent(false); setOtp(""); setError(""); }}
+            className="w-full text-xs text-gray-400 hover:text-yellow-400 transition-colors py-1"
+          >
+            ← Change number
+          </button>
+        </div>
       )}
     </div>
   );
