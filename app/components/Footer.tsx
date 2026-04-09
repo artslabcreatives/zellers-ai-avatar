@@ -75,11 +75,11 @@ export default function Footer() {
           transition={{ duration: 0.5, delay: 0.25 }}
           className="text-base sm:text-lg text-blue-50/90 max-w-xl leading-relaxed drop-shadow-md"
         >
-          Upload your selfie, pick your flavor, and let AI crown you the{" "}
+          Upload your selfie, choose your favorite Zellers flavor, and get your perfect{" "}
           <span className="text-white font-medium">
-            Avurudu royalty you were born to be.
+            AI Avurudu look.
           </span>{" "}
-          Campaign ends April 14th.
+          Campaign ends April 22th.
         </motion.p>
 
         {/* Pulsing CTA button */}
@@ -108,7 +108,7 @@ export default function Footer() {
           transition={{ duration: 0.5, delay: 0.45 }}
           className="text-xs text-white/50 tracking-widest uppercase font-semibold"
         >
-          Free to enter · Results announced April 15, 2026
+          Free to enter · Results announced April 23, 2026
         </motion.p>
       </div>
 

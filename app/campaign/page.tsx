@@ -18,8 +18,8 @@ const STEPS = [
 const QUIZ_QUESTIONS = [
   {
     id: "q3",
-    question: "Choose your favorite Zellers flavor:",
-    sinhala: "ඔබේ ප්‍රියතම Zellers රසය තෝරන්න:",
+    question: "Choose your favorite Zellers Chocolate:",
+    sinhala: "ඔබේ ප්‍රියතම Zellers චොකලට් තෝරන්න:",
     options: [
       { id: "pistachio", label: "PISTACHIO & KUNAFA CREAM FILLED CHOCOLATE ", image: "/quiz/pistachio-and-kunafa.png" },
       { id: "redvelvet", label: "RED VELVET COOKIE CREAM FILLED WHITE CHOCOLATE", image: "/quiz/red-velvet.png" },
@@ -923,7 +923,7 @@ export default function CampaignPage() {
       </div>
       
       <div className="relative z-10">
-         <Footer />
+         {/* <Footer /> */}
       </div>
     </div>
   );

@@ -4,78 +4,39 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, Search, X, Smartphone, CheckCircle2, ShieldCheck } from "lucide-react";
+import { Search, X, Smartphone, CheckCircle2, ShieldCheck, RefreshCw } from "lucide-react";
 import Navbar from "../components/Navbar";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Filter = "all" | "kumara" | "kumariya" | "top";
-type Avatar = {
-  id: number;
-  rank: number;
-  name: string;
-  type: "kumara" | "kumariya";
+
+type Post = {
+  postId: string;
+  postNumber: number;
+  displayName: string;
+  gender: "male" | "female";
   flavor: string;
-  lover: string;
-  votes: number;
-  badge: string;
-  badgeColor: string;
-  img: string;
+  voteCount: number;
+  imageUrl?: string; // populated once image API is ready
 };
 
-// ─── Dummy data ───────────────────────────────────────────────────────────────
-const ALL_AVATARS: Avatar[] = [
-  {
-    id: 1, rank: 1, name: "Nethmi Kumariya", type: "kumariya",
-    flavor: "Pistachio", lover: "Kuliath Lover", votes: 2847,
-    badge: "ROYAL MYSTIC", badgeColor: "from-violet-500 to-purple-400",
-    img: "/avatar-1.jpg",
-  },
-  {
-    id: 2, rank: 2, name: "Sandali Devi", type: "kumariya",
-    flavor: "Strawberry Cream", lover: "Kakia Lover", votes: 2103,
-    badge: "POPULAR", badgeColor: "from-pink-500 to-rose-400",
-    img: "/avatar-1.jpg",
-  },
-  {
-    id: 3, rank: 3, name: "Sahan Kumara", type: "kumara",
-    flavor: "Milk Chocolate", lover: "Karum Lover", votes: 1967,
-    badge: "GENTLE SOUL", badgeColor: "from-sky-500 to-blue-400",
-    img: "/avatar-2.jpg",
-  },
-  {
-    id: 4, rank: 4, name: "Chamari Deviyani", type: "kumariya",
-    flavor: "Hazelnut Praline", lover: "Kakia Lover", votes: 1442,
-    badge: "BOLD WARRIOR", badgeColor: "from-amber-500 to-orange-400",
-    img: "/avatar-2.jpg",
-  },
-  {
-    id: 5, rank: 5, name: "Kasun Deva", type: "kumara",
-    flavor: "Dark Chocolate", lover: "Kiribath Lover", votes: 1188,
-    badge: "MOON SILVER", badgeColor: "from-slate-400 to-gray-300",
-    img: "/avatar-3.png",
-  },
-  {
-    id: 6, rank: 6, name: "Hiruni Kumariya", type: "kumariya",
-    flavor: "Milk Chocolate", lover: "Aluwa Lover", votes: 987,
-    badge: "NARITA SOUL", badgeColor: "from-teal-500 to-emerald-400",
-    img: "/avatar-4.png",
-  },
-  {
-    id: 7, rank: 7, name: "Ravindu Kumara", type: "kumara",
-    flavor: "Golden Caramel", lover: "Kavum Lover", votes: 876,
-    badge: "SUN KING", badgeColor: "from-yellow-500 to-amber-400",
-    img: "/avatar-3.png",
-  },
-  {
-    id: 8, rank: 8, name: "Amaya Devi", type: "kumariya",
-    flavor: "Cherry Bliss", lover: "Kokis Lover", votes: 754,
-    badge: "CHERRY QUEEN", badgeColor: "from-red-500 to-pink-400",
-    img: "/avatar-4.png",
-  },
-];
+type PaginationMeta = {
+  totalPosts: number;
+  currentPage: number;
+  totalPages: number;
+  perPage: number;
+};
 
-// Campaign ends April 14, 2026
-const TARGET_DATE = new Date("2026-04-14T23:59:59");
+// ─── Constants ────────────────────────────────────────────────────────────────
+// Campaign ends April 22, 2026
+const TARGET_DATE = new Date("2026-04-22T23:59:59");
+
+const FILTERS: { key: Filter; label: string; dot?: string }[] = [
+  { key: "all",      label: "All" },
+  { key: "kumara",   label: "Kumara",    dot: "bg-blue-400"   },
+  { key: "kumariya", label: "Kumariya",  dot: "bg-pink-400"   },
+  { key: "top",      label: "Top Voted", dot: "bg-yellow-400" },
+];
 
 // ─── Countdown hook time ───────────────────────────────────────────────────────────
 function useCountdown(target: Date) {
@@ -105,83 +66,250 @@ function CountdownTimer() {
   useEffect(() => setMounted(true), []);
   const { days, hours, minutes, seconds } = useCountdown(TARGET_DATE);
 
+  const units = [
+    { label: "DAYS",    value: days,    yellow: true  },
+    { label: "HOURS",   value: hours,   yellow: false },
+    { label: "MINUTES", value: minutes, yellow: false },
+    { label: "SECONDS", value: seconds, yellow: false },
+  ];
+
   if (!mounted) return (
     <div className="flex items-center gap-0.5 sm:gap-1 justify-center">
-      {["DAYS", "HOURS", "MINUTES", "SECONDS"].map((label, i) => (
-        <div key={label} className="flex items-center gap-0.5 sm:gap-1">
+      {units.map((u, i) => (
+        <div key={u.label} className="flex items-center gap-0.5 sm:gap-1">
           <div className="flex flex-col items-center">
             <span className="text-2xl sm:text-3xl md:text-4xl font-black tabular-nums w-10 sm:w-14 text-center text-gray-100">00</span>
-            <span className="text-[8px] sm:text-[9px] tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mt-0.5">{label}</span>
+            <span className="text-[8px] sm:text-[9px] tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mt-0.5">{u.label}</span>
           </div>
-          {i < 3 && <span className="text-xl sm:text-2xl font-black text-gray-600 mb-4 mx-0.5">:</span>}
+          {i < units.length - 1 && <span className="text-xl sm:text-2xl font-black text-gray-600 mb-4 mx-0.5">:</span>}
         </div>
       ))}
     </div>
   );
-  const units = [
-    { label: "HOURS",   value: hours },
-    { label: "MINUTES", value: minutes },
-    { label: "SECONDS", value: seconds },
-  ];
+
   return (
-    <div className="flex flex-col items-center gap-3">
-      <div className="flex items-center gap-0.5 sm:gap-1">
-        {/* DAYS — first position */}
-        <div className="flex flex-col items-center">
-          <span className="text-2xl sm:text-3xl md:text-4xl font-black text-yellow-400 tabular-nums w-10 sm:w-14 text-center drop-shadow-[0_0_10px_rgba(234,179,8,0.5)]">
-            {String(days).padStart(2, "0")}
-          </span>
-          <span className="text-[8px] sm:text-[9px] tracking-[0.15em] sm:tracking-[0.2em] text-yellow-500 mt-0.5">DAYS</span>
-        </div>
-        {/* separator */}
-        <span className="text-xl sm:text-2xl font-black text-gray-600 mb-4 mx-0.5">:</span>
-        {units.map((u, i) => (
-          <div key={u.label} className="flex items-center gap-0.5 sm:gap-1">
-            <div className="flex flex-col items-center">
-              <span className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-100 tabular-nums w-10 sm:w-14 text-center drop-shadow-md">
-                {String(u.value).padStart(2, "0")}
-              </span>
-              <span className="text-[8px] sm:text-[9px] tracking-[0.15em] sm:tracking-[0.2em] text-gray-400 mt-0.5">{u.label}</span>
-            </div>
-            {i < units.length - 1 && (
-              <span className="text-xl sm:text-2xl font-black text-gray-600 mb-4 mx-0.5">:</span>
-            )}
+    <div className="flex items-center gap-0.5 sm:gap-1 justify-center">
+      {units.map((u, i) => (
+        <div key={u.label} className="flex items-center gap-0.5 sm:gap-1">
+          <div className="flex flex-col items-center">
+            <span className={`text-2xl sm:text-3xl md:text-4xl font-black tabular-nums w-10 sm:w-14 text-center drop-shadow-md ${
+              u.yellow ? "text-yellow-400 drop-shadow-[0_0_10px_rgba(234,179,8,0.5)]" : "text-gray-100"
+            }`}>
+              {String(u.value).padStart(2, "0")}
+            </span>
+            <span className={`text-[8px] sm:text-[9px] tracking-[0.15em] sm:tracking-[0.2em] mt-0.5 ${u.yellow ? "text-yellow-500" : "text-gray-400"}`}>
+              {u.label}
+            </span>
           </div>
-        ))}
+          {i < units.length - 1 && <span className="text-xl sm:text-2xl font-black text-gray-600 mb-4 mx-0.5">:</span>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── Placeholder Avatar ───────────────────────────────────────────────────────
+// Shown in place of a real image until the image API is ready.
+function PlaceholderAvatar({ post }: { post: Post }) {
+  const initials = post.displayName
+    .split(" ")
+    .map((w) => w[0] ?? "")
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+
+  const gradient =
+    post.gender === "male"
+      ? "from-blue-700 via-indigo-700 to-violet-800"
+      : "from-pink-600 via-rose-600 to-purple-700";
+
+  return (
+    <div className={`absolute inset-0 bg-linear-to-br ${gradient} flex items-center justify-center`}>
+      <span className="text-5xl sm:text-6xl font-black text-white/25 select-none tracking-wider drop-shadow-2xl">
+        {initials}
+      </span>
+    </div>
+  );
+}
+
+// ─── Skeleton Card ────────────────────────────────────────────────────────────
+function SkeletonCard() {
+  return (
+    <div className="flex flex-col bg-white/5 border border-white/10 rounded-2xl overflow-hidden animate-pulse">
+      <div className="w-full aspect-4/5 bg-white/10" />
+      <div className="p-4 space-y-3">
+        <div className="h-4 bg-white/10 rounded-full w-3/4" />
+        <div className="h-3 bg-white/10 rounded-full w-1/2" />
+        <div className="flex justify-between items-center mt-2">
+          <div className="h-5 bg-white/10 rounded-full w-20" />
+          <div className="h-8 bg-white/10 rounded-full w-16" />
+        </div>
       </div>
     </div>
   );
 }
 
-// ─── Vote Modal ──────────────────────────────────────────────────────────────
+// ─── Post Card ────────────────────────────────────────────────────────────────
+function PostCard({ post, voted, onVote }: { post: Post; voted: boolean; onVote: () => void }) {
+  const isMale = post.gender === "male";
+
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="group relative flex flex-col bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden hover:border-yellow-400/50 hover:-translate-y-2 transition-all duration-500 shadow-xl hover:shadow-[0_15px_40px_rgba(234,179,8,0.15)]"
+      style={voted ? { boxShadow: "0 0 20px rgba(234,179,8,0.2)", borderColor: "rgba(234,179,8,0.4)" } : undefined}
+    >
+      {/* Image area */}
+      <div className="relative w-full aspect-4/5 overflow-hidden">
+        {post.imageUrl ? (
+          <Image
+            src={post.imageUrl}
+            alt={post.displayName}
+            fill
+            sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
+          />
+        ) : (
+          <PlaceholderAvatar post={post} />
+        )}
+        <div className="absolute inset-0 bg-linear-to-t from-[#1E0B4B]/95 via-[#1E0B4B]/20 to-transparent" />
+
+        {/* Post number badge */}
+        <div className="absolute top-2.5 left-2.5">
+          <span className="text-[10px] font-extrabold text-gray-100 bg-black/60 backdrop-blur-md rounded-full px-2.5 py-1 border border-white/10 shadow-md">
+            #{post.postNumber}
+          </span>
+        </div>
+
+        {/* Gender badge */}
+        <div className="absolute top-2.5 right-2.5">
+          <span className={`text-[9px] font-extrabold tracking-widest text-white rounded-full px-2.5 py-1 shadow-md ${
+            isMale
+              ? "bg-linear-to-r from-blue-500 to-indigo-500"
+              : "bg-linear-to-r from-pink-500 to-rose-500"
+          }`}>
+            {isMale ? "KUMARA" : "KUMARIYA"}
+          </span>
+        </div>
+      </div>
+
+      {/* Card body */}
+      <div className="flex flex-col gap-2 px-4 pt-3 pb-5 relative z-10">
+        <p className="text-sm font-bold text-gray-100 leading-tight drop-shadow-sm truncate" title={post.displayName}>
+          {post.displayName}
+        </p>
+        <p className="text-[11px] text-yellow-400/80 font-medium truncate">{post.flavor}</p>
+
+        {/* Vote row */}
+        <div className="flex items-center justify-between mt-2 gap-2">
+          <span className="text-base font-black text-yellow-400 drop-shadow-[0_0_10px_rgba(234,179,8,0.3)]">
+            {post.voteCount.toLocaleString()}
+            <span className="text-[10px] font-bold text-yellow-400/60 ml-1 tracking-wider uppercase">votes</span>
+          </span>
+          <button
+            onClick={onVote}
+            disabled={voted}
+            className={[
+              "text-[11px] font-extrabold tracking-widest rounded-full px-4 py-2 transition-all duration-300 shrink-0",
+              voted
+                ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 cursor-default"
+                : "bg-linear-to-r from-yellow-400 to-amber-500 text-black hover:brightness-110 hover:scale-105 shadow-[0_0_15px_rgba(234,179,8,0.4)]",
+            ].join(" ")}
+          >
+            {voted ? "✦ VOTED" : "VOTE"}
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Vote Modal ───────────────────────────────────────────────────────────────
 type VoteModalProps = {
-  avatar: Avatar | null;
+  post: Post | null;
   onClose: () => void;
-  onSuccess: (id: number) => void;
+  onSuccess: (postId: string) => void;
 };
 
-function VoteModal({ avatar, onClose, onSuccess }: VoteModalProps) {
+function VoteModal({ post, onClose, onSuccess }: VoteModalProps) {
   const [phase, setPhase] = useState<"phone" | "otp" | "success">("phone");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [cooldown, setCooldown] = useState(0);
 
-  function handleSendOtp() {
+  // Reset state whenever a different post is targeted
+  useEffect(() => {
+    setPhase("phone");
+    setPhone("");
+    setOtp("");
+    setError("");
+    setCooldown(0);
+  }, [post?.postId]);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
+
+  async function handleSendOtp() {
     if (phone.length < 9) return;
+    setError("");
     setLoading(true);
-    // TODO: call backend to send OTP
-    setTimeout(() => { setLoading(false); setPhase("otp"); }, 1200);
+    try {
+      const res = await fetch("/api/auth/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: `+94${phone}` }),
+      });
+      const data = await res.json();
+      if (res.status === 429) {
+        setError(data.message || "Too many requests. Please wait before trying again.");
+        setCooldown(30);
+      } else if (!res.ok) {
+        setError(data.message || "Failed to send OTP. Please try again.");
+      } else {
+        setPhase("otp");
+      }
+    } catch {
+      setError("Network error. Please check your connection.");
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function handleVerify() {
-    if (otp.length < 4 || !avatar) return;
+  async function handleVerifyAndVote() {
+    if (otp.length < 4 || !post) return;
+    setError("");
     setLoading(true);
-    // TODO: call backend to verify OTP and cast vote
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: `+94${phone}`, otp }),
+      });
+      const data = await res.json();
+      if (res.status === 429) {
+        setError(data.message || "Too many attempts. Please wait.");
+      } else if (!res.ok) {
+        setError(data.message || "Invalid OTP. Please try again.");
+      } else {
+        // TODO: cast vote — POST /votes { postId: post.postId } with Authorization: Bearer data.token
+        // once the vote endpoint is documented and live.
+        setPhase("success");
+        setTimeout(() => { onSuccess(post.postId); onClose(); }, 1800);
+      }
+    } catch {
+      setError("Network error. Please check your connection.");
+    } finally {
       setLoading(false);
-      setPhase("success");
-      setTimeout(() => { onSuccess(avatar.id); onClose(); }, 1600);
-    }, 1200);
+    }
   }
 
   // Close on backdrop click
@@ -189,7 +317,7 @@ function VoteModal({ avatar, onClose, onSuccess }: VoteModalProps) {
     if (e.target === e.currentTarget) onClose();
   }
 
-  if (!avatar) return null;
+  if (!post) return null;
 
   return (
     <AnimatePresence>
@@ -234,7 +362,7 @@ function VoteModal({ avatar, onClose, onSuccess }: VoteModalProps) {
                   </div>
                   <div>
                     <p className="text-base font-black text-gray-100 leading-tight">Verify to Vote</p>
-                    <p className="text-xs text-gray-400 mt-0.5">Voting for <span className="text-yellow-400 font-bold">{avatar.name}</span></p>
+                    <p className="text-xs text-gray-400 mt-0.5">Voting for <span className="text-yellow-400 font-bold">{post.displayName}</span></p>
                   </div>
                 </div>
 
@@ -252,19 +380,27 @@ function VoteModal({ avatar, onClose, onSuccess }: VoteModalProps) {
                       inputMode="numeric"
                       maxLength={10}
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
-                      placeholder="7X XXX XXXX"
-                      className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-200 placeholder-gray-600 outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-all duration-300"
-                    />
-                  </div>
+                    onChange={(e) => { setPhone(e.target.value.replace(/\D/g, "")); setError(""); }}
+                    placeholder="7X XXX XXXX"
+                    className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-200 placeholder-gray-600 outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-all duration-300"
+                  />
                 </div>
+              </div>
 
-                <button
+              <AnimatePresence>
+                {error && (
+                  <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="text-xs text-red-400 text-center font-semibold bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2">
+                    {error}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+
+              <button
                   onClick={handleSendOtp}
-                  disabled={phone.length < 9 || loading}
+                  disabled={phone.length < 9 || loading || cooldown > 0}
                   className="w-full bg-linear-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl py-3.5 hover:brightness-110 hover:scale-[1.01] shadow-[0_4px_15px_rgba(234,179,8,0.3)] disabled:opacity-40 disabled:scale-100 disabled:cursor-not-allowed transition-all duration-300"
                 >
-                  {loading ? "SENDING OTP…" : "SEND OTP"}
+                  {loading ? "SENDING OTP…" : cooldown > 0 ? `WAIT ${cooldown}s` : "SEND OTP"}
                 </button>
 
                 <p className="text-center text-[10px] text-gray-600 tracking-wide">
@@ -295,14 +431,22 @@ function VoteModal({ avatar, onClose, onSuccess }: VoteModalProps) {
                     inputMode="numeric"
                     maxLength={6}
                     value={otp}
-                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+                    onChange={(e) => { setOtp(e.target.value.replace(/\D/g, "")); setError(""); }}
                     placeholder="• • • • • •"
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-xl text-yellow-400 placeholder-gray-600 outline-none focus:border-yellow-500/50 transition-all duration-300 tracking-[0.5em] text-center font-black"
                   />
                 </div>
 
+                <AnimatePresence>
+                  {error && (
+                    <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="text-xs text-red-400 text-center font-semibold bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2">
+                      {error}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+
                 <button
-                  onClick={handleVerify}
+                  onClick={handleVerifyAndVote}
                   disabled={otp.length < 4 || loading}
                   className="w-full bg-linear-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl py-3.5 hover:brightness-110 hover:scale-[1.01] shadow-[0_4px_15px_rgba(234,179,8,0.3)] disabled:opacity-40 disabled:scale-100 disabled:cursor-not-allowed transition-all duration-300"
                 >
@@ -329,7 +473,7 @@ function VoteModal({ avatar, onClose, onSuccess }: VoteModalProps) {
                   <CheckCircle2 size={56} className="text-yellow-400" strokeWidth={1.5} />
                 </motion.div>
                 <p className="text-xl font-black text-transparent bg-clip-text bg-linear-to-r from-yellow-300 to-amber-500">Vote Cast!</p>
-                <p className="text-sm text-gray-400">Thanks for voting for <span className="text-yellow-400 font-bold">{avatar.name}</span>!</p>
+                <p className="text-sm text-gray-400">Thanks for voting for <span className="text-yellow-400 font-bold">{post.displayName}</span>!</p>
               </motion.div>
             )}
 
@@ -340,81 +484,41 @@ function VoteModal({ avatar, onClose, onSuccess }: VoteModalProps) {
   );
 }
 
-// ─── Filter Tabs ──────────────────────────────────────────────────────────────
-const FILTERS: { key: Filter; label: string; dot?: string }[] = [
-  { key: "all",      label: "All" },
-  { key: "kumara",   label: "Kumara",   dot: "bg-blue-400"  },
-  { key: "kumariya", label: "Kumariya", dot: "bg-pink-400"  },
-  { key: "top",      label: "Top Voted",dot: "bg-yellow-400"},
-];
+// ─── Pagination component ─────────────────────────────────────────────────────
+function Pagination({ page, totalPages, onChange }: { page: number; totalPages: number; onChange: (p: number) => void }) {
+  if (totalPages <= 1) return null;
 
-function AvatarCard({ avatar, voted, onVote }: { avatar: Avatar; voted: boolean; onVote: () => void }) {
+  // Show up to 5 page numbers centred around current
+  const delta = 2;
+  const start = Math.max(1, page - delta);
+  const end   = Math.min(totalPages, page + delta);
+  const range: number[] = [];
+  for (let i = start; i <= end; i++) range.push(i);
+
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.4, ease: "easeOut" as const }}
-      className="group relative flex flex-col bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden hover:border-yellow-400/50 hover:-translate-y-2 transition-all duration-500 shadow-xl hover:shadow-[0_15px_40px_rgba(234,179,8,0.15)]"
-      style={voted ? { boxShadow: "0 0 20px rgba(234,179,8,0.2)", borderColor: "rgba(234,179,8,0.4)" } : undefined}
-    >
-      {/* Image */}
-      <div className="relative w-full aspect-[4/5] overflow-hidden">
-        <Image
-          src={avatar.img}
-          alt={avatar.name}
-          fill
-          sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-110"
-        />
-        {/* Gradient overlay matching the new base color */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1E0B4B]/95 via-[#1E0B4B]/20 to-transparent" />
+    <div className="flex items-center justify-center gap-2 flex-wrap">
+      <button onClick={() => onChange(Math.max(1, page - 1))} disabled={page === 1} className="w-10 h-10 flex items-center justify-center rounded-full border border-white/20 bg-white/5 text-white text-sm font-bold hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all" aria-label="Previous page">‹</button>
 
-        {/* Rank badge */}
-        <div className="absolute top-2.5 left-2.5">
-          <span className="text-[10px] font-extrabold text-gray-100 bg-black/60 backdrop-blur-md rounded-full px-2.5 py-1 border border-white/10 shadow-md">
-            #{avatar.rank}
-          </span>
-        </div>
+      {start > 1 && (
+        <>
+          <button onClick={() => onChange(1)} className="w-10 h-10 flex items-center justify-center rounded-full text-xs font-extrabold border border-white/15 bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white transition-all">1</button>
+          {start > 2 && <span className="text-gray-600 text-sm px-1">…</span>}
+        </>
+      )}
 
-        {/* Type badge */}
-        <div className="absolute top-2.5 right-2.5">
-          <span className={`text-[9px] font-extrabold tracking-widest text-white bg-gradient-to-r ${avatar.badgeColor} rounded-full px-2.5 py-1 shadow-md`}>
-            {avatar.badge}
-          </span>
-        </div>
-      </div>
+      {range.map((p) => (
+        <button key={p} onClick={() => onChange(p)} className={["w-10 h-10 flex items-center justify-center rounded-full text-xs font-extrabold border transition-all", p === page ? "bg-yellow-500/20 border-yellow-400/50 text-yellow-400 shadow-[0_0_12px_rgba(234,179,8,0.25)]" : "border-white/15 bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white"].join(" ")}>{p}</button>
+      ))}
 
-      {/* Card body */}
-      <div className="flex flex-col gap-2 px-4 pt-3 pb-5 relative z-10">
-        <p className="text-sm font-bold text-gray-100 leading-tight drop-shadow-sm">{avatar.name}</p>
-        <div className="flex items-center gap-1 text-[11px] text-gray-300 font-medium">
-          <MapPin size={10} className="shrink-0 text-yellow-400" />
-          <span>{avatar.flavor} · {avatar.lover}</span>
-        </div>
+      {end < totalPages && (
+        <>
+          {end < totalPages - 1 && <span className="text-gray-600 text-sm px-1">…</span>}
+          <button onClick={() => onChange(totalPages)} className="w-10 h-10 flex items-center justify-center rounded-full text-xs font-extrabold border border-white/15 bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white transition-all">{totalPages}</button>
+        </>
+      )}
 
-        {/* Vote row */}
-        <div className="flex items-center justify-between mt-2 gap-2">
-          <span className="text-base font-black text-yellow-400 drop-shadow-[0_0_10px_rgba(234,179,8,0.3)]">
-            {avatar.votes.toLocaleString()}
-            <span className="text-[10px] font-bold text-yellow-400/60 ml-1 tracking-wider uppercase">votes</span>
-          </span>
-          <button
-            onClick={onVote}
-            disabled={voted}
-            className={[
-              "text-[11px] font-extrabold tracking-widest rounded-full px-4 py-2 transition-all duration-300",
-              voted
-                ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 cursor-default"
-                : "bg-gradient-to-r from-yellow-400 to-amber-500 text-black hover:brightness-110 hover:scale-105 shadow-[0_0_15px_rgba(234,179,8,0.4)]",
-            ].join(" ")}
-          >
-            {voted ? "✦ VOTED" : "VOTE"}
-          </button>
-        </div>
-      </div>
-    </motion.div>
+      <button onClick={() => onChange(Math.min(totalPages, page + 1))} disabled={page === totalPages} className="w-10 h-10 flex items-center justify-center rounded-full border border-white/20 bg-white/5 text-white text-sm font-bold hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all" aria-label="Next page">›</button>
+    </div>
   );
 }
 
@@ -422,38 +526,76 @@ function AvatarCard({ avatar, voted, onVote }: { avatar: Avatar; voted: boolean;
 const PAGE_SIZE = 8; // Increased slightly for better grid fill
 
 export default function VotePage() {
-  const [filter, setFilter]       = useState<Filter>("all");
-  const [page, setPage]           = useState(1);
-  const [voted, setVoted]         = useState<Set<number>>(new Set());
-  const [query, setQuery]         = useState("");
-  const [voteTarget, setVoteTarget] = useState<Avatar | null>(null);
+  const [filter, setFilter]         = useState<Filter>("all");
+  const [page, setPage]             = useState(1);
+  const [posts, setPosts]           = useState<Post[]>([]);
+  const [pagination, setPagination] = useState<PaginationMeta | null>(null);
+  const [loading, setLoading]       = useState(true);
+  const [error, setError]           = useState("");
+  const [voted, setVoted]           = useState<Set<string>>(new Set());
+  const [voteTarget, setVoteTarget] = useState<Post | null>(null);
+  const [query, setQuery]           = useState("");
 
-  function handleVoteSuccess(id: number) {
-    setVoted((prev) => new Set(prev).add(id));
+  const fetchPosts = useCallback(async (f: Filter, p: number) => {
+    setLoading(true);
+    setError("");
+    try {
+      const url =
+        f === "all"      ? `/api/posts?page=${p}`        :
+        f === "kumara"   ? `/api/posts/male?page=${p}`   :
+        f === "kumariya" ? `/api/posts/female?page=${p}` :
+                           `/api/posts/top/mixed`;
+
+      const res  = await fetch(url);
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        setError(data.message || "Failed to load posts. Please try again.");
+        setPosts([]);
+        setPagination(null);
+        return;
+      }
+
+      setPosts(data.posts ?? []);
+      setPagination(data.pagination ?? null); // top/mixed has no pagination
+    } catch {
+      setError("Network error. Please check your connection and try again.");
+      setPosts([]);
+      setPagination(null);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchPosts(filter, page);
+  }, [filter, page, fetchPosts]);
+
+  function handleFilterChange(f: Filter) {
+    setFilter(f);
+    setPage(1);
+    setQuery("");
   }
 
-  const q = query.trim().toLowerCase();
-  const filtered = ALL_AVATARS.filter((a) => {
-    if (filter === "kumara")   if (a.type !== "kumara")   return false;
-    if (filter === "kumariya") if (a.type !== "kumariya") return false;
-    if (filter === "top")      if (a.votes < 1500)        return false;
-    if (!q) return true;
-    return (
-      a.name.toLowerCase().includes(q) ||
-      a.flavor.toLowerCase().includes(q) ||
-      a.lover.toLowerCase().includes(q) ||
-      a.badge.toLowerCase().includes(q)
+  function handleVoteSuccess(postId: string) {
+    setVoted((prev) => new Set(prev).add(postId));
+    // Optimistically bump vote count in local state
+    setPosts((prev) =>
+      prev.map((p) => p.postId === postId ? { ...p, voteCount: p.voteCount + 1 } : p)
     );
-  });
+  }
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const safePage = Math.min(page, totalPages);
-  const visible = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  // Client-side search on the currently loaded page of posts
+  const q = query.trim().toLowerCase();
+  const visiblePosts = q
+    ? posts.filter(
+        (p) =>
+          p.displayName.toLowerCase().includes(q) ||
+          p.flavor.toLowerCase().includes(q)
+      )
+    : posts;
 
-  const cardVariants = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.07 } },
-  };
+  const totalPages = pagination?.totalPages ?? 1;
 
   return (
     <div className="min-h-screen bg-transparent flex flex-col relative">
@@ -461,13 +603,13 @@ export default function VotePage() {
       {/* ─── EXPERT UI: Unified Fixed Mesh Gradient Background ─── */}
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#1E0B4B]" // Deep violet/indigo base
+        className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#1E0B4B]"
       >
-        <div className="absolute -top-[20%] -right-[10%] w-[600px] h-[600px] sm:w-[800px] sm:h-[800px] rounded-full bg-[#00E5FF]/35 blur-[120px] sm:blur-[160px]" />
-        <div className="absolute -bottom-[20%] -left-[10%] w-[600px] h-[600px] sm:w-[800px] sm:h-[800px] rounded-full bg-[#00E5FF]/35 blur-[120px] sm:blur-[160px]" />
-        <div className="absolute top-[10%] left-[20%] w-[500px] h-[500px] rounded-full bg-[#9D00FF]/30 blur-[140px]" />
-        <div className="absolute bottom-[20%] right-[20%] w-[500px] h-[500px] rounded-full bg-[#6A00F4]/30 blur-[140px]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-yellow-500/10 blur-[100px]" />
+        <div className="absolute -top-[20%] -right-[10%] w-150 h-150 sm:w-200 sm:h-200 rounded-full bg-[#00E5FF]/35 blur-[120px] sm:blur-[160px]" />
+        <div className="absolute -bottom-[20%] -left-[10%] w-150 h-150 sm:w-200 sm:h-200 rounded-full bg-[#00E5FF]/35 blur-[120px] sm:blur-[160px]" />
+        <div className="absolute top-[10%] left-[20%] w-125 h-125 rounded-full bg-[#9D00FF]/30 blur-[140px]" />
+        <div className="absolute bottom-[20%] right-[20%] w-125 h-125 rounded-full bg-[#6A00F4]/30 blur-[140px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-100 h-100 rounded-full bg-yellow-500/10 blur-[100px]" />
         <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
       </div>
 
@@ -475,78 +617,40 @@ export default function VotePage() {
 
       <div className="relative z-10 flex-1 max-w-6xl mx-auto w-full px-4 pt-32 pb-20">
 
-        {/* ── Header ─────────────────────────────────────────────────────── */}
+        {/* ── Header ────────────────────────────────────────────────────── */}
         <div className="flex flex-col items-center text-center gap-3 mb-12">
-          {/* Live pill */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4 }}
-          >
+          <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }}>
             <span className="inline-flex items-center gap-2 text-[10px] font-black tracking-[0.3em] uppercase text-green-400 border border-green-500/40 bg-green-500/10 rounded-full px-4 py-1.5 backdrop-blur-md shadow-[0_0_15px_rgba(34,197,94,0.2)]">
               <span className="w-2 h-2 rounded-full bg-green-400 animate-ping" />
               VOTING IS LIVE
             </span>
           </motion.div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.05 }}
-            className="text-[10px] sm:text-xs font-bold tracking-[0.4em] uppercase text-yellow-400 mt-2"
-          >
+          <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }} className="text-[10px] sm:text-xs font-bold tracking-[0.4em] uppercase text-yellow-400 mt-2">
             AI AVATAR GALLERY
           </motion.p>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.1, ease: "easeOut" as const }}
-            className="font-playfair text-4xl sm:text-5xl md:text-6xl font-normal text-white tracking-tight leading-tight drop-shadow-lg"
-          >
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.1, ease: "easeOut" as const }} className="font-playfair text-4xl sm:text-5xl md:text-6xl font-normal text-white tracking-tight leading-tight drop-shadow-lg">
             VOTE FOR YOUR{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-500">FAVOURITE</span>
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-yellow-300 to-amber-500">FAVOURITE</span>
           </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
-            className="text-lg sm:text-xl font-bold text-yellow-100/90"
-          >
+          <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }} className="text-lg sm:text-xl font-bold text-yellow-100/90">
             ඔබේ ප්‍රියතම Avatar එකට ජන්දය දෙන්න
-          </motion.p>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.3 }}
-            className="text-xs sm:text-sm text-blue-100/60 font-medium max-w-lg mt-2"
-          >
           </motion.p>
         </div>
 
-        {/* ── Countdown ──────────────────────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.35 }}
-          className="bg-white/5 backdrop-blur-md border border-white/10 rounded-[2rem] px-4 sm:px-8 py-8 mb-12 max-w-md mx-auto text-center shadow-2xl"
-        >
+        {/* ── Countdown ─────────────────────────────────────────────────── */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.35 }} className="bg-white/5 backdrop-blur-md border border-white/10 rounded-4xl px-4 sm:px-8 py-8 mb-12 max-w-md mx-auto text-center shadow-2xl">
           <CountdownTimer />
         </motion.div>
 
-        {/* ── Filter Tabs ────────────────────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.45 }}
-          className="flex items-center justify-center gap-2 flex-wrap mb-10"
-        >
+        {/* ── Filter Tabs ───────────────────────────────────────────────── */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.45 }} className="flex items-center justify-center gap-2 flex-wrap mb-6">
           {FILTERS.map((f) => (
             <button
               key={f.key}
-              onClick={() => { setFilter(f.key); setPage(1); }}
+              onClick={() => handleFilterChange(f.key)}
               className={[
                 "inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase rounded-full px-5 py-2.5 border transition-all duration-300",
                 filter === f.key
@@ -560,23 +664,15 @@ export default function VotePage() {
           ))}
         </motion.div>
 
-        {/* ── Search Bar ─────────────────────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.5 }}
-          className="relative max-w-lg mx-auto mb-12"
-        >
+        {/* ── Search Bar ────────────────────────────────────────────────── */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.5 }} className="relative max-w-lg mx-auto mb-12">
           <div className="relative flex items-center">
-            <Search
-              size={18}
-              className="absolute left-5 text-white/40 pointer-events-none shrink-0"
-            />
+            <Search size={18} className="absolute left-5 text-white/40 pointer-events-none shrink-0" />
             <input
               type="text"
               value={query}
-              onChange={(e) => { setQuery(e.target.value); setPage(1); }}
-              placeholder="Search by name, flavor, badge…"
+              onChange={(e) => { setQuery(e.target.value); }}
+              placeholder="Search by name or flavor…"
               className="w-full bg-white/5 border border-white/10 backdrop-blur-md rounded-full pl-12 pr-12 py-3.5 text-sm text-white placeholder-white/40 tracking-wide focus:outline-none focus:border-yellow-400/50 focus:bg-white/10 focus:ring-4 focus:ring-yellow-400/10 transition-all duration-300"
             />
             <AnimatePresence>
@@ -586,7 +682,7 @@ export default function VotePage() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.7 }}
                   transition={{ duration: 0.15 }}
-                  onClick={() => { setQuery(""); setPage(1); }}
+                  onClick={() => { setQuery(""); }}
                   className="absolute right-4 text-white/40 hover:text-white transition-colors duration-150 bg-white/10 rounded-full p-1"
                   aria-label="Clear search"
                 >
@@ -595,81 +691,67 @@ export default function VotePage() {
               )}
             </AnimatePresence>
           </div>
-          {q && (
+          {q && !loading && (
             <p className="text-center text-[11px] font-bold tracking-widest text-yellow-400/70 mt-3 uppercase">
-              {filtered.length === 0
-                ? `No avatars match "${query}"`
-                : `${filtered.length} avatar${filtered.length !== 1 ? "s" : ""} found`}
+              {visiblePosts.length === 0
+                ? `No posts match "${query}"`
+                : `${visiblePosts.length} post${visiblePosts.length !== 1 ? "s" : ""} found`}
             </p>
           )}
         </motion.div>
 
-        {/* ── Avatar Grid ────────────────────────────────────────────────── */}
-        <motion.div
-          variants={cardVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
-        >
-          <AnimatePresence mode="popLayout">
-            {visible.map((avatar) => (
-              <AvatarCard
-                key={avatar.id}
-                avatar={avatar}
-                voted={voted.has(avatar.id)}
-                onVote={() => setVoteTarget(avatar)}
-              />
-            ))}
-          </AnimatePresence>
-        </motion.div>
+        {/* ── Grid / Error / Empty / Skeleton ───────────────────────────── */}
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center gap-5 py-24 text-center">
+            <p className="text-red-400 font-bold text-sm max-w-sm">{error}</p>
+            <button
+              onClick={() => fetchPosts(filter, page)}
+              className="inline-flex items-center gap-2 text-xs font-black tracking-widest text-yellow-400 border border-yellow-400/30 rounded-full px-6 py-3 hover:bg-yellow-500/10 transition-all"
+            >
+              <RefreshCw size={14} /> TRY AGAIN
+            </button>
+          </div>
+        ) : visiblePosts.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-3 py-24 text-center">
+            <p className="text-gray-400 font-bold text-sm">
+              {q ? `No posts match "${query}".` : "No posts found for this filter."}
+            </p>
+          </div>
+        ) : (
+          <motion.div
+            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07 } } }}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+          >
+            <AnimatePresence mode="popLayout">
+              {visiblePosts.map((post) => (
+                <PostCard
+                  key={post.postId}
+                  post={post}
+                  voted={voted.has(post.postId)}
+                  onVote={() => setVoteTarget(post)}
+                />
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        )}
 
         {/* Pagination */}
-        <div className="mt-16 flex flex-col items-center gap-4">
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 flex-wrap">
-              {/* Prev */}
-              <button
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={safePage === 1}
-                className="w-10 h-10 flex items-center justify-center rounded-full border border-white/20 bg-white/5 text-white text-sm font-bold hover:bg-white/10 hover:border-white/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
-                aria-label="Previous page"
-              >
-                ‹
-              </button>
+        {!loading && !error && pagination && filter !== "top" && (
+          <div className="mt-16 flex flex-col items-center gap-4">
+            <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+            <p className="text-[11px] font-bold text-white/30 tracking-widest uppercase">
+              Page {page} of {totalPages} · {pagination.totalPosts} total entries
+            </p>
+          </div>
+        )}
 
-              {/* Page numbers */}
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setPage(p)}
-                  className={[
-                    "w-10 h-10 flex items-center justify-center rounded-full text-xs font-extrabold tracking-widest border transition-all duration-200",
-                    p === safePage
-                      ? "bg-yellow-500/20 border-yellow-400/50 text-yellow-400 shadow-[0_0_12px_rgba(234,179,8,0.25)]"
-                      : "border-white/15 bg-white/5 text-gray-300 hover:bg-white/10 hover:border-white/30 hover:text-white",
-                  ].join(" ")}
-                >
-                  {p}
-                </button>
-              ))}
-
-              {/* Next */}
-              <button
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={safePage === totalPages}
-                className="w-10 h-10 flex items-center justify-center rounded-full border border-white/20 bg-white/5 text-white text-sm font-bold hover:bg-white/10 hover:border-white/40 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
-                aria-label="Next page"
-              >
-                ›
-              </button>
-            </div>
-          )}
-          <p className="text-[11px] font-bold text-white/30 tracking-widest uppercase">
-            Page {safePage} of {totalPages} · {filtered.length} entries
-          </p>
-        </div>
-
-        {/* ── Bottom CTA ─────────────────────────────────────────────────── */}
+        {/* ── Bottom CTA ────────────────────────────────────────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -682,7 +764,7 @@ export default function VotePage() {
           </p>
           <Link
             href="/campaign"
-            className="inline-flex items-center justify-center gap-2 text-sm font-extrabold tracking-widest text-black bg-gradient-to-r from-yellow-400 via-yellow-500 to-amber-500 rounded-full px-10 py-4 hover:scale-105 transition-all duration-300 shadow-[0_4px_20px_rgba(234,179,8,0.4)] hover:shadow-[0_6px_30px_rgba(234,179,8,0.6)] uppercase"
+            className="inline-flex items-center justify-center gap-2 text-sm font-extrabold tracking-widest text-black bg-linear-to-r from-yellow-400 via-yellow-500 to-amber-500 rounded-full px-10 py-4 hover:scale-105 transition-all duration-300 shadow-[0_4px_20px_rgba(234,179,8,0.4)] hover:shadow-[0_6px_30px_rgba(234,179,8,0.6)] uppercase"
           >
             <span className="text-lg leading-none">+</span> CREATE YOUR AVATAR NOW
           </Link>
@@ -690,9 +772,9 @@ export default function VotePage() {
 
       </div>
 
-      {/* ── Vote Modal ──────────────────────────────────────────────────────── */}
+      {/* ── Vote Modal ─────────────────────────────────────────────────────── */}
       <VoteModal
-        avatar={voteTarget}
+        post={voteTarget}
         onClose={() => setVoteTarget(null)}
         onSuccess={handleVoteSuccess}
       />
@@ -700,19 +782,14 @@ export default function VotePage() {
       {/* ── Footer ───────────────────────────────────────────────────────────── */}
       <footer className="relative z-10 bg-transparent border-t border-white/10 py-12 mt-auto">
         <div className="relative z-10 max-w-6xl mx-auto px-4 flex flex-col items-center gap-6">
-          {/* Logo */}
-          <div className="flex flex-col items-center">
-            <div className="relative w-40 h-20">
-              <Image
-                src="/Avrudu-logo.png"
-                alt="AI Avurudu with Zellers Chocolates"
-                fill
-                className="object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]"
-              />
-            </div>
+          <div className="relative w-40 h-20">
+            <Image
+              src="/Avrudu-logo.png"
+              alt="AI Avurudu with Zellers Chocolates"
+              fill
+              className="object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]"
+            />
           </div>
-
-          {/* Links */}
           <nav aria-label="Vote page footer">
             <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
               {[
@@ -729,7 +806,6 @@ export default function VotePage() {
               ))}
             </ul>
           </nav>
-
           <p className="text-[10px] font-bold text-white/30 tracking-widest text-center uppercase mt-4">
             © 2026 Zellers Chocolates. All rights reserved. <br className="sm:hidden" /> Campaign subject to terms & conditions.
           </p>

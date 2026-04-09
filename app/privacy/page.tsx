@@ -7,19 +7,16 @@ import Link from "next/link";
 const SECTIONS = [
   {
     title: "Information We Collect",
-    body: "We collect your mobile number (for OTP verification), name, email address, NIC number, age, and home address when you enter the campaign. We also collect the selfie photo you upload and the AI-generated avatar image.",
+    body: "We collect your mobile number (for OTP verification), name, and gender when you enter the campaign. We also collect the selfie photo you upload and the AI-generated avatar image.",
   },
   {
     title: "How We Use Your Information",
     body: "Your information is used to verify your identity, generate your AI avatar, administer the campaign, contact winners, and for promotional purposes with your consent. We do not sell your personal data to third parties.",
   },
-  {
-    title: "Data Storage & Security",
-    body: "All data is stored on secure servers located in Sri Lanka. We employ industry-standard encryption and security measures to protect your personal information from unauthorised access, disclosure, or misuse.",
-  },
+
   {
     title: "Avatar & Image Rights",
-    body: "Your uploaded selfie is used solely to generate your AI avatar. Selfies are automatically deleted after avatar generation. Generated avatars may be used by Zellers Chocolates for promotional purposes as described in our Terms & Conditions.",
+    body: "Your uploaded selfie is used solely to generate your AI avatar. Generated avatars may be used by Zellers Chocolates for promotional purposes as described in our Terms & Conditions.",
   },
   {
     title: "Cookies",
@@ -29,11 +26,8 @@ const SECTIONS = [
     title: "Third-Party Services",
     body: "We use trusted third-party services for AI image generation. These providers are bound by strict data processing agreements and may not use your data for any purpose other than delivering the service.",
   },
-  {
-    title: "Your Rights",
-    body: "You have the right to access, correct, or request deletion of your personal data at any time. To exercise these rights, contact us at privacy@zellers.lk.",
-  },
-  {
+
+  { 
     title: "Contact",
     body: "For privacy-related inquiries, please contact our Data Protection Officer at privacy@zellers.lk or write to us at Zellers Chocolates (Pvt) Ltd, Colombo, Sri Lanka.",
   },
