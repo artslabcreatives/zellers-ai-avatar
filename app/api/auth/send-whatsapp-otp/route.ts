@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const url = `${BASE_URL}/auth/send-otp`;
+    const url = `${BASE_URL}/auth/send-whatsapp-otp`;
 
     const response = await fetch(url, {
       method: "POST",
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(data, { status: response.status });
   } catch {
     return NextResponse.json(
-      { success: false, message: "Failed to send OTP. Please try again." },
+      { success: false, message: "Failed to send WhatsApp OTP. Please try again." },
       { status: 500 }
     );
   }

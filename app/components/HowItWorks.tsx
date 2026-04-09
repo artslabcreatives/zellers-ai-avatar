@@ -1,42 +1,43 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { Smartphone, Camera, Star, Sparkles, Trophy } from "lucide-react";
 
 const steps = [
   {
     icon: Smartphone, 
     step: "01",
-    title: "Register",
+    title: "Register First",
     subtitle: "ලියාපදිංචි වන්න",
     text: "Enter your details and verify with an OTP.",
   },
   {
     icon: Camera, 
     step: "02",
-    title: "Upload your image",
-    subtitle: "Image Upload කරන්න ",
+    title: "Upload Your image",
+    subtitle: "ඔබේ Photo එකක් Upload කරන්න ",
     text: "Upload a clear front-facing photo.",
   },
   {
     icon: Star, 
     step: "03",
-    title: "Flavour Quiz",
-    subtitle: "රස ප්‍රශ්නාවලිය",
+    title: "Complete the Avurudu Quiz",
+    subtitle: "අවුරුදු Quiz එක Complete කරන්න",
     text: "Find your favorite Zellers chocolate flavor.",
   },
   {
     icon: Sparkles, 
     step: "04",
-    title: "AI Avatar සාදන්න",
-    subtitle: "Experience AI",
+    title: "Generate Your AI Avurudu Kumara or Kumariya",
+    subtitle: "ඔබේ AI අවුරුදු කුමරා හෝ කුමරිය Generate කරන්න",
     text: "View, download, and share your royal avatar!",
   },
   {
     icon: Trophy,
     step: "05",
-    title: "Get friends to vote!",
-    subtitle: "යාලුවටන්ට කියන්න",
+    title: "Get Votes & Win",
+    subtitle: "Votes ලබාගන්න Win කරන්න",
     text: "Vote for your favourite avatar and stand a chance to win amazing Zellers prizes!",
   },
 ];
@@ -60,6 +61,7 @@ const cardVariants = {
 };
 
 export default function HowItWorks() {
+  const router = useRouter();
   return (
     <section className="relative py-24 px-4 overflow-hidden">
       
@@ -113,7 +115,7 @@ export default function HowItWorks() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="font-playfair text-3xl sm:text-4xl md:text-5xl font-normal text-gray-100 tracking-tight leading-tight"
           >
-            HOW IT WORKS
+           How to create your AI අවුරුදු කුමරා හෝ කුමරිය
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -122,7 +124,7 @@ export default function HowItWorks() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-base sm:text-lg text-blue-200/60 font-medium"
           >
-            AI Avatar සාදා ගන්නේ කෙසේද?
+            ඔබේ AI අවුරුදු කුමරා හෝ කුමරිය නිර්මාණය කරගන්නේ කෙසේද?
           </motion.p>
         </div>
 
@@ -138,7 +140,8 @@ export default function HowItWorks() {
             <motion.div
               key={step.step}
               variants={cardVariants}
-              className="group relative flex flex-col gap-6 bg-white/3 border border-white/10 rounded-2xl p-6 md:p-8 hover:bg-white/6 hover:border-yellow-500/30 transition-all duration-500 cursor-default overflow-hidden shadow-xl"
+              onClick={() => index === 0 && router.push("/campaign")}
+              className={`group relative flex flex-col gap-6 bg-white/3 border border-white/10 rounded-2xl p-6 md:p-8 hover:bg-white/6 hover:border-yellow-500/30 transition-all duration-500 ${index === 0 ? "cursor-pointer" : "cursor-default"} overflow-hidden shadow-xl`}
             >
               {/* Card glow on hover */}
               <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-linear-to-br from-yellow-500/5 to-transparent pointer-events-none" />

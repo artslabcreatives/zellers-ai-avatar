@@ -7,27 +7,27 @@ import { motion } from "framer-motion";
 const avatars = [
   {
     src: "/1.png",
-    flavor: "MINT CHOCOLATE",
-    title: "The Green Spirit",
-    alt: "Mint Chocolate Avatar",
+    flavor: "PISTACHIO & KUNAFA CREAM FILLED ",
+    title: "CHOCOLATE",
+    alt: "Pistachio & Kunafa Cream Filled Chocolate Avatar",
   },
   {
     src: "/2.png",
-    flavor: "DARK VELVET",
-    title: "The Shadow Prince",
+    flavor: "RED VELVET COOKIE CREAM FILLED WHITE",
+    title: "CHOCOLATE",
     alt: "Dark Velvet Avatar",
   },
   {
     src: "/3.png",
-    flavor: "GOLDEN CARAMEL",
-    title: "The Sun Rani",
-    alt: "Golden Caramel Avatar",
+    flavor: "STRAWBERRY CREAM FILLED",
+    title: "CHOCOLATE",
+    alt: "Strawberry Cream Filled Chocolate Avatar",
   },
   {
     src: "/4.png",
-    flavor: "CHERRY BLISS",
-    title: "The Rose Kumariya",
-    alt: "Cherry Bliss Avatar",
+    flavor: "COCONUT CREAM FILLED",
+    title: "CHOCOLATE",
+    alt: "Coconut Cream Filled Chocolate Avatar",
   },
 ];
 
@@ -94,7 +94,7 @@ export default function MeetTheAvatars() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="font-playfair text-3xl sm:text-4xl md:text-5xl font-normal text-gray-100 tracking-tight leading-tight"
           >
-            MEET THE AVATARS
+           Meet your Zellers AI අවුරුදු කුමරා and අවුරුදු කුමරිය
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -134,13 +134,6 @@ export default function MeetTheAvatars() {
 
               {/* Bottom gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#1E0B4B]/95 via-[#1E0B4B]/40 to-transparent pointer-events-none" />
-
-              {/* Top badge */}
-              <div className="absolute top-3 left-3">
-                <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-yellow-400 bg-yellow-500/15 border border-yellow-500/30 backdrop-blur-sm rounded-full px-2.5 py-1 shadow-md">
-                  {avatar.flavor}
-                </span>
-              </div>
 
               {/* Bottom text */}
               <div className="absolute bottom-0 left-0 right-0 p-4">

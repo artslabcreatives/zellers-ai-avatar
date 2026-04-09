@@ -9,9 +9,10 @@ const grandPrizes = [
     place: "PEOPLE'S CHOICE",
     icon: Crown,
     title: "Most Popular Avurudu Kumariya",
+    sinhala: "ජනප්‍රියතම AI අවුරුදු කුමරිය",
     amount: "Rs. 75,000",
     accent: "from-yellow-300 via-yellow-400 to-amber-500",
-    glow: "rgba(250, 204, 21, 0.15)", 
+    glow: "rgba(250, 204, 21, 0.15)",
     delay: 0.1,
   },
   {
@@ -19,6 +20,7 @@ const grandPrizes = [
     place: "PEOPLE'S CHOICE",
     icon: Trophy,
     title: "Most Popular Avurudu Kumara",
+    sinhala: "ජනප්‍රියතම AI අවුරුදු කුමරා",
     amount: "Rs. 75,000",
     accent: "from-amber-300 via-amber-500 to-orange-500",
     glow: "rgba(245, 158, 11, 0.15)",
@@ -125,9 +127,14 @@ export default function AvuruduPrizes() {
                 </div>
 
                 {/* Title */}
-                <h3 className="font-playfair text-2xl md:text-3xl font-normal text-gray-100 mb-10 leading-tight tracking-tight min-h-[4rem] flex items-center justify-center group-hover:text-white transition-colors duration-500 drop-shadow-sm">
-                  {prize.title}
-                </h3>
+                <div className="mb-10 min-h-[4rem] flex flex-col items-center justify-center gap-1.5">
+                  <h3 className="font-playfair text-2xl md:text-3xl font-normal text-gray-100 leading-tight tracking-tight group-hover:text-white transition-colors duration-500 drop-shadow-sm">
+                    {prize.title}
+                  </h3>
+                  <p className="text-sm font-semibold text-yellow-400/80 group-hover:text-yellow-400 transition-colors duration-500 drop-shadow-sm">
+                    {prize.sinhala}
+                  </p>
+                </div>
 
                 {/* Amount Display */}
                 <div className="py-8 relative group/amount">

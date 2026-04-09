@@ -13,11 +13,11 @@ const FAQS = [
   },
   {
     q: "Who can enter the campaign?",
-    a: "The campaign is open to all Sri Lankan residents aged 18 and above. Employees of Zellers Chocolates and their immediate family members are not eligible.",
+    a: "The campaign is open to all Sri Lankan residents aged 18 and above. ",
   },
   {
     q: "How do I create my avatar?",
-    a: "Go to the Campaign page, verify your mobile number with OTP, fill in your profile, answer 4 quick questions about your Avurudu preferences, then upload a clear front-facing selfie. Our AI will generate your royal avatar in seconds.",
+    a: "Go to the Campaign page, verify your mobile number with OTP, fill in your profile, answer 3 quick questions about your Avurudu preferences, then upload a clear front-facing selfie. Our AI will generate your AI avatar.",
   },
   {
     q: "Is it free to enter?",
@@ -25,28 +25,19 @@ const FAQS = [
   },
   {
     q: "How does voting work?",
-    a: "Every verified participant can cast one vote per day on the Vote page. You can vote for any avatar in the gallery. Votes reset at midnight SLST each day.",
+    a: "Every verified participant can cast one vote on the Vote page. You can vote for any avatar in the gallery. Votes reset at midnight SLST each day.",
   },
   {
     q: "When does the campaign end?",
-    a: "The campaign closes on April 14, 2026 at 23:59 SLST. Winners will be announced on April 15, 2026.",
+    a: "The campaign closes on April 22, 2026 at 23:59 SLST. Winners will be announced on April 23, 2026.",
   },
-  {
-    q: "What are the prizes?",
-    a: "The top voted Kumara and Kumariya avatars each win a Zellers Royal Gift Hamper worth LKR 50,000, social media features, and a professional photoshoot. Runners-up receive exclusive Zellers Chocolates gift boxes.",
-  },
-  {
-    q: "What happens to my selfie photo?",
-    a: "Your selfie is used only to generate your avatar and is automatically deleted from our servers immediately after. We never share, sell, or use your original photo for any other purpose.",
-  },
+
+
   {
     q: "Can I delete my avatar after submitting?",
     a: "Yes. Contact us at support@zellers.lk with your registered mobile number and we will remove your entry and avatar from the platform within 48 hours.",
   },
-  {
-    q: "How do I contact support?",
-    a: "Visit our Contact page or email us at support@zellers.lk. We typically respond within one business day.",
-  },
+
 ];
 
 function FAQItem({ item, index }: { item: typeof FAQS[0]; index: number }) {

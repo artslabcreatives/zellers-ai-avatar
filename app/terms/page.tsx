@@ -7,11 +7,11 @@ import Link from "next/link";
 const SECTIONS = [
   {
     title: "1. Eligibility",
-    body: "The Zellers AI Avurudu Campaign is open to residents of Sri Lanka aged 18 and above. Employees of Zellers Chocolates and their immediate family members are not eligible to participate.",
+    body: "The Zellers AI Avurudu Campaign is open to residents of Sri Lanka aged 18 and above.",
   },
   {
     title: "2. Campaign Period",
-    body: "The campaign runs from April 1, 2026 to April 14, 2026 at 23:59 SLST. Entries submitted after the closing time will not be considered.",
+    body: "The campaign runs from March 10, 2026 to April 22, 2026 at 23:59 SLST. Entries submitted after the closing time will not be considered.",
   },
   {
     title: "3. How to Enter",
@@ -19,11 +19,11 @@ const SECTIONS = [
   },
   {
     title: "4. Voting",
-    body: "Each verified participant may cast one vote per day. Votes cannot be transferred. Zellers reserves the right to disqualify entries suspected of fraudulent voting activity.",
+    body: "Each verified participant may cast one vote. Votes cannot be transferred. Zellers reserves the right to disqualify entries suspected of fraudulent voting activity.",
   },
   {
     title: "5. Prizes",
-    body: "Prizes are non-transferable and cannot be exchanged for cash. Winners will be announced on April 15, 2026 via official Zellers social media channels and contacted directly.",
+    body: "Winners will be get 75,000",
   },
   {
     title: "6. Intellectual Property",
@@ -33,10 +33,7 @@ const SECTIONS = [
     title: "7. Disqualification",
     body: "Zellers reserves the right to disqualify any participant who tampers with the entry process, acts in an unsportsmanlike manner, or violates any of these terms.",
   },
-  {
-    title: "8. Governing Law",
-    body: "These terms are governed by the laws of Sri Lanka. Any disputes will be subject to the exclusive jurisdiction of the courts of Sri Lanka.",
-  },
+ 
 ];
 
 export default function TermsPage() {
