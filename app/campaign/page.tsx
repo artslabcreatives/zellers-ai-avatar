@@ -2,10 +2,19 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, Smartphone, User, Star, Sparkles, CheckCircle2, Camera, ArrowLeft, Check, UploadCloud, Gamepad2, Image as ImageIcon, X } from "lucide-react";
+import { ChevronRight, Smartphone, User, Star, Sparkles, CheckCircle2, Camera, ArrowLeft, Check, UploadCloud, Gamepad2, Image as ImageIcon, X, AlertCircle } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Image from "next/image";
+import { 
+  trackAuth, 
+  trackCampaign, 
+  trackAvatar, 
+  trackQuiz, 
+  trackError,
+  trackConversion 
+} from "@/lib/analytics";
+import { useAnalytics } from "@/lib/useAnalytics";
 
 // ─── Step Definitions ─────────────────────────────────────────────────────────
 const STEPS = [
@@ -122,6 +131,10 @@ function StepVerify({ onNext }: { onNext: () => void }) {
   const [channel, setChannel]   = useState<"whatsapp" | "sms" | null>(null);
 
   useEffect(() => {
+    trackCampaign.stepStarted('verify');
+  }, []);
+
+  useEffect(() => {
     if (cooldown <= 0) return;
     const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
     return () => clearTimeout(t);
@@ -151,6 +164,7 @@ function StepVerify({ onNext }: { onNext: () => void }) {
       if (waRes.ok) {
         setChannel("whatsapp");
         setOtpSent(true);
+        trackAuth.otpRequested(formattedPhone, 'whatsapp');
         return;
       }
 
@@ -166,9 +180,11 @@ function StepVerify({ onNext }: { onNext: () => void }) {
         setCooldown(30);
       } else if (!smsRes.ok) {
         setError(smsData.message || "Failed to send OTP. Please try again.");
+        trackAuth.otpFailed(formattedPhone, smsData.message || 'sms_send_failed');
       } else {
         setChannel("sms");
         setOtpSent(true);
+        trackAuth.otpRequested(formattedPhone, 'sms');
       }
     } catch (err) {
       setError("Network error. Please check your connection and try again.");
@@ -193,8 +209,18 @@ function StepVerify({ onNext }: { onNext: () => void }) {
         setError(data.message || "Too many attempts. Please wait before trying again.");
       } else if (!res.ok) {
         setError(data.message || "Invalid OTP. Please try again.");
+        trackAuth.otpFailed(formattedPhone, data.message || 'invalid_otp');
       } else {
-        if (data.token) sessionStorage.setItem("auth_token", data.token);
+        console.log('✅ OTP VERIFIED SUCCESSFULLY');
+        if (data.token) {
+          sessionStorage.setItem("auth_token", data.token);
+          console.log('🔑 AUTH TOKEN SAVED:', data.token.substring(0, 20) + '...');
+        } else {
+          console.error('❌ NO TOKEN RECEIVED FROM SERVER');
+        }
+        trackAuth.otpVerified(formattedPhone, channel || 'sms');
+        trackCampaign.stepCompleted('verify', data.userId);
+        console.log('➡️ Moving to profile step');
         onNext();
       }
     } catch (err) {
@@ -313,6 +339,10 @@ function StepProfile({ onNext, onBack }: { onNext: () => void, onBack: () => voi
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    trackCampaign.stepStarted('profile');
+  }, []);
+
   const isComplete = Object.values(form).every((val) => val.trim() !== "");
 
   async function handleSubmit() {
@@ -320,6 +350,8 @@ function StepProfile({ onNext, onBack }: { onNext: () => void, onBack: () => voi
     setError("");
     setIsLoading(true);
     const token = sessionStorage.getItem("auth_token");
+    console.log('📝 SUBMITTING PROFILE:', form);
+    console.log('🔑 Token available:', !!token);
     try {
       const res = await fetch("/api/user/profile", {
         method: "PUT",
@@ -330,8 +362,16 @@ function StepProfile({ onNext, onBack }: { onNext: () => void, onBack: () => voi
         body: JSON.stringify(form),
       });
       const data = await res.json();
-      if (!res.ok) setError(data.message || "Failed to save profile. Please try again.");
-      else onNext();
+      if (!res.ok) {
+        setError(data.message || "Failed to save profile. Please try again.");
+        trackError.apiError('/api/user/profile', res.status, data.message);
+      } else {
+        console.log('✅ PROFILE SAVED SUCCESSFULLY:', data);
+        trackCampaign.profileCreated(data.userId || 'unknown', form.gender, form.name);
+        trackCampaign.stepCompleted('profile', data.userId);
+        console.log('➡️ Moving to upload step');
+        onNext();
+      }
     } catch (err) {
       setError("Network error. Please check your connection and try again.");
     } finally {
@@ -346,7 +386,11 @@ function StepProfile({ onNext, onBack }: { onNext: () => void, onBack: () => voi
         <input
           type="text"
           value={form.name}
-          onChange={(e) => { setForm({ ...form, name: e.target.value }); setError(""); }}
+          onChange={(e) => { 
+            setForm({ ...form, name: e.target.value }); 
+            setError(""); 
+            if (e.target.value.length > 0) trackCampaign.formFieldFilled('name', 'profile');
+          }}
           placeholder="e.g. Shashith Perera"
           className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-200 outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-all backdrop-blur-md placeholder-gray-500"
         />
@@ -362,7 +406,11 @@ function StepProfile({ onNext, onBack }: { onNext: () => void, onBack: () => voi
         <input
           type="text"
           value={form.displayName}
-          onChange={(e) => { setForm({ ...form, displayName: e.target.value }); setError(""); }}
+          onChange={(e) => { 
+            setForm({ ...form, displayName: e.target.value }); 
+            setError(""); 
+            if (e.target.value.length > 0) trackCampaign.formFieldFilled('displayName', 'profile');
+          }}
           placeholder="e.g. The Golden Prince"
           className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-200 outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-all backdrop-blur-md placeholder-gray-500"
         />
@@ -372,7 +420,11 @@ function StepProfile({ onNext, onBack }: { onNext: () => void, onBack: () => voi
         <label className="text-[10px] font-bold tracking-widest text-gray-400 uppercase ml-1">Gender</label>
         <select
           value={form.gender}
-          onChange={(e) => { setForm({ ...form, gender: e.target.value }); setError(""); }}
+          onChange={(e) => { 
+            setForm({ ...form, gender: e.target.value }); 
+            setError(""); 
+            if (e.target.value) trackCampaign.formFieldFilled('gender', 'profile');
+          }}
           className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-gray-200 outline-none focus:border-yellow-500/50 focus:bg-white/10 transition-all backdrop-blur-md appearance-none"
         >
           <option value="" className="bg-gray-900 text-gray-500">Select Gender</option>
@@ -501,27 +553,95 @@ function CameraModal({ onCapture, onClose }: { onCapture: (file: File) => void; 
 
 // ─── Step 3: Upload Photo ─────────────────────────────────────────────────────
 function StepGenerate({ onNext, onBack }: { onNext: () => void, onBack: () => void }) {
-  const [status, setStatus] = useState<"idle" | "uploading" | "success">("idle");
+  const [status, setStatus] = useState<"idle" | "uploading" | "success" | "error">("idle");
   const [showCamera, setShowCamera] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const uploadStartTime = useRef<number>(0);
 
-  function processUpload() {
+  useEffect(() => {
+    trackCampaign.stepStarted('upload');
+  }, []);
+
+  async function processUpload(file: File) {
+    console.log('📸 UPLOAD STARTED');
+    console.log('File:', file.name, file.size, 'bytes');
     setStatus("uploading");
-    setTimeout(() => {
+    setErrorMsg("");
+    uploadStartTime.current = Date.now();
+    const token = sessionStorage.getItem("auth_token");
+    console.log('🔑 Token available:', !!token);
+    if (token) {
+      console.log('Token preview:', token.substring(0, 20) + '...');
+    }
+    const userId = 'user_' + Date.now(); // Get from token in production
+    trackAvatar.uploadStarted(userId, file.size);
+
+    if (!token) {
+      console.error('❌ NO AUTH TOKEN - Cannot upload');
+      setErrorMsg("Authentication required. Please log in again.");
+      setStatus("error");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("photo", file);
+
+      console.log('🚀 Calling upload API...');
+      const res = await fetch("/api/images/upload", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      console.log('📡 Upload response status:', res.status);
+      const data = await res.json();
+      console.log('📦 Upload response data:', data);
+
+      if (!res.ok) {
+        console.error('❌ UPLOAD FAILED:', res.status, data);
+        setErrorMsg(data.message || "Failed to upload image. Please try again.");
+        setStatus("error");
+        const userId = 'user_' + Date.now();
+        trackAvatar.uploadFailed(userId, data.message || 'upload_failed');
+        trackError.apiError('/api/images/upload', res.status, data.message);
+        return;
+      }
+
+      // Store upload info in sessionStorage
+      console.log('✅ UPLOAD SUCCESS!');
+      console.log('Image URL:', data.url);
+      console.log('S3 Key:', data.s3Key);
+      sessionStorage.setItem("uploaded_image_url", data.url || "");
+      sessionStorage.setItem("uploaded_s3_key", data.s3Key || "");
+
+      const uploadDuration = Date.now() - uploadStartTime.current;
+      const userId = data.userId || 'user_' + Date.now();
+      trackAvatar.uploadCompleted(userId, file.size, uploadDuration);
+      trackCampaign.stepCompleted('upload', userId);
+
       setStatus("success");
+      console.log('➡️ Moving to quiz step in 1.5s');
       setTimeout(() => onNext(), 1500);
-    }, 2000);
+    } catch (err) {
+      console.error("Upload error:", err);
+      setErrorMsg("Network error. Please check your connection.");
+      setStatus("error");
+    }
   }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files.length > 0) {
-      processUpload();
+      processUpload(e.target.files[0]);
     }
   }
 
-  function handleCameraCapture(_file: File) {
+  function handleCameraCapture(file: File) {
     setShowCamera(false);
-    processUpload();
+    processUpload(file);
   }
 
   return (
@@ -602,6 +722,23 @@ function StepGenerate({ onNext, onBack }: { onNext: () => void, onBack: () => vo
             <p className="text-sm text-gray-300 font-medium animate-pulse">Proceeding to Final Quiz...</p>
           </motion.div>
         )}
+
+        {/* State 4: ERROR */}
+        {status === "error" && (
+          <motion.div key="error" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center w-full h-full min-h-[250px]">
+            <div className="w-24 h-24 rounded-full bg-red-500/20 border border-red-500/50 flex items-center justify-center mb-6">
+              <AlertCircle size={48} strokeWidth={3} className="text-red-400" />
+            </div>
+            <p className="text-xl font-black text-red-400 mb-2">Upload Failed</p>
+            <p className="text-sm text-gray-300 mb-6 max-w-xs mx-auto">{errorMsg}</p>
+            <button
+              onClick={() => setStatus("idle")}
+              className="px-6 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 transition-colors"
+            >
+              Try Again
+            </button>
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );
@@ -614,11 +751,19 @@ function StepQuiz({ onBack, onShowGamePopup }: { onBack: () => void, onShowGameP
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    trackCampaign.stepStarted('quiz');
+    const userId = 'user_' + Date.now(); // Get from session/token
+    trackQuiz.started(userId);
+  }, []);
+
   const currentQ = QUIZ_QUESTIONS[currentQIndex];
   const isLastQ = currentQIndex === QUIZ_QUESTIONS.length - 1;
 
   function handleSelect(optionId: string) {
     setAnswers({ ...answers, [currentQ.id]: optionId });
+    const userId = 'user_' + Date.now(); // Get from session/token
+    trackQuiz.questionAnswered(userId, currentQ.id, optionId, currentQIndex + 1);
     if (!isLastQ) {
       setTimeout(() => setCurrentQIndex((prev) => prev + 1), 600);
     }
@@ -648,8 +793,15 @@ function StepQuiz({ onBack, onShowGamePopup }: { onBack: () => void, onShowGameP
         body: JSON.stringify({ answers: formattedAnswers }),
       });
       const data = await res.json();
-      if (!res.ok) setError(data.message || "Failed to save quiz. Please try again.");
-      else onShowGamePopup(); 
+      if (!res.ok) {
+        setError(data.message || "Failed to save quiz. Please try again.");
+        trackError.apiError('/api/quiz/submit', res.status, data.message);
+      } else {
+        const userId = data.userId || 'user_' + Date.now();
+        trackQuiz.submitted(userId, data.flavor || 'unknown');
+        trackCampaign.stepCompleted('quiz', userId);
+        onShowGamePopup();
+      } 
     } catch (err) {
       setError("Network error. Please check your connection and try again.");
     } finally {
@@ -765,20 +917,94 @@ function StepQuiz({ onBack, onShowGamePopup }: { onBack: () => void, onShowGameP
 // ─── Post-Quiz Game Modal ─────────────────────────────────────────────────────
 function GamePopup({ onFinish }: { onFinish: () => void }) {
   const [progress, setProgress] = useState(0);
+  const [status, setStatus] = useState<"generating" | "complete" | "error">("generating");
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setTimeout(onFinish, 1000);
-          return 100;
+    async function triggerGeneration() {
+      const token = sessionStorage.getItem("auth_token");
+      const userId = 'user_' + Date.now(); // Get from token in production
+      const startTime = Date.now();
+      
+      if (!token) {
+        setErrorMsg("Authentication required");
+        setStatus("error");
+        return;
+      }
+
+      try {
+        // Start avatar generation
+        const res = await fetch("/api/avatar/generate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          setErrorMsg(data.message || "Failed to generate avatar");
+          setStatus("error");
+          trackAvatar.generationFailed(userId, data.message || 'generation_failed');
+          trackError.apiError('/api/avatar/generate', res.status, data.message);
+          return;
         }
-        return prev + 1; 
-      });
-    }, 60);
-    return () => clearInterval(interval);
+
+        trackAvatar.generationStarted(userId, data.gender || 'unknown');
+
+        // Simulate progress while generation happens
+        // In production, you might poll /api/avatar/status instead
+        const interval = setInterval(() => {
+          setProgress((prev) => {
+            if (prev >= 100) {
+              clearInterval(interval);
+              setStatus("complete");
+              const duration = Math.round((Date.now() - startTime) / 1000);
+              trackAvatar.generationCompleted(userId, duration);
+              trackConversion.campaignCompleted(userId, duration);
+              setTimeout(onFinish, 1000);
+              return 100;
+            }
+            return prev + 2; 
+          });
+        }, 100);
+
+        return () => clearInterval(interval);
+      } catch (err) {
+        console.error("Generation error:", err);
+        setErrorMsg("Network error occurred");
+        setStatus("error");
+      }
+    }
+
+    triggerGeneration();
   }, [onFinish]);
+
+  if (status === "error") {
+    return (
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#0A0515]/80 backdrop-blur-md">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }} 
+          animate={{ opacity: 1, scale: 1 }} 
+          className="w-full max-w-md bg-[#160A30]/95 border border-red-500/30 rounded-3xl p-6 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center"
+        >
+          <div className="mx-auto w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mb-6">
+            <AlertCircle size={30} className="text-red-400" />
+          </div>
+          <h3 className="font-playfair text-2xl font-black text-white mb-2">Generation Failed</h3>
+          <p className="text-sm text-gray-300 mb-6">{errorMsg}</p>
+          <button
+            onClick={onFinish}
+            className="px-6 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 transition-colors"
+          >
+            Continue Anyway
+          </button>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#0A0515]/80 backdrop-blur-md">
@@ -824,6 +1050,10 @@ export default function CampaignPage() {
   const [unlockedStep, setUnlockedStep] = useState(1);
   const [dir, setDir]   = useState(1);
   const [showGamePopup, setShowGamePopup] = useState(false);
+  const stepStartTime = useRef<number>(Date.now());
+
+  // Initialize page tracking
+  useAnalytics('campaign');
 
   function goNext() { 
     setDir(1); 
@@ -839,8 +1069,15 @@ export default function CampaignPage() {
 
   function goToStep(targetStep: number) {
     if (targetStep <= unlockedStep && targetStep !== step) {
+      // Track abandonment if going backward
+      if (targetStep < step) {
+        const timeSpent = Math.round((Date.now() - stepStartTime.current) / 1000);
+        const stepNames = ['verify', 'profile', 'upload', 'quiz'];
+        trackCampaign.stepAbandoned(stepNames[step - 1] || 'unknown', timeSpent);
+      }
       setDir(targetStep > step ? 1 : -1);
       setStep(targetStep);
+      stepStartTime.current = Date.now();
     }
   }
 

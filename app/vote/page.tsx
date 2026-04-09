@@ -6,6 +6,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Search, X, Smartphone, CheckCircle2, ShieldCheck, RefreshCw, AlertCircle } from "lucide-react";
 import Navbar from "../components/Navbar";
+import { trackVoting, trackAuth, trackError } from "@/lib/analytics";
+import { useAnalytics } from "@/lib/useAnalytics";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Filter = "all" | "kumara" | "kumariya" | "top";
@@ -153,6 +155,11 @@ function SkeletonCard() {
 function PostCard({ post, voted, onVote }: { post: Post; voted: boolean; onVote: () => void }) {
   const isMale = post.gender === "male";
 
+  useEffect(() => {
+    // Track post view when card mounts
+    trackVoting.postViewed(post.postId, post.postNumber);
+  }, [post.postId, post.postNumber]);
+
   return (
     <motion.div
       layout
@@ -211,7 +218,11 @@ function PostCard({ post, voted, onVote }: { post: Post; voted: boolean; onVote:
             <span className="text-[10px] font-bold text-yellow-400/60 ml-1 tracking-wider uppercase">votes</span>
           </span>
           <button
-            onClick={onVote}
+            onClick={() => {
+              const userId = 'user_' + Date.now(); // Get from auth token
+              trackVoting.voteAttempted(userId, post.postId);
+              onVote();
+            }}
             disabled={voted}
             className={[
               "text-[11px] font-extrabold tracking-widest rounded-full px-4 py-2 transition-all duration-300 shrink-0",
@@ -277,11 +288,13 @@ function VoteModal({ post, onClose, onSuccess }: VoteModalProps) {
       if (waRes.status === 429) {
         setError(waData.message || "Too many requests. Please wait before trying again.");
         setCooldown(30);
+        trackAuth.otpFailed(formattedPhone, 'rate_limited');
         return;
       }
 
       if (waRes.ok) {
         setPhase("otp");
+        trackAuth.otpRequested(formattedPhone, 'whatsapp');
         return;
       }
 
@@ -296,10 +309,13 @@ function VoteModal({ post, onClose, onSuccess }: VoteModalProps) {
       if (smsRes.status === 429) {
         setError(smsData.message || "Too many requests. Please wait before trying again.");
         setCooldown(30);
+        trackAuth.otpFailed(formattedPhone, 'rate_limited_sms');
       } else if (!smsRes.ok) {
         setError(smsData.message || "Failed to send OTP. Please try again.");
+        trackAuth.otpFailed(formattedPhone, smsData.message || 'sms_failed');
       } else {
         setPhase("otp");
+        trackAuth.otpRequested(formattedPhone, 'sms');
       }
     } catch {
       setError("Network error. Please check your connection.");
@@ -321,21 +337,28 @@ function VoteModal({ post, onClose, onSuccess }: VoteModalProps) {
       const data = await res.json();
       if (res.status === 429) {
         setError(data.message || "Too many attempts. Please wait.");
+        trackAuth.otpFailed(`+94${phone}`, 'rate_limited_verify');
       } else if (!res.ok) {
         setError(data.message || "Invalid OTP. Please try again.");
+        trackAuth.otpFailed(`+94${phone}`, 'invalid_otp');
       } else {
         const token: string = data.token;
+        trackAuth.otpVerified(`+94${phone}`, 'sms'); // Track successful verification
         try {
           const voteRes = await fetch(`/api/votes/${post.postId}`, {
             method: "POST",
             headers: { Authorization: `Bearer ${token}` },
           });
           const voteData = await voteRes.json();
+          const userId = data.userId || 'user_' + Date.now();
           if (voteRes.status === 409) {
             // Already voted — acknowledge and mark as voted in UI
             setVoteResult("already_voted");
+            trackVoting.voteFailed(userId, post.postId, 'already_voted');
           } else if (!voteRes.ok) {
             setError(voteData.message || "Failed to cast vote. Please try again.");
+            trackVoting.voteFailed(userId, post.postId, voteData.message || 'vote_failed');
+            trackError.apiError(`/api/votes/${post.postId}`, voteRes.status, voteData.message);
             return;
           } else {
             setVoteResult("voted");
@@ -344,6 +367,7 @@ function VoteModal({ post, onClose, onSuccess }: VoteModalProps) {
           setTimeout(() => { onSuccess(post.postId, token); onClose(); }, 2000);
         } catch {
           setError("Network error. Failed to cast vote.");
+          trackVoting.voteFailed('unknown', post.postId, 'network_error');
           return;
         }
       }
@@ -591,6 +615,9 @@ export default function VotePage() {
   const [voteTarget, setVoteTarget] = useState<Post | null>(null);
   const [query, setQuery]           = useState("");
 
+  // Initialize page tracking
+  useAnalytics('vote');
+
   const fetchPosts = useCallback(async (f: Filter, p: number) => {
     setLoading(true);
     setError("");
@@ -624,6 +651,7 @@ export default function VotePage() {
 
   useEffect(() => {
     fetchPosts(filter, page);
+    trackVoting.pageViewed(filter, page);
   }, [filter, page, fetchPosts]);
 
   // Restore previously voted posts from the stored auth token
@@ -646,6 +674,7 @@ export default function VotePage() {
     setFilter(f);
     setPage(1);
     setQuery("");
+    trackVoting.filterChanged(f);
   }
 
   function handleVoteSuccess(postId: string, token: string) {
@@ -653,6 +682,9 @@ export default function VotePage() {
       localStorage.setItem("zell_auth_token", token);
     }
     setVoted((prev) => new Set(prev).add(postId));
+    // Track successful vote
+    const userId = 'user_' + Date.now(); // Parse from token in production
+    trackVoting.voteSuccess(userId, postId);
     // Optimistically bump vote count in local state
     setPosts((prev) =>
       prev.map((p) => p.postId === postId ? { ...p, voteCount: p.voteCount + 1 } : p)
@@ -745,7 +777,18 @@ export default function VotePage() {
             <input
               type="text"
               value={query}
-              onChange={(e) => { setQuery(e.target.value); }}
+              onChange={(e) => { 
+                const newQuery = e.target.value;
+                setQuery(newQuery); 
+                if (newQuery.trim().length > 2) {
+                  const matches = posts.filter(
+                    (p) =>
+                      p.displayName.toLowerCase().includes(newQuery.toLowerCase()) ||
+                      p.flavor.toLowerCase().includes(newQuery.toLowerCase())
+                  );
+                  trackVoting.searchPerformed(newQuery, matches.length);
+                }
+              }}
               placeholder="Search by name or flavor…"
               className="w-full bg-white/5 border border-white/10 backdrop-blur-md rounded-full pl-12 pr-12 py-3.5 text-sm text-white placeholder-white/40 tracking-wide focus:outline-none focus:border-yellow-400/50 focus:bg-white/10 focus:ring-4 focus:ring-yellow-400/10 transition-all duration-300"
             />
