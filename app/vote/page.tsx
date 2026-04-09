@@ -523,7 +523,6 @@ export default function VotePage() {
             transition={{ duration: 0.4, delay: 0.3 }}
             className="text-xs sm:text-sm text-blue-100/60 font-medium max-w-lg mt-2"
           >
-            One vote per day, per person. Top voted avatars win amazing Zellers golden hampers!
           </motion.p>
         </div>
 

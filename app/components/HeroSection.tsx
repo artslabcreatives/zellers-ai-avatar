@@ -104,9 +104,10 @@ export default function HeroSection() {
           </motion.div>
 
           <motion.p custom={0.4} initial="hidden" animate="visible" variants={fadeUp} className="text-base sm:text-xl text-blue-50/90 leading-relaxed max-w-lg font-light drop-shadow-md px-4 sm:px-0">
-            Transform into a legendary AI Avurudu Kumara or Kumariya.{" "}
+            Introducing Sri Lanka’s First Ever AI Avurudu Kumara & Kumariya Contest{" "}
             <span className="text-white font-medium">
-              Let our AI reveal your royal Avurudu self — then win big!
+             Powered by Zellers
+
             </span>
           </motion.p>
 
