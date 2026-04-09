@@ -13,3 +13,68 @@
 2026-04-09T23:00:31: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
 2026-04-09T23:00:31: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
 2026-04-09T23:00:31:     at ignore-listed frames
+2026-04-09T23:41:44: Avatar generation proxy error: SyntaxError: Unexpected end of JSON input
+2026-04-09T23:41:44:     at JSON.parse (<anonymous>)
+2026-04-09T23:47:04: Avatar generation proxy error: SyntaxError: Unexpected end of JSON input
+2026-04-09T23:47:04:     at JSON.parse (<anonymous>)
+2026-04-09T23:48:24: Avatar generation proxy error: SyntaxError: Unexpected end of JSON input
+2026-04-09T23:48:24:     at JSON.parse (<anonymous>)
+2026-04-09T23:49:23: Error [InvariantError]: Invariant: The client reference manifest for route "/campaign" does not exist. This is a bug in Next.js.
+2026-04-09T23:49:23:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-09T23:49:23: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/campaign" does not exist. This is a bug in Next.js.
+2026-04-09T23:49:23:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-09T23:49:23: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/campaign" does not exist. This is a bug in Next.js.
+2026-04-09T23:49:23:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-09T23:49:23: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/zellers-ai-avatar/.next/server/pages/500.html'
+2026-04-09T23:49:23:     at ignore-listed frames
+2026-04-09T23:49:30: Error [InvariantError]: Invariant: The client reference manifest for route "/campaign" does not exist. This is a bug in Next.js.
+2026-04-09T23:49:30:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-09T23:49:30: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/campaign" does not exist. This is a bug in Next.js.
+2026-04-09T23:49:30:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-09T23:49:30: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/campaign" does not exist. This is a bug in Next.js.
+2026-04-09T23:49:30:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-09T23:49:30: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/zellers-ai-avatar/.next/server/pages/500.html'
+2026-04-09T23:49:30:     at ignore-listed frames
+2026-04-09T23:49:33: Error [InvariantError]: Invariant: The client reference manifest for route "/campaign" does not exist. This is a bug in Next.js.
+2026-04-09T23:49:33:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-09T23:49:33: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/campaign" does not exist. This is a bug in Next.js.
+2026-04-09T23:49:33:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-09T23:49:33: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/campaign" does not exist. This is a bug in Next.js.
+2026-04-09T23:49:33:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-09T23:49:33: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/zellers-ai-avatar/.next/server/pages/500.html'
+2026-04-09T23:49:33:     at ignore-listed frames
+2026-04-09T23:49:36: Error [InvariantError]: Invariant: The client reference manifest for route "/campaign" does not exist. This is a bug in Next.js.
+2026-04-09T23:49:36:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-09T23:49:36: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/campaign" does not exist. This is a bug in Next.js.
+2026-04-09T23:49:36:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-09T23:49:36: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/campaign" does not exist. This is a bug in Next.js.
+2026-04-09T23:49:36:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-09T23:49:36: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/zellers-ai-avatar/.next/server/pages/500.html'
+2026-04-09T23:49:36:     at ignore-listed frames
+2026-04-09T23:49:37: Error [InvariantError]: Invariant: The client reference manifest for route "/campaign" does not exist. This is a bug in Next.js.
+2026-04-09T23:49:37:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-09T23:49:37: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/campaign" does not exist. This is a bug in Next.js.
+2026-04-09T23:49:37:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-09T23:49:37: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/campaign" does not exist. This is a bug in Next.js.
+2026-04-09T23:49:37:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-09T23:49:37: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/zellers-ai-avatar/.next/server/pages/500.html'
+2026-04-09T23:49:37:     at ignore-listed frames
+2026-04-09T23:49:38: Error [InvariantError]: Invariant: The client reference manifest for route "/campaign" does not exist. This is a bug in Next.js.
+2026-04-09T23:49:38:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-09T23:49:38: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/campaign" does not exist. This is a bug in Next.js.
+2026-04-09T23:49:38:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-09T23:49:38: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/campaign" does not exist. This is a bug in Next.js.
+2026-04-09T23:49:38:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-09T23:49:38: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/zellers-ai-avatar/.next/server/pages/500.html'
+2026-04-09T23:49:38:     at ignore-listed frames
+2026-04-09T23:50:47: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-09T23:50:47: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-09T23:50:47:     at ignore-listed frames
+2026-04-09T23:57:22: [avatar proxy] Non-JSON response: <html>
+2026-04-09T23:57:22: <head><title>504 Gateway Time-out</title></head>
+2026-04-09T23:57:22: <body>
+2026-04-09T23:57:22: <center><h1>504 Gateway Time-out</h1></center>
+2026-04-09T23:57:22: <hr><center>nginx/1.24.0 (Ubuntu)</center>
+2026-04-09T23:57:22: </body>
+2026-04-09T23:57:22: </html>
+2026-04-09T23:57:22: 

@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Navbar from "./components/Navbar";
 import HeroSection from "./components/HeroSection";
 import HowItWorks from "./components/HowItWorks";
@@ -9,17 +10,32 @@ import Footer from "./components/Footer";
 import RegistrationReminder from "./components/RegistrationReminder";
 import { useAnalytics } from "@/lib/useAnalytics";
 
+function AnalyticsTracker({ pageName }: { pageName: string }) {
+	useAnalytics(pageName);
+	return null;
+}
+
+function HomeContent() {
+	return (
+		<main className="min-h-screen bg-transparent">
+			<Navbar />
+			<HeroSection />
+			<HowItWorks />
+			<MeetTheAvatars />
+			<AvuruduPrizes />
+			<Footer />
+			<RegistrationReminder />
+		</main>
+	);
+}
+
 export default function Home() {
-  useAnalytics('home');
-  return (
-    <main className="min-h-screen bg-transparent">
-      <Navbar />
-      <HeroSection />
-      <HowItWorks />
-      <MeetTheAvatars />
-      <AvuruduPrizes />
-      <Footer />
-      <RegistrationReminder />
-    </main>
-  );
+	return (
+		<>
+			<Suspense fallback={null}>
+				<AnalyticsTracker pageName="home" />
+			</Suspense>
+			<HomeContent />
+		</>
+	);
 }

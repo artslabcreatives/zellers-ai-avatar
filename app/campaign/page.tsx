@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, Smartphone, User, Star, Sparkles, CheckCircle2, Camera, ArrowLeft, Check, UploadCloud, Gamepad2, Image as ImageIcon, X, AlertCircle } from "lucide-react";
 import Navbar from "../components/Navbar";
@@ -1046,16 +1046,19 @@ function GamePopup({ onFinish }: { onFinish: () => void }) {
   );
 }
 
+// ─── Analytics Wrapper Component with Suspense ────────────────────────────────
+function AnalyticsTracker({ pageName }: { pageName: string }) {
+  useAnalytics(pageName);
+  return null;
+}
+
 // ─── Main Page Component ──────────────────────────────────────────────────────
-export default function CampaignPage() {
+function CampaignPageContent() {
   const [step, setStep] = useState(1);
   const [unlockedStep, setUnlockedStep] = useState(1);
   const [dir, setDir]   = useState(1);
   const [showGamePopup, setShowGamePopup] = useState(false);
   const stepStartTime = useRef<number>(Date.now());
-
-  // Initialize page tracking
-  useAnalytics('campaign');
 
   function goNext() { 
     setDir(1); 
@@ -1165,5 +1168,17 @@ export default function CampaignPage() {
          {/* <Footer /> */}
       </div>
     </div>
+  );
+}
+
+// ─── Main Export with Suspense Boundary ───────────────────────────────────────
+export default function CampaignPage() {
+  return (
+    <>
+      <Suspense fallback={null}>
+        <AnalyticsTracker pageName="campaign" />
+      </Suspense>
+      <CampaignPageContent />
+    </>
   );
 }
