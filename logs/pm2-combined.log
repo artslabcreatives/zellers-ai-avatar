@@ -114,3 +114,61 @@
 2026-04-09T23:57:22: </body>
 2026-04-09T23:57:22: </html>
 2026-04-09T23:57:22: 
+2026-04-10T00:37:29: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T00:38:29: [avatar proxy] Response status: 504, body length: 176
+2026-04-10T00:38:29: [avatar proxy] Non-JSON response: <html>
+2026-04-10T00:38:29: <head><title>504 Gateway Time-out</title></head>
+2026-04-10T00:38:29: <body>
+2026-04-10T00:38:29: <center><h1>504 Gateway Time-out</h1></center>
+2026-04-10T00:38:29: <hr><center>nginx/1.24.0 (Ubuntu)</center>
+2026-04-10T00:38:29: </body>
+2026-04-10T00:38:29: </html>
+2026-04-10T00:38:29: 
+2026-04-10T00:39:16: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T00:39:16: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T00:39:16:     at ignore-listed frames
+2026-04-10T00:39:16: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T00:39:16: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T00:39:16:     at ignore-listed frames
+2026-04-10T00:41:43: ▲ Next.js 16.2.2
+2026-04-10T00:41:43: - Local:         http://localhost:3000
+2026-04-10T00:41:43: - Network:       http://161.97.118.187:3000
+2026-04-10T00:41:43: ✓ Ready in 582ms
+2026-04-10T01:36:58: ▲ Next.js 16.2.2
+2026-04-10T01:36:58: - Local:         http://localhost:3000
+2026-04-10T01:36:58: - Network:       http://161.97.118.187:3000
+2026-04-10T01:36:58: ✓ Ready in 338ms
+2026-04-10T01:43:20: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T01:43:20: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T01:43:20:     at ignore-listed frames
+2026-04-10T01:43:20: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T01:43:20: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T01:43:20:     at ignore-listed frames
+2026-04-10T01:43:21: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T01:43:21: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T01:43:21:     at ignore-listed frames
+2026-04-10T01:43:21: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T01:43:21: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T01:43:21:     at ignore-listed frames
+2026-04-10T01:43:22: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T01:43:22: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T01:43:22:     at ignore-listed frames
+2026-04-10T01:43:22: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T01:43:22: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T01:43:22:     at ignore-listed frames
+2026-04-10T02:32:25: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T02:32:25: [avatar proxy] Response status: 200, body length: 130
+2026-04-10T02:41:34: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T02:41:34: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T02:41:34:     at ignore-listed frames
+2026-04-10T02:43:35: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T02:43:36: [avatar proxy] Response status: 200, body length: 130
+2026-04-10T02:47:05: Avatar status proxy error: SyntaxError: Unexpected token '<', "<html>
+2026-04-10T02:47:05: <h"... is not valid JSON
+2026-04-10T02:47:05:     at JSON.parse (<anonymous>)
+2026-04-10T02:47:09: Avatar status proxy error: SyntaxError: Unexpected token '<', "<html>
+2026-04-10T02:47:09: <h"... is not valid JSON
+2026-04-10T02:47:09:     at JSON.parse (<anonymous>)
+2026-04-10T02:47:14: Avatar status proxy error: SyntaxError: Unexpected token '<', "<html>
+2026-04-10T02:47:14: <h"... is not valid JSON
+2026-04-10T02:47:14:     at JSON.parse (<anonymous>)

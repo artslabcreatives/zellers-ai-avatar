@@ -512,7 +512,7 @@ function CameraModal({ onCapture, onClose }: { onCapture: (file: File) => void; 
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-      <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-sm bg-[#160A30]/95 border border-yellow-500/30 rounded-3xl p-6 relative">
+      <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-[calc(100vw-2rem)] sm:max-w-sm bg-[#160A30]/95 border border-yellow-500/30 rounded-3xl p-4 sm:p-6 relative">
         <button onClick={stopAndClose} className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors" aria-label="Close camera">
           <X size={20} />
         </button>
@@ -747,11 +747,12 @@ function StepGenerate({ onNext, onBack }: { onNext: () => void, onBack: () => vo
 }
 
 // ─── Step 4: Quiz ─────────────────────────────────────────────────────────────
-function StepQuiz({ onBack, onShowGamePopup }: { onBack: () => void, onShowGamePopup: () => void }) {
+function StepQuiz({ onBack, onShowGamePopup, onTriggerGeneration }: { onBack: () => void, onShowGamePopup: () => void, onTriggerGeneration: (flavour: string) => void }) {
   const [currentQIndex, setCurrentQIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [generationTriggered, setGenerationTriggered] = useState(false);
 
   useEffect(() => {
     trackCampaign.stepStarted('quiz');
@@ -766,6 +767,16 @@ function StepQuiz({ onBack, onShowGamePopup }: { onBack: () => void, onShowGameP
     setAnswers({ ...answers, [currentQ.id]: optionId });
     const userId = 'user_' + Date.now(); // Get from session/token
     trackQuiz.questionAnswered(userId, currentQ.id, optionId, currentQIndex + 1);
+
+    // Auto-trigger generation on chocolate flavour selection (q3 is the first question)
+    if (currentQ.id === 'q3' && !generationTriggered) {
+      const optionObj = currentQ.options.find((o) => o.id === optionId);
+      if (optionObj) {
+        setGenerationTriggered(true);
+        onTriggerGeneration(optionObj.label);
+      }
+    }
+
     if (!isLastQ) {
       setTimeout(() => setCurrentQIndex((prev) => prev + 1), 600);
     }
@@ -917,71 +928,79 @@ function StepQuiz({ onBack, onShowGamePopup }: { onBack: () => void, onShowGameP
 }
 
 // ─── Post-Quiz Game Modal ─────────────────────────────────────────────────────
+
+const STAGE_PROGRESS: Record<string, number> = {
+  otp_verify: 5,
+  profile_setup: 10,
+  selfie_upload: 15,
+  quiz_complete: 20,
+  fantasy_style: 50,
+  face_swap: 70,
+  bg_removal_gen: 85,
+  branded_composites: 95,
+};
+
 function GamePopup({ onFinish }: { onFinish: () => void }) {
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState<"generating" | "complete" | "error">("generating");
   const [errorMsg, setErrorMsg] = useState("");
+  const [stageName, setStageName] = useState("Starting...");
 
   useEffect(() => {
-    async function triggerGeneration() {
+    let cancelled = false;
+    let pollTimer: ReturnType<typeof setTimeout>;
+
+    async function pollStatus() {
       const token = sessionStorage.getItem("auth_token");
-      const userId = 'user_' + Date.now(); // Get from token in production
-      const startTime = Date.now();
-      
-      if (!token) {
-        setErrorMsg("Authentication required");
-        setStatus("error");
-        return;
-      }
+      if (!token || cancelled) return;
 
       try {
-        // Start avatar generation
-        const res = await fetch("/api/avatar/generate", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
+        const res = await fetch("/api/avatar/status", {
+          headers: { "Authorization": `Bearer ${token}` },
         });
-
         const data = await res.json();
 
-        if (!res.ok) {
-          setErrorMsg(data.message || "Failed to generate avatar");
-          setStatus("error");
-          trackAvatar.generationFailed(userId, data.message || 'generation_failed');
-          trackError.apiError('/api/avatar/generate', res.status, data.message);
+        if (cancelled) return;
+
+        if (data.generationStatus === 'completed') {
+          setProgress(100);
+          setStageName("Complete!");
+          setStatus("complete");
+          const userId = 'user_' + Date.now();
+          trackAvatar.generationCompleted(userId, 0);
+          trackConversion.campaignCompleted(userId, 0);
+          setTimeout(() => { if (!cancelled) onFinish(); }, 1500);
           return;
         }
 
-        trackAvatar.generationStarted(userId, data.gender || 'unknown');
+        if (data.generationStatus === 'failed') {
+          setErrorMsg(data.generationError || "Generation failed");
+          setStatus("error");
+          return;
+        }
 
-        // Simulate progress while generation happens
-        // In production, you might poll /api/avatar/status instead
-        const interval = setInterval(() => {
-          setProgress((prev) => {
-            if (prev >= 100) {
-              clearInterval(interval);
-              setStatus("complete");
-              const duration = Math.round((Date.now() - startTime) / 1000);
-              trackAvatar.generationCompleted(userId, duration);
-              trackConversion.campaignCompleted(userId, duration);
-              setTimeout(onFinish, 1000);
-              return 100;
-            }
-            return prev + 2; 
-          });
-        }, 100);
+        // Map stage to progress percentage
+        if (data.currentStage) {
+          const p = STAGE_PROGRESS[data.currentStage] || progress;
+          setProgress((prev) => Math.max(prev, p));
+          setStageName(data.currentStage.replace(/_/g, ' '));
+        }
 
-        return () => clearInterval(interval);
-      } catch (err) {
-        console.error("Generation error:", err);
-        setErrorMsg("Network error occurred");
-        setStatus("error");
+        // Continue polling
+        pollTimer = setTimeout(pollStatus, 3000);
+      } catch {
+        // Network error — keep retrying
+        if (!cancelled) pollTimer = setTimeout(pollStatus, 5000);
       }
     }
 
-    triggerGeneration();
+    // Start polling after a short delay
+    pollTimer = setTimeout(pollStatus, 2000);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(pollTimer);
+    };
   }, [onFinish]);
 
   if (status === "error") {
@@ -990,7 +1009,7 @@ function GamePopup({ onFinish }: { onFinish: () => void }) {
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }} 
           animate={{ opacity: 1, scale: 1 }} 
-          className="w-full max-w-md bg-[#160A30]/95 border border-red-500/30 rounded-3xl p-6 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center"
+          className="w-full max-w-[calc(100vw-2rem)] sm:max-w-md bg-[#160A30]/95 border border-red-500/30 rounded-3xl p-4 sm:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center"
         >
           <div className="mx-auto w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mb-6">
             <AlertCircle size={30} className="text-red-400" />
@@ -1009,11 +1028,11 @@ function GamePopup({ onFinish }: { onFinish: () => void }) {
   }
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#0A0515]/80 backdrop-blur-md">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-[#0A0515]/80 backdrop-blur-md">
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }} 
         animate={{ opacity: 1, scale: 1 }} 
-        className="w-full max-w-md bg-[#160A30]/95 border border-yellow-500/30 rounded-3xl p-6 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
+        className="w-full max-w-[calc(100vw-1.5rem)] sm:max-w-md bg-[#160A30]/95 border border-yellow-500/30 rounded-3xl p-4 sm:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
       >
         <div className="absolute top-0 left-0 w-full h-1 bg-white/10">
            <div className="h-full bg-gradient-to-r from-yellow-500 to-amber-500 transition-all duration-75 ease-linear" style={{ width: `${progress}%` }} />
@@ -1039,7 +1058,7 @@ function GamePopup({ onFinish }: { onFinish: () => void }) {
         {progress === 100 ? (
           <p className="text-green-400 font-bold text-sm animate-pulse tracking-widest uppercase">Generation Complete!</p>
         ) : (
-          <p className="text-yellow-400/80 font-bold text-xs tracking-widest uppercase">{progress}% Processed</p>
+          <p className="text-yellow-400/80 font-bold text-xs tracking-widest uppercase">{progress}% — {stageName}</p>
         )}
       </motion.div>
     </div>
@@ -1058,6 +1077,7 @@ function CampaignPageContent() {
   const [unlockedStep, setUnlockedStep] = useState(1);
   const [dir, setDir]   = useState(1);
   const [showGamePopup, setShowGamePopup] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const stepStartTime = useRef<number>(Date.now());
 
   function goNext() { 
@@ -1068,11 +1088,13 @@ function CampaignPageContent() {
   }
 
   function goBack() {
+    if (isGenerating) return; // Block back navigation during generation
     setDir(-1);
     setStep((s) => Math.max(s - 1, 1));
   }
 
   function goToStep(targetStep: number) {
+    if (isGenerating) return; // Block navigation during generation
     if (targetStep <= unlockedStep && targetStep !== step) {
       // Track abandonment if going backward
       if (targetStep < step) {
@@ -1086,16 +1108,41 @@ function CampaignPageContent() {
     }
   }
 
+  // Auto-trigger generation when flavour is selected during quiz
+  async function handleTriggerGeneration(flavourLabel: string) {
+    const token = sessionStorage.getItem("auth_token");
+    if (!token) return;
+
+    setIsGenerating(true);
+    try {
+      const res = await fetch("/api/avatar/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ flavour: flavourLabel }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        const userId = 'user_' + Date.now();
+        trackAvatar.generationStarted(userId, data.gender || 'unknown');
+      }
+    } catch (err) {
+      console.error("Auto-trigger generation error:", err);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-transparent flex flex-col font-sans relative">
       
       {/* ─── EXPERT UI: Unified Fixed Mesh Gradient Background ─── */}
       <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#1E0B4B]">
-        <div className="absolute -top-[20%] -right-[10%] w-[600px] h-[600px] sm:w-[800px] sm:h-[800px] rounded-full bg-[#00E5FF]/35 blur-[120px] sm:blur-[160px]" />
-        <div className="absolute -bottom-[20%] -left-[10%] w-[600px] h-[600px] sm:w-[800px] sm:h-[800px] rounded-full bg-[#00E5FF]/35 blur-[120px] sm:blur-[160px]" />
-        <div className="absolute top-[10%] left-[20%] w-[500px] h-[500px] rounded-full bg-[#9D00FF]/30 blur-[140px]" />
-        <div className="absolute bottom-[20%] right-[20%] w-[500px] h-[500px] rounded-full bg-[#6A00F4]/30 blur-[140px]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-yellow-500/10 blur-[100px]" />
+        <div className="absolute -top-[20%] -right-[10%] w-[300px] sm:w-[600px] md:w-[800px] h-[300px] sm:h-[600px] md:h-[800px] rounded-full bg-[#00E5FF]/35 blur-[80px] sm:blur-[120px] md:blur-[160px]" />
+        <div className="absolute -bottom-[20%] -left-[10%] w-[300px] sm:w-[600px] md:w-[800px] h-[300px] sm:h-[600px] md:h-[800px] rounded-full bg-[#00E5FF]/35 blur-[80px] sm:blur-[120px] md:blur-[160px]" />
+        <div className="absolute top-[10%] left-[20%] w-[250px] sm:w-[500px] h-[250px] sm:h-[500px] rounded-full bg-[#9D00FF]/30 blur-[100px] sm:blur-[140px]" />
+        <div className="absolute bottom-[20%] right-[20%] w-[250px] sm:w-[500px] h-[250px] sm:h-[500px] rounded-full bg-[#6A00F4]/30 blur-[100px] sm:blur-[140px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] sm:w-[400px] h-[200px] sm:h-[400px] rounded-full bg-yellow-500/10 blur-[80px] sm:blur-[100px]" />
         <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
       </div>
 
@@ -1108,7 +1155,7 @@ function CampaignPageContent() {
 
       <Navbar />
       
-      <div className="flex-1 flex items-center justify-center px-4 py-16 pt-28 relative z-10 w-full">
+<div className="flex-1 flex items-center justify-center px-3 sm:px-4 py-12 sm:py-16 pt-24 sm:pt-28 relative z-10 w-full">
         
         <div className="relative w-full max-w-lg">
           
@@ -1123,10 +1170,10 @@ function CampaignPageContent() {
               <Sparkles size={14} className="text-yellow-400" />
               <span className="text-[10px] font-bold tracking-[0.25em] text-yellow-400 uppercase">Avurudu Campaign</span>
             </div>
-            <h1 className="font-playfair text-3xl md:text-4xl font-normal tracking-wide text-white mb-2 drop-shadow-lg">
+            <h1 className="font-playfair text-2xl sm:text-3xl md:text-4xl font-normal tracking-wide text-white mb-2 drop-shadow-lg">
               REVEAL YOUR <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-500">ROYAL</span> SELF
             </h1>
-            <p className="text-sm text-gray-300 px-4 font-medium max-w-md mx-auto">
+            <p className="text-xs sm:text-sm text-gray-300 px-2 sm:px-4 font-medium max-w-md mx-auto">
               Complete the steps below to generate your legendary AI Avatar and enter the Zellers competition.
             </p>
           </motion.div>
@@ -1141,7 +1188,7 @@ function CampaignPageContent() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white/5 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-[2rem] p-4 sm:p-8 backdrop-blur-2xl overflow-hidden mt-4 w-full"
+            className="bg-white/5 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-2xl sm:rounded-[2rem] p-3 sm:p-6 md:p-8 backdrop-blur-2xl overflow-hidden mt-4 w-full"
           >
             <AnimatePresence mode="wait" custom={dir}>
               <motion.div
@@ -1156,7 +1203,7 @@ function CampaignPageContent() {
                 {step === 1 && <StepVerify   onNext={goNext} />}
                 {step === 2 && <StepProfile  onNext={goNext} onBack={goBack} />}
                 {step === 3 && <StepGenerate onNext={goNext} onBack={goBack} />}
-                {step === 4 && <StepQuiz     onShowGamePopup={() => setShowGamePopup(true)} onBack={goBack} />}
+                {step === 4 && <StepQuiz     onShowGamePopup={() => setShowGamePopup(true)} onBack={goBack} onTriggerGeneration={handleTriggerGeneration} />}
               </motion.div>
             </AnimatePresence>
           </motion.div>

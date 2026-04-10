@@ -194,26 +194,25 @@ function PostCard({ post, voted, onVote }: { post: Post; voted: boolean; onVote:
 				{/* Gender badge */}
 				<div className="absolute top-2.5 right-2.5">
 					<span className={`text-[9px] font-extrabold tracking-widest text-white rounded-full px-2.5 py-1 shadow-md ${isMale
-							? "bg-linear-to-r from-blue-500 to-indigo-500"
-							: "bg-linear-to-r from-pink-500 to-rose-500"
+						? "bg-linear-to-r from-blue-500 to-indigo-500"
+						: "bg-linear-to-r from-pink-500 to-rose-500"
 						}`}>
 						{isMale ? "KUMARA" : "KUMARIYA"}
 					</span>
 				</div>
 			</div>
 
-			{/* Card body */}
-			<div className="flex flex-col gap-2 px-4 pt-3 pb-5 relative z-10">
-				<p className="text-sm font-bold text-gray-100 leading-tight drop-shadow-sm truncate" title={post.displayName}>
+			<div className="flex flex-col gap-1.5 sm:gap-2 px-2.5 sm:px-4 pt-2 sm:pt-3 pb-3 sm:pb-5 relative z-10">
+				<p className="text-xs sm:text-sm font-bold text-gray-100 leading-tight drop-shadow-sm truncate" title={post.displayName}>
 					{post.displayName}
 				</p>
-				<p className="text-[11px] text-yellow-400/80 font-medium truncate">{post.flavor}</p>
+				<p className="text-[10px] sm:text-[11px] text-yellow-400/80 font-medium truncate">{post.flavor}</p>
 
 				{/* Vote row */}
-				<div className="flex items-center justify-between mt-2 gap-2">
-					<span className="text-base font-black text-yellow-400 drop-shadow-[0_0_10px_rgba(234,179,8,0.3)]">
+				<div className="flex items-center justify-between mt-1 sm:mt-2 gap-1 sm:gap-2">
+					<span className="text-sm sm:text-base font-black text-yellow-400 drop-shadow-[0_0_10px_rgba(234,179,8,0.3)]">
 						{post.voteCount.toLocaleString()}
-						<span className="text-[10px] font-bold text-yellow-400/60 ml-1 tracking-wider uppercase">votes</span>
+						<span className="text-[8px] sm:text-[10px] font-bold text-yellow-400/60 ml-0.5 sm:ml-1 tracking-wider uppercase">votes</span>
 					</span>
 					<button
 						onClick={() => {
@@ -223,7 +222,7 @@ function PostCard({ post, voted, onVote }: { post: Post; voted: boolean; onVote:
 						}}
 						disabled={voted}
 						className={[
-							"text-[11px] font-extrabold tracking-widest rounded-full px-4 py-2 transition-all duration-300 shrink-0",
+							"text-[10px] sm:text-[11px] font-extrabold tracking-widest rounded-full px-2.5 sm:px-4 py-1.5 sm:py-2 transition-all duration-300 shrink-0",
 							voted
 								? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 cursor-default"
 								: "bg-linear-to-r from-yellow-400 to-amber-500 text-black hover:brightness-110 hover:scale-105 shadow-[0_0_15px_rgba(234,179,8,0.4)]",
@@ -401,7 +400,7 @@ function VoteModal({ post, onClose, onSuccess }: VoteModalProps) {
 					animate={{ opacity: 1, scale: 1, y: 0 }}
 					exit={{ opacity: 0, scale: 0.92, y: 24 }}
 					transition={{ duration: 0.3, ease: "easeOut" }}
-					className="relative w-full max-w-sm bg-[#1a0f4e] border border-purple-500/20 rounded-3xl p-6 sm:p-8 shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden"
+					className="relative w-full max-w-[calc(100vw-2rem)] sm:max-w-sm bg-[#1a0f4e] border border-purple-500/20 rounded-3xl p-4 sm:p-6 md:p-8 shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden"
 				>
 					{/* Top gold accent line */}
 					<div className="absolute top-0 left-8 right-8 h-px bg-linear-to-r from-transparent via-yellow-400/60 to-transparent" />
@@ -573,28 +572,27 @@ function Pagination({ page, totalPages, onChange }: { page: number; totalPages: 
 	for (let i = start; i <= end; i++) range.push(i);
 
 	return (
-		<div className="flex items-center justify-center gap-2 flex-wrap">
-			<button onClick={() => onChange(Math.max(1, page - 1))} disabled={page === 1} className="w-10 h-10 flex items-center justify-center rounded-full border border-white/20 bg-white/5 text-white text-sm font-bold hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all" aria-label="Previous page">‹</button>
-
+		<div className="flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap">
+			<button onClick={() => onChange(Math.max(1, page - 1))} disabled={page === 1} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full border border-white/20 bg-white/5 text-white text-xs sm:text-sm font-bold hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all" aria-label="Previous page">‹</button>
 			{start > 1 && (
 				<>
-					<button onClick={() => onChange(1)} className="w-10 h-10 flex items-center justify-center rounded-full text-xs font-extrabold border border-white/15 bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white transition-all">1</button>
+					<button onClick={() => onChange(1)} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-[10px] sm:text-xs font-extrabold border border-white/15 bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white transition-all">1</button>
 					{start > 2 && <span className="text-gray-600 text-sm px-1">…</span>}
 				</>
 			)}
 
 			{range.map((p) => (
-				<button key={p} onClick={() => onChange(p)} className={["w-10 h-10 flex items-center justify-center rounded-full text-xs font-extrabold border transition-all", p === page ? "bg-yellow-500/20 border-yellow-400/50 text-yellow-400 shadow-[0_0_12px_rgba(234,179,8,0.25)]" : "border-white/15 bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white"].join(" ")}>{p}</button>
+				<button key={p} onClick={() => onChange(p)} className={["w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-[10px] sm:text-xs font-extrabold border transition-all", p === page ? "bg-yellow-500/20 border-yellow-400/50 text-yellow-400 shadow-[0_0_12px_rgba(234,179,8,0.25)]" : "border-white/15 bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white"].join(" ")}>{p}</button>
 			))}
 
 			{end < totalPages && (
 				<>
 					{end < totalPages - 1 && <span className="text-gray-600 text-sm px-1">…</span>}
-					<button onClick={() => onChange(totalPages)} className="w-10 h-10 flex items-center justify-center rounded-full text-xs font-extrabold border border-white/15 bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white transition-all">{totalPages}</button>
+					<button onClick={() => onChange(totalPages)} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-[10px] sm:text-xs font-extrabold border border-white/15 bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white transition-all">{totalPages}</button>
 				</>
 			)}
 
-			<button onClick={() => onChange(Math.min(totalPages, page + 1))} disabled={page === totalPages} className="w-10 h-10 flex items-center justify-center rounded-full border border-white/20 bg-white/5 text-white text-sm font-bold hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all" aria-label="Next page">›</button>
+			<button onClick={() => onChange(Math.min(totalPages, page + 1))} disabled={page === totalPages} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full border border-white/20 bg-white/5 text-white text-xs sm:text-sm font-bold hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all" aria-label="Next page">›</button>
 		</div>
 	);
 }
@@ -713,20 +711,20 @@ function VotePageContent() {
 				aria-hidden
 				className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#1E0B4B]"
 			>
-				<div className="absolute -top-[20%] -right-[10%] w-150 h-150 sm:w-200 sm:h-200 rounded-full bg-[#00E5FF]/35 blur-[120px] sm:blur-[160px]" />
-				<div className="absolute -bottom-[20%] -left-[10%] w-150 h-150 sm:w-200 sm:h-200 rounded-full bg-[#00E5FF]/35 blur-[120px] sm:blur-[160px]" />
-				<div className="absolute top-[10%] left-[20%] w-125 h-125 rounded-full bg-[#9D00FF]/30 blur-[140px]" />
-				<div className="absolute bottom-[20%] right-[20%] w-125 h-125 rounded-full bg-[#6A00F4]/30 blur-[140px]" />
-				<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-100 h-100 rounded-full bg-yellow-500/10 blur-[100px]" />
+				<div className="absolute -top-[20%] -right-[10%] w-[250px] sm:w-150 md:w-200 h-[250px] sm:h-150 md:h-200 rounded-full bg-[#00E5FF]/35 blur-[80px] sm:blur-[120px] md:blur-[160px]" />
+				<div className="absolute -bottom-[20%] -left-[10%] w-[250px] sm:w-150 md:w-200 h-[250px] sm:h-150 md:h-200 rounded-full bg-[#00E5FF]/35 blur-[80px] sm:blur-[120px] md:blur-[160px]" />
+				<div className="absolute top-[10%] left-[20%] w-[200px] sm:w-125 h-[200px] sm:h-125 rounded-full bg-[#9D00FF]/30 blur-[100px] sm:blur-[140px]" />
+				<div className="absolute bottom-[20%] right-[20%] w-[200px] sm:w-125 h-[200px] sm:h-125 rounded-full bg-[#6A00F4]/30 blur-[100px] sm:blur-[140px]" />
+				<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150px] sm:w-100 h-[150px] sm:h-100 rounded-full bg-yellow-500/10 blur-[80px] sm:blur-[100px]" />
 				<div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
 			</div>
 
 			<Navbar />
 
-			<div className="relative z-10 flex-1 max-w-6xl mx-auto w-full px-4 pt-32 pb-20">
+			<div className="relative z-10 flex-1 max-w-6xl mx-auto w-full px-3 sm:px-4 pt-24 sm:pt-32 pb-12 sm:pb-20">
 
 				{/* ── Header ────────────────────────────────────────────────────── */}
-				<div className="flex flex-col items-center text-center gap-3 mb-12">
+				<div className="flex flex-col items-center text-center gap-2 sm:gap-3 mb-8 sm:mb-12">
 					<motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }}>
 						<span className="inline-flex items-center gap-2 text-[10px] font-black tracking-[0.3em] uppercase text-green-400 border border-green-500/40 bg-green-500/10 rounded-full px-4 py-1.5 backdrop-blur-md shadow-[0_0_15px_rgba(34,197,94,0.2)]">
 							<span className="w-2 h-2 rounded-full bg-green-400 animate-ping" />
@@ -738,29 +736,29 @@ function VotePageContent() {
 						AI AVATAR GALLERY
 					</motion.p>
 
-					<motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.1, ease: "easeOut" as const }} className="font-playfair text-4xl sm:text-5xl md:text-6xl font-normal text-white tracking-tight leading-tight drop-shadow-lg">
+					<motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.1, ease: "easeOut" as const }} className="font-playfair text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal text-white tracking-tight leading-tight drop-shadow-lg">
 						VOTE FOR YOUR{" "}
 						<span className="text-transparent bg-clip-text bg-linear-to-r from-yellow-300 to-amber-500">FAVOURITE</span>
 					</motion.h1>
 
-					<motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }} className="text-lg sm:text-xl font-bold text-yellow-100/90">
+					<motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }} className="text-base sm:text-lg md:text-xl font-bold text-yellow-100/90">
 						ඔබේ ප්‍රියතම Avatar එකට ජන්දය දෙන්න
 					</motion.p>
 				</div>
 
 				{/* ── Countdown ─────────────────────────────────────────────────── */}
-				<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.35 }} className="bg-white/5 backdrop-blur-md border border-white/10 rounded-4xl px-4 sm:px-8 py-8 mb-12 max-w-md mx-auto text-center shadow-2xl">
+				<motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.35 }} className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl sm:rounded-4xl px-3 sm:px-8 py-5 sm:py-8 mb-8 sm:mb-12 max-w-md mx-auto text-center shadow-2xl">
 					<CountdownTimer />
 				</motion.div>
 
 				{/* ── Filter Tabs ───────────────────────────────────────────────── */}
-				<motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.45 }} className="flex items-center justify-center gap-2 flex-wrap mb-6">
+				<motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.45 }} className="flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap mb-6">
 					{FILTERS.map((f) => (
 						<button
 							key={f.key}
 							onClick={() => handleFilterChange(f.key)}
 							className={[
-								"inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase rounded-full px-5 py-2.5 border transition-all duration-300",
+								"inline-flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-bold tracking-widest uppercase rounded-full px-3 sm:px-5 py-2 sm:py-2.5 border transition-all duration-300",
 								filter === f.key
 									? "bg-yellow-500/20 border-yellow-400/50 text-yellow-400 shadow-[0_0_15px_rgba(234,179,8,0.2)]"
 									: "bg-white/5 border-white/10 text-gray-300 hover:bg-white/10 hover:border-white/20 hover:text-white backdrop-blur-md",
@@ -773,7 +771,7 @@ function VotePageContent() {
 				</motion.div>
 
 				{/* ── Search Bar ────────────────────────────────────────────────── */}
-				<motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.5 }} className="relative max-w-lg mx-auto mb-12">
+				<motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.5 }} className="relative max-w-lg mx-auto mb-8 sm:mb-12">
 					<div className="relative flex items-center">
 						<Search size={18} className="absolute left-5 text-white/40 pointer-events-none shrink-0" />
 						<input
@@ -792,7 +790,7 @@ function VotePageContent() {
 								}
 							}}
 							placeholder="Search by name or flavor…"
-							className="w-full bg-white/5 border border-white/10 backdrop-blur-md rounded-full pl-12 pr-12 py-3.5 text-sm text-white placeholder-white/40 tracking-wide focus:outline-none focus:border-yellow-400/50 focus:bg-white/10 focus:ring-4 focus:ring-yellow-400/10 transition-all duration-300"
+							className="w-full bg-white/5 border border-white/10 backdrop-blur-md rounded-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-3.5 text-xs sm:text-sm text-white placeholder-white/40 tracking-wide focus:outline-none focus:border-yellow-400/50 focus:bg-white/10 focus:ring-4 focus:ring-yellow-400/10 transition-all duration-300"
 						/>
 						<AnimatePresence>
 							{query && (
@@ -821,7 +819,7 @@ function VotePageContent() {
 
 				{/* ── Grid / Error / Empty / Skeleton ───────────────────────────── */}
 				{loading ? (
-					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+					<div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
 						{Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
 					</div>
 				) : error ? (
@@ -845,7 +843,7 @@ function VotePageContent() {
 						variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07 } } }}
 						initial="hidden"
 						animate="visible"
-						className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+						className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6"
 					>
 						<AnimatePresence mode="popLayout">
 							{visiblePosts.map((post) => (
@@ -876,7 +874,7 @@ function VotePageContent() {
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true }}
 					transition={{ duration: 0.5 }}
-					className="mt-28 flex flex-col items-center gap-5"
+					className="mt-16 sm:mt-28 flex flex-col items-center gap-4 sm:gap-5"
 				>
 					<p className="text-lg font-black text-white tracking-wide">
 						ඔබේ Avatar එකක් නොමතිද?
