@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "via.placeholder.com",
       },
+      {
+        protocol: "https",
+        hostname: "s3.ap-southeast-1.wasabisys.com",
+      },
     ],
   },
 };

@@ -172,3 +172,173 @@
 2026-04-10T02:47:14: Avatar status proxy error: SyntaxError: Unexpected token '<', "<html>
 2026-04-10T02:47:14: <h"... is not valid JSON
 2026-04-10T02:47:14:     at JSON.parse (<anonymous>)
+2026-04-10T03:04:12: ▲ Next.js 16.2.2
+2026-04-10T03:04:12: - Local:         http://localhost:3000
+2026-04-10T03:04:12: - Network:       http://161.97.118.187:3000
+2026-04-10T03:04:12: ✓ Ready in 619ms
+2026-04-10T03:11:56: ▲ Next.js 16.2.2
+2026-04-10T03:11:56: - Local:         http://localhost:3000
+2026-04-10T03:11:56: - Network:       http://161.97.118.187:3000
+2026-04-10T03:11:56: ✓ Ready in 225ms
+2026-04-10T03:12:46: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T03:12:46: [avatar proxy] Response status: 200, body length: 130
+2026-04-10T03:17:08: ▲ Next.js 16.2.2
+2026-04-10T03:17:08: - Local:         http://localhost:3000
+2026-04-10T03:17:08: - Network:       http://161.97.118.187:3000
+2026-04-10T03:17:08: ✓ Ready in 564ms
+2026-04-10T03:27:20: ▲ Next.js 16.2.2
+2026-04-10T03:27:20: - Local:         http://localhost:3000
+2026-04-10T03:27:20: - Network:       http://161.97.118.187:3000
+2026-04-10T03:27:20: ✓ Ready in 404ms
+2026-04-10T03:27:29: ▲ Next.js 16.2.2
+2026-04-10T03:27:29: - Local:         http://localhost:3000
+2026-04-10T03:27:29: - Network:       http://161.97.118.187:3000
+2026-04-10T03:27:29: ✓ Ready in 406ms
+2026-04-10T03:29:56: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T03:29:56: [avatar proxy] Response status: 404, body length: 81
+2026-04-10T03:40:22: Avatar status proxy error: SyntaxError: Unexpected token '<', "<html>
+2026-04-10T03:40:22: <h"... is not valid JSON
+2026-04-10T03:40:22:     at JSON.parse (<anonymous>)
+2026-04-10T03:40:26: Avatar status proxy error: SyntaxError: Unexpected token '<', "<html>
+2026-04-10T03:40:26: <h"... is not valid JSON
+2026-04-10T03:40:26:     at JSON.parse (<anonymous>)
+2026-04-10T03:40:30: Avatar status proxy error: SyntaxError: Unexpected token '<', "<html>
+2026-04-10T03:40:30: <h"... is not valid JSON
+2026-04-10T03:40:30:     at JSON.parse (<anonymous>)
+2026-04-10T03:42:20: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T03:42:21: [avatar proxy] Response status: 200, body length: 130
+2026-04-10T03:48:52: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T03:48:52: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T03:48:52:     at ignore-listed frames
+2026-04-10T03:56:54: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T03:56:54: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T03:56:54:     at ignore-listed frames
+2026-04-10T03:57:52: ▲ Next.js 16.2.2
+2026-04-10T03:57:52: - Local:         http://localhost:3000
+2026-04-10T03:57:52: - Network:       http://161.97.118.187:3000
+2026-04-10T03:57:52: ✓ Ready in 316ms
+2026-04-10T04:06:17: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T04:06:17: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T04:06:17:     at ignore-listed frames
+2026-04-10T04:57:07: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T04:57:07: [avatar proxy] Response status: 200, body length: 130
+2026-04-10T04:58:48: ▲ Next.js 16.2.2
+2026-04-10T04:58:48: - Local:         http://localhost:3000
+2026-04-10T04:58:48: - Network:       http://161.97.118.187:3000
+2026-04-10T04:58:48: ✓ Ready in 625ms
+2026-04-10T05:04:41: ▲ Next.js 16.2.2
+2026-04-10T05:04:41: - Local:         http://localhost:3000
+2026-04-10T05:04:41: - Network:       http://161.97.118.187:3000
+2026-04-10T05:04:41: ✓ Ready in 362ms
+2026-04-10T05:05:37: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T05:05:37: [avatar proxy] Response status: 200, body length: 130
+2026-04-10T05:19:04: ▲ Next.js 16.2.2
+2026-04-10T05:19:04: - Local:         http://localhost:3000
+2026-04-10T05:19:04: - Network:       http://161.97.118.187:3000
+2026-04-10T05:19:04: ✓ Ready in 400ms
+2026-04-10T05:21:57: ▲ Next.js 16.2.2
+2026-04-10T05:21:57: - Local:         http://localhost:3000
+2026-04-10T05:21:57: - Network:       http://161.97.118.187:3000
+2026-04-10T05:21:57: ✓ Ready in 303ms
+2026-04-10T05:27:11: ▲ Next.js 16.2.2
+2026-04-10T05:27:11: - Local:         http://localhost:3000
+2026-04-10T05:27:11: - Network:       http://161.97.118.187:3000
+2026-04-10T05:27:11: ✓ Ready in 289ms
+2026-04-10T05:48:04: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T05:48:05: [avatar proxy] Response status: 200, body length: 130
+2026-04-10T05:58:25: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T05:58:25: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T05:58:25:     at ignore-listed frames
+2026-04-10T05:58:25: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T05:58:25: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T05:58:25:     at ignore-listed frames
+2026-04-10T05:58:26: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T05:58:26: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T05:58:26:     at ignore-listed frames
+2026-04-10T05:58:26: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T05:58:26: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T05:58:26:     at ignore-listed frames
+2026-04-10T05:58:27: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T05:58:27: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T05:58:27:     at ignore-listed frames
+2026-04-10T05:58:27: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T05:58:27: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T05:58:27:     at ignore-listed frames
+2026-04-10T06:16:47: ▲ Next.js 16.2.2
+2026-04-10T06:16:47: - Local:         http://localhost:3000
+2026-04-10T06:16:47: - Network:       http://161.97.118.187:3000
+2026-04-10T06:16:47: ✓ Ready in 277ms
+2026-04-10T06:22:11: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T06:22:12: [avatar proxy] Response status: 200, body length: 130
+2026-04-10T06:35:20: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T06:35:21: [avatar proxy] Response status: 200, body length: 130
+2026-04-10T06:49:32: ▲ Next.js 16.2.2
+2026-04-10T06:49:32: - Local:         http://localhost:3000
+2026-04-10T06:49:32: - Network:       http://161.97.118.187:3000
+2026-04-10T06:49:32: ✓ Ready in 326ms
+2026-04-10T06:56:59: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T06:56:59: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T06:56:59:     at ignore-listed frames
+2026-04-10T07:29:13: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T07:29:15: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T07:31:47: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T07:31:47: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T07:31:47:     at ignore-listed frames
+2026-04-10T07:53:25: Error [InvariantError]: Invariant: The client reference manifest for route "/contact" does not exist. This is a bug in Next.js.
+2026-04-10T07:53:25:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-10T07:53:25: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/contact" does not exist. This is a bug in Next.js.
+2026-04-10T07:53:25:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-10T07:53:25: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/contact" does not exist. This is a bug in Next.js.
+2026-04-10T07:53:25:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-10T07:53:25: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/zellers-ai-avatar/.next/server/pages/500.html'
+2026-04-10T07:53:25:     at ignore-listed frames
+2026-04-10T07:53:43: Error [InvariantError]: Invariant: The client reference manifest for route "/contact" does not exist. This is a bug in Next.js.
+2026-04-10T07:53:43:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-10T07:53:43: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/contact" does not exist. This is a bug in Next.js.
+2026-04-10T07:53:43:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-10T07:53:43: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/contact" does not exist. This is a bug in Next.js.
+2026-04-10T07:53:43:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-10T07:53:43: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/zellers-ai-avatar/.next/server/pages/500.html'
+2026-04-10T07:53:43:     at ignore-listed frames
+2026-04-10T07:53:46: Error [InvariantError]: Invariant: The client reference manifest for route "/contact" does not exist. This is a bug in Next.js.
+2026-04-10T07:53:46:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-10T07:53:46: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/contact" does not exist. This is a bug in Next.js.
+2026-04-10T07:53:46:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-10T07:53:46: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/contact" does not exist. This is a bug in Next.js.
+2026-04-10T07:53:46:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-10T07:53:46: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/zellers-ai-avatar/.next/server/pages/500.html'
+2026-04-10T07:53:46:     at ignore-listed frames
+2026-04-10T07:54:51: ▲ Next.js 16.2.2
+2026-04-10T07:54:51: - Local:         http://localhost:3000
+2026-04-10T07:54:51: - Network:       http://161.97.118.187:3000
+2026-04-10T07:54:51: ✓ Ready in 442ms
+2026-04-10T08:03:26: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T08:03:27: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T08:13:56: ▲ Next.js 16.2.2
+2026-04-10T08:13:56: - Local:         http://localhost:3000
+2026-04-10T08:13:56: - Network:       http://161.97.118.187:3000
+2026-04-10T08:13:56: ✓ Ready in 304ms
+2026-04-10T08:19:04: ▲ Next.js 16.2.2
+2026-04-10T08:19:04: - Local:         http://localhost:3000
+2026-04-10T08:19:04: - Network:       http://161.97.118.187:3000
+2026-04-10T08:19:04: ✓ Ready in 315ms
+2026-04-10T08:36:17: ▲ Next.js 16.2.2
+2026-04-10T08:36:17: - Local:         http://localhost:3000
+2026-04-10T08:36:17: - Network:       http://161.97.118.187:3000
+2026-04-10T08:36:17: ✓ Ready in 336ms
+2026-04-10T08:42:21: ▲ Next.js 16.2.2
+2026-04-10T08:42:21: - Local:         http://localhost:3000
+2026-04-10T08:42:21: - Network:       http://161.97.118.187:3000
+2026-04-10T08:42:21: ✓ Ready in 335ms
+2026-04-10T08:50:16: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T08:50:16: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T08:50:16:     at ignore-listed frames
+2026-04-10T09:06:21: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T09:06:21: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T09:06:21:     at ignore-listed frames
+2026-04-10T09:10:00: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T09:10:01: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T09:39:54: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T09:39:55: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T09:43:54: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T09:43:56: [avatar proxy] Response status: 200, body length: 183

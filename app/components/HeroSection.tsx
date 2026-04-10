@@ -39,7 +39,7 @@ export default function HeroSection() {
 			{/* ─── Mesh Gradient Background ─── */}
 			<div
 				aria-hidden
-				className="pointer-events-none absolute inset-0 -z-10 overflow-hidden bg-[#1E0B4B]"
+				className="pointer-events-none absolute inset-0 -z-10 overflow-hidden bg-transparent"
 			>
 				{/* Adjusted top positions from -20% to -25% to account for reduced section padding */}
 				<div className="absolute -top-[25%] -right-[10%] w-[250px] sm:w-150 md:w-200 h-[250px] sm:h-150 md:h-200 rounded-full bg-[#00E5FF]/35 blur-[80px] sm:blur-[120px] md:blur-[160px]" />

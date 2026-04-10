@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, X, Smartphone, CheckCircle2, ShieldCheck, RefreshCw, AlertCircle } from "lucide-react";
+import { Search, X, Smartphone, CheckCircle2, ShieldCheck, RefreshCw, AlertCircle, Share2 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import { trackVoting, trackAuth, trackError } from "@/lib/analytics";
 import { useAnalytics } from "@/lib/useAnalytics";
@@ -19,7 +19,9 @@ type Post = {
 	gender: "male" | "female";
 	flavor: string;
 	voteCount: number;
+	rank?: number;
 	imageUrl?: string; // populated once image API is ready
+	shareUrl?: string; // share URL for social media
 };
 
 type PaginationMeta = {
@@ -151,13 +153,95 @@ function SkeletonCard() {
 }
 
 // ─── Post Card ────────────────────────────────────────────────────────────────
-function PostCard({ post, voted, onVote }: { post: Post; voted: boolean; onVote: () => void }) {
+function PostCard({ post, voted, onVote, votingOpen }: { post: Post; voted: boolean; onVote: () => void; votingOpen: boolean }) {
 	const isMale = post.gender === "male";
+	const [showShareMenu, setShowShareMenu] = useState(false);
+	const [shareCopied, setShareCopied] = useState(false);
+
+	const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.aiavuruduwithzellers.com';
+	const shareUrl = post.shareUrl || `${API_BASE}/share/${post.postId}`;
+	const shareText = `Vote for ${post.displayName} in the Zellers Avurudu Avatar Contest! 🎉`;
 
 	useEffect(() => {
 		// Track post view when card mounts
 		trackVoting.postViewed(post.postId, post.postNumber);
 	}, [post.postId, post.postNumber]);
+
+	// Close share menu when clicking outside
+	useEffect(() => {
+		const handleClickOutside = () => {
+			if (showShareMenu) {
+				setShowShareMenu(false);
+			}
+		};
+
+		if (showShareMenu) {
+			document.addEventListener('click', handleClickOutside);
+		}
+
+		return () => {
+			document.removeEventListener('click', handleClickOutside);
+		};
+	}, [showShareMenu]);
+
+	// Handle native mobile share or open custom menu
+	const handleShareButtonClick = async (e: React.MouseEvent) => {
+		e.stopPropagation();
+
+		// Check if Web Share API is available (mobile devices)
+		if (typeof navigator !== 'undefined' && navigator.share) {
+			try {
+				await navigator.share({
+					title: `${post.displayName}'s Avurudu Avatar`,
+					text: shareText,
+					url: shareUrl,
+				});
+				// Track successful native share
+				trackVoting.shareClicked(post.postId, 'native_share');
+			} catch (error) {
+				// User cancelled or share failed
+				if ((error as Error).name !== 'AbortError') {
+					console.error('Native share failed:', error);
+					// Fall back to custom menu
+					setShowShareMenu(true);
+				}
+			}
+		} else {
+			// Desktop or browsers without Web Share API - show custom menu
+			setShowShareMenu(!showShareMenu);
+		}
+	};
+
+	const handleShare = async (platform: string) => {
+		// Track share action
+		trackVoting.shareClicked(post.postId, platform);
+
+		let url = '';
+		switch (platform) {
+			case 'facebook':
+				url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+				window.open(url, '_blank', 'width=600,height=400');
+				break;
+			case 'twitter':
+				url = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
+				window.open(url, '_blank', 'width=600,height=400');
+				break;
+			case 'whatsapp':
+				url = `https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
+				window.open(url, '_blank');
+				break;
+			case 'copy':
+				try {
+					await navigator.clipboard.writeText(shareUrl);
+					setShareCopied(true);
+					setTimeout(() => setShareCopied(false), 2000);
+				} catch (error) {
+					console.error('Failed to copy link:', error);
+				}
+				break;
+		}
+		setShowShareMenu(false);
+	};
 
 	return (
 		<motion.div
@@ -170,7 +254,7 @@ function PostCard({ post, voted, onVote }: { post: Post; voted: boolean; onVote:
 			style={voted ? { boxShadow: "0 0 20px rgba(234,179,8,0.2)", borderColor: "rgba(234,179,8,0.4)" } : undefined}
 		>
 			{/* Image area */}
-			<div className="relative w-full aspect-4/5 overflow-hidden">
+			<div className="relative w-full aspect-[3/5] overflow-hidden">
 				{post.imageUrl ? (
 					<Image
 						src={post.imageUrl}
@@ -200,6 +284,59 @@ function PostCard({ post, voted, onVote }: { post: Post; voted: boolean; onVote:
 						{isMale ? "KUMARA" : "KUMARIYA"}
 					</span>
 				</div>
+
+				{/* Share button */}
+				<div className="absolute bottom-2.5 right-2.5">
+					<div className="relative">
+						<button
+							onClick={handleShareButtonClick}
+							className="w-8 h-8 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white hover:bg-yellow-500/20 hover:border-yellow-500/50 transition-all duration-200 shadow-md"
+							title="Share this avatar"
+						>
+							<Share2 size={14} />
+						</button>
+
+						{/* Share menu */}
+						<AnimatePresence>
+							{showShareMenu && (
+								<motion.div
+									initial={{ opacity: 0, scale: 0.9, y: -10 }}
+									animate={{ opacity: 1, scale: 1, y: 0 }}
+									exit={{ opacity: 0, scale: 0.9, y: -10 }}
+									transition={{ duration: 0.2 }}
+									className="absolute bottom-full right-0 mb-2 bg-[#1a0f4e] border border-purple-500/30 rounded-xl p-2 shadow-2xl backdrop-blur-xl min-w-[140px] z-50"
+									onClick={(e) => e.stopPropagation()}
+								>
+									<div className="text-[10px] text-gray-400 font-bold px-3 py-1 tracking-wide uppercase">Share via</div>
+									<button
+										onClick={(e) => { e.stopPropagation(); handleShare('facebook'); }}
+										className="w-full text-left text-xs font-bold text-white hover:text-blue-400 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors"
+									>
+										📘 Facebook
+									</button>
+									<button
+										onClick={(e) => { e.stopPropagation(); handleShare('twitter'); }}
+										className="w-full text-left text-xs font-bold text-white hover:text-blue-300 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors"
+									>
+										🐦 Twitter
+									</button>
+									<button
+										onClick={(e) => { e.stopPropagation(); handleShare('whatsapp'); }}
+										className="w-full text-left text-xs font-bold text-white hover:text-green-400 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors"
+									>
+										💬 WhatsApp
+									</button>
+									<button
+										onClick={(e) => { e.stopPropagation(); handleShare('copy'); }}
+										className="w-full text-left text-xs font-bold text-white hover:text-yellow-400 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors"
+									>
+										{shareCopied ? '✅ Copied!' : '📋 Copy Link'}
+									</button>
+								</motion.div>
+							)}
+						</AnimatePresence>
+					</div>
+				</div>
 			</div>
 
 			<div className="flex flex-col gap-1.5 sm:gap-2 px-2.5 sm:px-4 pt-2 sm:pt-3 pb-3 sm:pb-5 relative z-10">
@@ -207,6 +344,13 @@ function PostCard({ post, voted, onVote }: { post: Post; voted: boolean; onVote:
 					{post.displayName}
 				</p>
 				<p className="text-[10px] sm:text-[11px] text-yellow-400/80 font-medium truncate">{post.flavor}</p>
+
+				{/* Rank display (if available) */}
+				{post.rank && (
+					<p className="text-[10px] sm:text-[11px] text-purple-400/80 font-bold">
+						Rank #{post.rank}
+					</p>
+				)}
 
 				{/* Vote row */}
 				<div className="flex items-center justify-between mt-1 sm:mt-2 gap-1 sm:gap-2">
@@ -216,19 +360,23 @@ function PostCard({ post, voted, onVote }: { post: Post; voted: boolean; onVote:
 					</span>
 					<button
 						onClick={() => {
+							if (!votingOpen) return;
 							const userId = 'user_' + Date.now(); // Get from auth token
 							trackVoting.voteAttempted(userId, post.postId);
 							onVote();
 						}}
-						disabled={voted}
+						disabled={voted || !votingOpen}
 						className={[
 							"text-[10px] sm:text-[11px] font-extrabold tracking-widest rounded-full px-2.5 sm:px-4 py-1.5 sm:py-2 transition-all duration-300 shrink-0",
-							voted
-								? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 cursor-default"
-								: "bg-linear-to-r from-yellow-400 to-amber-500 text-black hover:brightness-110 hover:scale-105 shadow-[0_0_15px_rgba(234,179,8,0.4)]",
+							!votingOpen
+								? "bg-gray-500/10 text-gray-500 border border-gray-500/30 cursor-not-allowed opacity-50"
+								: voted
+									? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 cursor-default"
+									: "bg-linear-to-r from-yellow-400 to-amber-500 text-black hover:brightness-110 hover:scale-105 shadow-[0_0_15px_rgba(234,179,8,0.4)]",
 						].join(" ")}
+						title={!votingOpen ? "Voting is currently closed" : voted ? "Already voted" : "Vote for this avatar"}
 					>
-						{voted ? "✦ VOTED" : "VOTE"}
+						{!votingOpen ? "CLOSED" : voted ? "✦ VOTED" : "VOTE"}
 					</button>
 				</div>
 			</div>
@@ -617,6 +765,26 @@ function VotePageContent() {
 	const [voted, setVoted] = useState<Set<string>>(new Set());
 	const [voteTarget, setVoteTarget] = useState<Post | null>(null);
 	const [query, setQuery] = useState("");
+	const [votingOpen, setVotingOpen] = useState(false);
+	const [votingStatusLoading, setVotingStatusLoading] = useState(true);
+
+	// Check voting status on mount
+	useEffect(() => {
+		fetch("/api/votes/status")
+			.then((r) => r.json())
+			.then((data) => {
+				if (data.success) {
+					setVotingOpen(data.votingOpen);
+				}
+			})
+			.catch(() => {
+				// Default to closed on error
+				setVotingOpen(false);
+			})
+			.finally(() => {
+				setVotingStatusLoading(false);
+			});
+	}, []);
 
 	const fetchPosts = useCallback(async (f: Filter, p: number) => {
 		setLoading(true);
@@ -726,10 +894,21 @@ function VotePageContent() {
 				{/* ── Header ────────────────────────────────────────────────────── */}
 				<div className="flex flex-col items-center text-center gap-2 sm:gap-3 mb-8 sm:mb-12">
 					<motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4 }}>
-						<span className="inline-flex items-center gap-2 text-[10px] font-black tracking-[0.3em] uppercase text-green-400 border border-green-500/40 bg-green-500/10 rounded-full px-4 py-1.5 backdrop-blur-md shadow-[0_0_15px_rgba(34,197,94,0.2)]">
-							<span className="w-2 h-2 rounded-full bg-green-400 animate-ping" />
-							VOTING IS LIVE
-						</span>
+						{votingStatusLoading ? (
+							<span className="inline-flex items-center gap-2 text-[10px] font-black tracking-[0.3em] uppercase text-gray-400 border border-gray-500/40 bg-gray-500/10 rounded-full px-4 py-1.5 backdrop-blur-md">
+								LOADING...
+							</span>
+						) : votingOpen ? (
+							<span className="inline-flex items-center gap-2 text-[10px] font-black tracking-[0.3em] uppercase text-green-400 border border-green-500/40 bg-green-500/10 rounded-full px-4 py-1.5 backdrop-blur-md shadow-[0_0_15px_rgba(34,197,94,0.2)]">
+								<span className="w-2 h-2 rounded-full bg-green-400 animate-ping" />
+								VOTING IS LIVE
+							</span>
+						) : (
+							<span className="inline-flex items-center gap-2 text-[10px] font-black tracking-[0.3em] uppercase text-red-400 border border-red-500/40 bg-red-500/10 rounded-full px-4 py-1.5 backdrop-blur-md shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+								<span className="w-2 h-2 rounded-full bg-red-400" />
+								VOTING IS CLOSED
+							</span>
+						)}
 					</motion.div>
 
 					<motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.05 }} className="text-[10px] sm:text-xs font-bold tracking-[0.4em] uppercase text-yellow-400 mt-2">
@@ -737,13 +916,38 @@ function VotePageContent() {
 					</motion.p>
 
 					<motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.1, ease: "easeOut" as const }} className="font-playfair text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal text-white tracking-tight leading-tight drop-shadow-lg">
-						VOTE FOR YOUR{" "}
-						<span className="text-transparent bg-clip-text bg-linear-to-r from-yellow-300 to-amber-500">FAVOURITE</span>
+						{votingOpen ? (
+							<>
+								VOTE FOR YOUR{" "}
+								<span className="text-transparent bg-clip-text bg-linear-to-r from-yellow-300 to-amber-500">FAVOURITE</span>
+							</>
+						) : (
+							<>
+								VIEW THE{" "}
+								<span className="text-transparent bg-clip-text bg-linear-to-r from-yellow-300 to-amber-500">AVATARS</span>
+							</>
+						)}
 					</motion.h1>
 
 					<motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }} className="text-base sm:text-lg md:text-xl font-bold text-yellow-100/90">
-						ඔබේ ප්‍රියතම Avatar එකට ජන්දය දෙන්න
+						{votingOpen ? "ඔබේ ප්‍රියතම Avatar එකට ජන්දය දෙන්න" : "Avatar ගැලරිය නරඹන්න"}
 					</motion.p>
+
+					{!votingOpen && !votingStatusLoading && (
+						<motion.div
+							initial={{ opacity: 0, y: 10 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.4, delay: 0.3 }}
+							className="mt-4 bg-yellow-500/10 border border-yellow-500/30 rounded-2xl px-6 py-4 max-w-2xl backdrop-blur-md"
+						>
+							<p className="text-sm sm:text-base text-yellow-200 font-semibold">
+								Voting is currently closed. Please check back later!
+							</p>
+							<p className="text-xs sm:text-sm text-yellow-300/70 mt-2">
+								You can still browse all the amazing AI avatars created by our community.
+							</p>
+						</motion.div>
+					)}
 				</div>
 
 				{/* ── Countdown ─────────────────────────────────────────────────── */}
@@ -852,6 +1056,7 @@ function VotePageContent() {
 									post={post}
 									voted={voted.has(post.postId)}
 									onVote={() => setVoteTarget(post)}
+									votingOpen={votingOpen}
 								/>
 							))}
 						</AnimatePresence>

@@ -35,7 +35,7 @@ export default function AvuruduPrizes() {
 			{/* ─── EXPERT UI: Unified Hero Mesh Gradient Background ─── */}
 			<div
 				aria-hidden
-				className="pointer-events-none absolute inset-0 -z-10 overflow-hidden bg-[#1E0B4B]" // Deep violet/indigo base
+				className="pointer-events-none absolute inset-0 -z-10 overflow-hidden bg-transparent" // Deep violet/indigo base
 			>
 				{/* Top Right Bright Cyan Glow */}
 				<div className="absolute -top-[20%] -right-[10%] w-[300px] sm:w-[600px] md:w-[800px] h-[300px] sm:h-[600px] md:h-[800px] rounded-full bg-[#00E5FF]/35 blur-[80px] sm:blur-[120px] md:blur-[160px]" />

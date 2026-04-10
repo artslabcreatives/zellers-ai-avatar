@@ -122,3 +122,75 @@
 2026-04-10T02:47:14: Avatar status proxy error: SyntaxError: Unexpected token '<', "<html>
 2026-04-10T02:47:14: <h"... is not valid JSON
 2026-04-10T02:47:14:     at JSON.parse (<anonymous>)
+2026-04-10T03:40:22: Avatar status proxy error: SyntaxError: Unexpected token '<', "<html>
+2026-04-10T03:40:22: <h"... is not valid JSON
+2026-04-10T03:40:22:     at JSON.parse (<anonymous>)
+2026-04-10T03:40:26: Avatar status proxy error: SyntaxError: Unexpected token '<', "<html>
+2026-04-10T03:40:26: <h"... is not valid JSON
+2026-04-10T03:40:26:     at JSON.parse (<anonymous>)
+2026-04-10T03:40:30: Avatar status proxy error: SyntaxError: Unexpected token '<', "<html>
+2026-04-10T03:40:30: <h"... is not valid JSON
+2026-04-10T03:40:30:     at JSON.parse (<anonymous>)
+2026-04-10T03:48:52: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T03:48:52: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T03:48:52:     at ignore-listed frames
+2026-04-10T03:56:54: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T03:56:54: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T03:56:54:     at ignore-listed frames
+2026-04-10T04:06:17: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T04:06:17: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T04:06:17:     at ignore-listed frames
+2026-04-10T05:58:25: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T05:58:25: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T05:58:25:     at ignore-listed frames
+2026-04-10T05:58:25: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T05:58:25: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T05:58:25:     at ignore-listed frames
+2026-04-10T05:58:26: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T05:58:26: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T05:58:26:     at ignore-listed frames
+2026-04-10T05:58:26: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T05:58:26: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T05:58:26:     at ignore-listed frames
+2026-04-10T05:58:27: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T05:58:27: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T05:58:27:     at ignore-listed frames
+2026-04-10T05:58:27: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T05:58:27: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T05:58:27:     at ignore-listed frames
+2026-04-10T06:56:59: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T06:56:59: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T06:56:59:     at ignore-listed frames
+2026-04-10T07:31:47: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T07:31:47: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T07:31:47:     at ignore-listed frames
+2026-04-10T07:53:25: Error [InvariantError]: Invariant: The client reference manifest for route "/contact" does not exist. This is a bug in Next.js.
+2026-04-10T07:53:25:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-10T07:53:25: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/contact" does not exist. This is a bug in Next.js.
+2026-04-10T07:53:25:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-10T07:53:25: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/contact" does not exist. This is a bug in Next.js.
+2026-04-10T07:53:25:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-10T07:53:25: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/zellers-ai-avatar/.next/server/pages/500.html'
+2026-04-10T07:53:25:     at ignore-listed frames
+2026-04-10T07:53:43: Error [InvariantError]: Invariant: The client reference manifest for route "/contact" does not exist. This is a bug in Next.js.
+2026-04-10T07:53:43:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-10T07:53:43: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/contact" does not exist. This is a bug in Next.js.
+2026-04-10T07:53:43:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-10T07:53:43: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/contact" does not exist. This is a bug in Next.js.
+2026-04-10T07:53:43:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-10T07:53:43: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/zellers-ai-avatar/.next/server/pages/500.html'
+2026-04-10T07:53:43:     at ignore-listed frames
+2026-04-10T07:53:46: Error [InvariantError]: Invariant: The client reference manifest for route "/contact" does not exist. This is a bug in Next.js.
+2026-04-10T07:53:46:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-10T07:53:46: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/contact" does not exist. This is a bug in Next.js.
+2026-04-10T07:53:46:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-10T07:53:46: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/contact" does not exist. This is a bug in Next.js.
+2026-04-10T07:53:46:     at Object.get (.next/server/chunks/ssr/[root-of-the-server]__09z7o2x._.js:1:47542)
+2026-04-10T07:53:46: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/zellers-ai-avatar/.next/server/pages/500.html'
+2026-04-10T07:53:46:     at ignore-listed frames
+2026-04-10T08:50:16: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T08:50:16: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T08:50:16:     at ignore-listed frames
+2026-04-10T09:06:21: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T09:06:21: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T09:06:21:     at ignore-listed frames
