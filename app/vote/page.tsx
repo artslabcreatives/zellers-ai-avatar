@@ -157,6 +157,7 @@ function PostCard({ post, voted, onVote, votingOpen }: { post: Post; voted: bool
 	const isMale = post.gender === "male";
 	const [showShareMenu, setShowShareMenu] = useState(false);
 	const [shareCopied, setShareCopied] = useState(false);
+	const [imageError, setImageError] = useState(false);
 
 	const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.aiavuruduwithzellers.com';
 	const shareUrl = post.shareUrl || `${API_BASE}/share/${post.postId}`;
@@ -255,13 +256,15 @@ function PostCard({ post, voted, onVote, votingOpen }: { post: Post; voted: bool
 		>
 			{/* Image area */}
 			<div className="relative w-full aspect-[3/5] overflow-hidden">
-				{post.imageUrl ? (
+				{post.imageUrl && !imageError ? (
 					<Image
 						src={post.imageUrl}
 						alt={post.displayName}
 						fill
 						sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
 						className="object-cover transition-transform duration-700 group-hover:scale-110"
+						onError={() => setImageError(true)}
+						priority={false}
 					/>
 				) : (
 					<PlaceholderAvatar post={post} />

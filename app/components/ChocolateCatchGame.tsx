@@ -48,7 +48,9 @@ export default function ChocolateCatchGame({ progress }: ChocolateCatchGameProps
 	const CANVAS_HEIGHT = canvasDimensions.height;
 	const BASKET_WIDTH = Math.floor(canvasDimensions.width * 0.23); // Proportional to canvas width
 	const BASKET_HEIGHT = Math.floor(BASKET_WIDTH * 0.5);
-	const CHOCOLATE_SIZE = Math.floor(canvasDimensions.width * 0.1); // Proportional chocolate size
+	// Chocolate actual size from image: 34px width × 107px height
+	const CHOCOLATE_WIDTH = 34;
+	const CHOCOLATE_HEIGHT = 107;
 
 	// Load images
 	useEffect(() => {
@@ -68,9 +70,11 @@ export default function ChocolateCatchGame({ progress }: ChocolateCatchGameProps
 		const updateCanvasSize = () => {
 			if (containerRef.current) {
 				const containerWidth = containerRef.current.offsetWidth;
-				// Use 80% of container width (which has 10% padding on each side)
-				const width = Math.floor(containerWidth * 0.8);
-				const height = Math.floor(width * 1.16); // Maintain aspect ratio (350/300)
+				const containerHeight = containerRef.current.offsetHeight;
+				// Use full width minus small margins
+				const width = Math.floor(containerWidth - 40);
+				// Use most of available height, leaving room for header and footer
+				const height = Math.floor(Math.min(containerHeight - 100, width * 1.2));
 				setCanvasDimensions({ width, height });
 				// Center basket
 				setBasketX(width / 2 - (width * 0.23) / 2);
@@ -128,7 +132,7 @@ export default function ChocolateCatchGame({ progress }: ChocolateCatchGameProps
 		const rect = canvas.getBoundingClientRect();
 		const x = e.clientX - rect.left;
 		const normalizedX = (x / rect.width) * CANVAS_WIDTH;
-		
+
 		setBasketX(Math.max(0, Math.min(CANVAS_WIDTH - BASKET_WIDTH, normalizedX - BASKET_WIDTH / 2)));
 	}, [CANVAS_WIDTH, BASKET_WIDTH]);
 
@@ -168,14 +172,14 @@ export default function ChocolateCatchGame({ progress }: ChocolateCatchGameProps
 			// Spawn new chocolate
 			const now = Date.now();
 			const spawnInterval = Math.max(800, 1500 - (progress * 8)); // Faster spawning as progress increases
-			
+
 			if (now - lastSpawnTimeRef.current > spawnInterval) {
 				const randomType = CHOCOLATE_TYPES[Math.floor(Math.random() * CHOCOLATE_TYPES.length)];
 				const newChocolate: Chocolate = {
 					id: chocolateIdCounter.current++,
 					type: randomType.name,
-					x: Math.random() * (CANVAS_WIDTH - CHOCOLATE_SIZE),
-					y: -CHOCOLATE_SIZE,
+					x: Math.random() * (CANVAS_WIDTH - CHOCOLATE_WIDTH),
+					y: -CHOCOLATE_HEIGHT,
 					speed: baseSpeed + Math.random() * 0.5,
 				};
 				chocolatesRef.current.push(newChocolate);
@@ -184,15 +188,15 @@ export default function ChocolateCatchGame({ progress }: ChocolateCatchGameProps
 
 			// Update and draw chocolates
 			const basketY = CANVAS_HEIGHT - BASKET_HEIGHT - Math.floor(CANVAS_HEIGHT * 0.03); // Small proportional gap from bottom
-			
+
 			chocolatesRef.current = chocolatesRef.current.filter((choc) => {
 				choc.y += choc.speed;
 
 				// Check collision with basket
 				if (
-					choc.y + CHOCOLATE_SIZE >= basketY &&
+					choc.y + CHOCOLATE_HEIGHT >= basketY &&
 					choc.y <= basketY + BASKET_HEIGHT &&
-					choc.x + CHOCOLATE_SIZE >= basketXRef.current &&
+					choc.x + CHOCOLATE_WIDTH >= basketXRef.current &&
 					choc.x <= basketXRef.current + BASKET_WIDTH
 				) {
 					// Caught!
@@ -212,11 +216,11 @@ export default function ChocolateCatchGame({ progress }: ChocolateCatchGameProps
 				// Draw chocolate
 				const img = imagesLoadedRef.current[choc.type];
 				if (img && img.complete) {
-					ctx.drawImage(img, choc.x, choc.y, CHOCOLATE_SIZE, CHOCOLATE_SIZE);
+					ctx.drawImage(img, choc.x, choc.y, CHOCOLATE_WIDTH, CHOCOLATE_HEIGHT);
 				} else {
 					// Fallback rectangle
 					ctx.fillStyle = '#8B4513';
-					ctx.fillRect(choc.x, choc.y, CHOCOLATE_SIZE, CHOCOLATE_SIZE);
+					ctx.fillRect(choc.x, choc.y, CHOCOLATE_WIDTH, CHOCOLATE_HEIGHT);
 				}
 
 				return true;
@@ -255,12 +259,12 @@ export default function ChocolateCatchGame({ progress }: ChocolateCatchGameProps
 				cancelAnimationFrame(animationFrameRef.current);
 			}
 		};
-	}, [progress, gameStarted, CANVAS_WIDTH, CANVAS_HEIGHT, CHOCOLATE_SIZE, BASKET_WIDTH, BASKET_HEIGHT]);
+	}, [progress, gameStarted, CANVAS_WIDTH, CANVAS_HEIGHT, CHOCOLATE_WIDTH, CHOCOLATE_HEIGHT, BASKET_WIDTH, BASKET_HEIGHT]);
 
 	return (
-		<div ref={containerRef} className="relative w-full px-[10%]">
+		<div ref={containerRef} className="relative w-full h-full flex flex-col">
 			{/* Top bar - Target chocolate and score */}
-			<div className="flex justify-between items-center mb-2">
+			<div className="flex justify-between items-center mb-2 px-4">
 				<div className="flex items-center gap-2 bg-black/40 rounded-lg px-3 py-1.5">
 					<span className="text-yellow-400 text-xs font-bold">SCORE:</span>
 					<span className="text-white text-sm font-black">{score}</span>
@@ -268,9 +272,9 @@ export default function ChocolateCatchGame({ progress }: ChocolateCatchGameProps
 
 				<div className="flex items-center gap-2 bg-black/40 rounded-lg px-3 py-1.5 border-2 border-yellow-500/50">
 					<span className="text-yellow-400 text-xs font-bold">CATCH:</span>
-					<div 
+					<div
 						className="bg-white/10 rounded border border-white/20 flex items-center justify-center p-1"
-						style={{ width: `${CHOCOLATE_SIZE}px`, height: `${CHOCOLATE_SIZE}px` }}
+						style={{ width: `${CHOCOLATE_WIDTH}px`, height: `${CHOCOLATE_HEIGHT}px` }}
 					>
 						{targetChocolate && (
 							<img

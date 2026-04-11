@@ -3,33 +3,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 
-const avatars = [
-	{
-		src: "/1.png",
-		flavor: "PISTACHIO & KUNAFA CREAM FILLED ",
-		title: "CHOCOLATE",
-		alt: "Pistachio & Kunafa Cream Filled Chocolate Avatar",
-	},
-	{
-		src: "/2.png",
-		flavor: "RED VELVET COOKIE CREAM FILLED WHITE",
-		title: "CHOCOLATE",
-		alt: "Dark Velvet Avatar",
-	},
-	{
-		src: "/3.png",
-		flavor: "STRAWBERRY CREAM FILLED",
-		title: "CHOCOLATE",
-		alt: "Strawberry Cream Filled Chocolate Avatar",
-	},
-	{
-		src: "/4.png",
-		flavor: "COCONUT CREAM FILLED",
-		title: "CHOCOLATE",
-		alt: "Coconut Cream Filled Chocolate Avatar",
-	},
-];
+type Post = {
+	postId: string;
+	postNumber: number;
+	displayName: string;
+	gender: "male" | "female";
+	flavor: string;
+	voteCount: number;
+	imageUrl?: string;
+};
 
 const containerVariants = {
 	hidden: {},
@@ -47,14 +31,59 @@ const cardVariants = {
 	},
 };
 
+// Placeholder Avatar component
+function PlaceholderAvatar({ post }: { post: Post }) {
+	const initials = post.displayName
+		.split(" ")
+		.map((w) => w[0] ?? "")
+		.join("")
+		.toUpperCase()
+		.slice(0, 2);
+
+	const gradient =
+		post.gender === "male"
+			? "from-blue-700 via-indigo-700 to-violet-800"
+			: "from-pink-600 via-rose-600 to-purple-700";
+
+	return (
+		<div className={`absolute inset-0 bg-gradient-to-br ${gradient} flex items-center justify-center`}>
+			<span className="text-5xl sm:text-6xl font-black text-white/25 select-none tracking-wider drop-shadow-2xl">
+				{initials}
+			</span>
+		</div>
+	);
+}
+
 export default function MeetTheAvatars() {
+	const [posts, setPosts] = useState<Post[]>([]);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		async function fetchPosts() {
+			try {
+				const res = await fetch("/api/posts?page=1");
+				const data = await res.json();
+				if (data.success && data.posts) {
+					// Get top 8 posts by vote count
+					const topPosts = data.posts.slice(0, 8);
+					setPosts(topPosts);
+				}
+			} catch (error) {
+				console.error("Failed to fetch posts:", error);
+			} finally {
+				setLoading(false);
+			}
+		}
+		fetchPosts();
+	}, []);
+
 	return (
 		<section className="relative py-16 sm:py-24 px-3 sm:px-4 overflow-hidden">
 
 			{/* ─── EXPERT UI: Unified Hero Mesh Gradient Background ─── */}
 			<div
 				aria-hidden
-				className="pointer-events-none absolute inset-0 -z-10 overflow-hidden bg-transparent" // Deep violet/indigo base
+				className="pointer-events-none absolute inset-0 -z-10 overflow-hidden bg-transparent"
 			>
 				{/* Top Right Bright Cyan Glow */}
 				<div className="absolute -top-[20%] -right-[10%] w-[300px] sm:w-[600px] md:w-[800px] h-[300px] sm:h-[600px] md:h-[800px] rounded-full bg-[#00E5FF]/35 blur-[80px] sm:blur-[120px] md:blur-[160px]" />
@@ -107,55 +136,94 @@ export default function MeetTheAvatars() {
 					</motion.p>
 				</div>
 
-				{/* Gallery grid */}
-				<motion.div
-					variants={containerVariants}
-					initial="hidden"
-					whileInView="visible"
-					viewport={{ once: true, margin: "-60px" }}
-					className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5"
-				>
-					{avatars.map((avatar) => (
-						<motion.div
-							key={avatar.flavor}
-							variants={cardVariants}
-							className="group relative overflow-hidden rounded-2xl cursor-pointer shadow-xl"
-						>
-							{/* Image */}
-							<div className="relative w-full aspect-[4/5] overflow-hidden bg-white/5">
-								<Image
-									src={avatar.src}
-									alt={avatar.alt}
-									fill
-									sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-									className="object-cover transition-transform duration-500 group-hover:scale-110"
-								/>
-							</div>
+				{/* Gallery grid - 4x2 layout */}
+				{loading ? (
+					<div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+						{[...Array(8)].map((_, i) => (
+							<div key={i} className="w-full aspect-[3/5] bg-white/5 rounded-2xl animate-pulse" />
+						))}
+					</div>
+				) : (
+					<motion.div
+						variants={containerVariants}
+						initial="hidden"
+						whileInView="visible"
+						viewport={{ once: true, margin: "-60px" }}
+						className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5"
+					>
+						{posts.map((post) => (
+							<Link key={post.postId} href="/vote">
+								<motion.div
+									variants={cardVariants}
+									className="group relative overflow-hidden rounded-2xl cursor-pointer shadow-xl"
+								>
+									{/* Image */}
+									<div className="relative w-full aspect-[3/5] overflow-hidden bg-white/5">
+										{post.imageUrl ? (
+											<Image
+												src={post.imageUrl}
+												alt={post.displayName}
+												fill
+												sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+												className="object-cover transition-transform duration-500 group-hover:scale-110"
+											/>
+										) : (
+											<PlaceholderAvatar post={post} />
+										)}
+									</div>
 
-							{/* Bottom gradient overlay */}
-							<div className="absolute inset-0 bg-gradient-to-t from-[#1E0B4B]/95 via-[#1E0B4B]/40 to-transparent pointer-events-none" />
+									{/* Bottom gradient overlay */}
+									<div className="absolute inset-0 bg-gradient-to-t from-[#1E0B4B]/95 via-[#1E0B4B]/40 to-transparent pointer-events-none" />
 
-							{/* Bottom text */}
-							<div className="absolute bottom-0 left-0 right-0 p-4">
-								<p className="text-xs font-semibold tracking-[0.2em] uppercase text-yellow-400/80 mb-0.5">
-									{avatar.flavor}
-								</p>
-								<p className="text-base font-bold text-gray-100 leading-snug drop-shadow-sm">
-									{avatar.title}
-								</p>
-								{/* Vote bar */}
-								<div className="mt-3 flex items-center gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
-									<button className="flex-1 text-xs font-bold tracking-widest text-black bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full py-1.5 hover:brightness-110 transition-all duration-200 shadow-[0_0_15px_rgba(234,179,8,0.4)]">
-										VOTE ✦
-									</button>
-								</div>
-							</div>
+									{/* Post number badge */}
+									<div className="absolute top-2.5 left-2.5">
+										<span className="text-[10px] font-extrabold text-gray-100 bg-black/60 backdrop-blur-md rounded-full px-2.5 py-1 border border-white/10 shadow-md">
+											#{post.postNumber}
+										</span>
+									</div>
 
-							{/* Gold border glow on hover */}
-							<div className="absolute inset-0 rounded-2xl border border-white/10 group-hover:border-yellow-400/50 transition-all duration-300 pointer-events-none" />
-						</motion.div>
-					))}
-				</motion.div>
+									{/* Gender badge */}
+									<div className="absolute top-2.5 right-2.5">
+										<span className={`text-[9px] font-extrabold tracking-widest text-white rounded-full px-2.5 py-1 shadow-md ${post.gender === "male"
+												? "bg-gradient-to-r from-blue-500 to-indigo-500"
+												: "bg-gradient-to-r from-pink-500 to-rose-500"
+											}`}>
+											{post.gender === "male" ? "KUMARA" : "KUMARIYA"}
+										</span>
+									</div>
+
+									{/* Bottom text */}
+									<div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+										<p className="text-xs sm:text-sm font-bold text-gray-100 leading-tight drop-shadow-sm truncate mb-1">
+											{post.displayName}
+										</p>
+										<p className="text-[10px] sm:text-[11px] text-yellow-400/80 font-medium truncate mb-2">
+											{post.flavor}
+										</p>
+										{/* Vote count and button */}
+										<div className="flex items-center justify-between gap-2">
+											<div className="flex items-center gap-1.5">
+												<span className="text-yellow-400 text-sm">✦</span>
+												<span className="text-xs font-bold text-yellow-400">
+													{post.voteCount}
+												</span>
+												<span className="text-[10px] text-gray-400 uppercase tracking-wider">
+													votes
+												</span>
+											</div>
+											<button className="text-[10px] font-bold tracking-widest text-black bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full px-3 py-1 hover:brightness-110 transition-all duration-200 shadow-[0_0_15px_rgba(234,179,8,0.4)] opacity-100 sm:opacity-0 sm:group-hover:opacity-100">
+												VOTE
+											</button>
+										</div>
+									</div>
+
+									{/* Gold border glow on hover */}
+									<div className="absolute inset-0 rounded-2xl border border-white/10 group-hover:border-yellow-400/50 transition-all duration-300 pointer-events-none" />
+								</motion.div>
+							</Link>
+						))}
+					</motion.div>
+				)}
 
 				{/* View all CTA */}
 				<motion.div

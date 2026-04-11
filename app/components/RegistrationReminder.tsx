@@ -53,18 +53,27 @@ export default function RegistrationReminder() {
 						exit={{ opacity: 0, scale: 0.9, y: 20 }}
 						transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
 						className="relative w-full max-w-[calc(100vw-2rem)] sm:max-w-md bg-[#160A30] border border-yellow-500/30 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] overflow-hidden z-10"
+						style={{
+							backgroundImage: 'url(/people.png)',
+							backgroundSize: 'cover',
+							backgroundPosition: 'center',
+							backgroundRepeat: 'no-repeat'
+						}}
 					>
+						{/* Dark Overlay */}
+						<div className="absolute inset-0 bg-[#160A30]/90 rounded-3xl z-0" />
+
 						{/* Close Button */}
 						<button
 							onClick={handleClose}
 							aria-label="Dismiss"
-							className="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-black/40 text-white/60 hover:text-white hover:bg-black/60 backdrop-blur-sm transition-all duration-200"
+							className="absolute top-4 right-4 z-30 w-8 h-8 flex items-center justify-center rounded-full bg-black/40 text-white/60 hover:text-white hover:bg-black/60 backdrop-blur-sm transition-all duration-200"
 						>
 							<X size={18} />
 						</button>
 
 						{/* ─── IMAGE SECTION WITH SEAMLESS FADE ─── */}
-						<div className="relative w-full h-48 sm:h-56">
+						<div className="relative w-full h-48 sm:h-56 z-20">
 							{/* Note: Update this src to your actual promotional image */}
 							<Image
 								src="/loading.jpeg"
@@ -76,7 +85,7 @@ export default function RegistrationReminder() {
 						</div>
 
 						{/* ─── CONTENT SECTION ─── */}
-						<div className="relative px-4 sm:px-8 pb-6 sm:pb-8 pt-2 text-center z-10">
+						<div className="relative px-4 sm:px-8 pb-6 sm:pb-8 pt-2 text-center z-20">
 
 							{/* Floating Crown Badge */}
 							<div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center shadow-[0_0_20px_rgba(234,179,8,0.5)] -mt-14 mb-4 border-4 border-[#160A30]">
@@ -85,10 +94,11 @@ export default function RegistrationReminder() {
 
 							{/* Text Content */}
 							<h3 className="font-playfair text-xl sm:text-2xl md:text-3xl font-black text-white leading-tight mb-2">
-								Claim Your Crown
+								Create now
 							</h3>
 							<p className="text-sm text-blue-200/70 leading-relaxed max-w-[280px] mx-auto">
-								Transform into a legendary AI avatar & win up to{" "}
+								Are you the Zellers AI අවුරුදු කුමරා or කුමරිය? <br />
+								Zellers AI අවුරුදු කුමරා කුමරිය ඔබද?
 								<span className="text-yellow-400 font-bold block mt-1 text-lg">Rs. 75,000</span>
 							</p>
 
@@ -98,8 +108,18 @@ export default function RegistrationReminder() {
 								onClick={handleClose} // Closes modal when navigating away
 								className="mt-8 flex items-center justify-center w-full bg-gradient-to-r from-yellow-400 to-amber-500 text-[#160A30] text-sm font-black tracking-widest uppercase rounded-xl py-4 hover:scale-[1.03] active:scale-[0.97] transition-all duration-200 shadow-[0_0_20px_rgba(234,179,8,0.3)]"
 							>
-								ENTER THE CAMPAIGN ✦
+								Create now
 							</Link>
+
+							<p className="text-sm text-blue-200/70 leading-relaxed max-w-[280px] mx-auto">
+								Create your AI Avatar based on your own look
+								and stand a chance to win gifts worth up to LKR 75,000!<br /><br />
+
+								ඔයාගේ පෙනුම AI Avatar එකක් විදියට Create  කරලා,
+								රුපියල් 75,000ක් දක්වා Gifts දිනාගන්න!
+								<span className="text-yellow-400 font-bold block mt-1 text-lg">Rs. 75,000</span>
+							</p>
+
 
 							{/* Secondary Dismiss Action */}
 							<button

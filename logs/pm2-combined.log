@@ -342,3 +342,411 @@
 2026-04-10T09:39:55: [avatar proxy] Response status: 200, body length: 183
 2026-04-10T09:43:54: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
 2026-04-10T09:43:56: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T09:48:45: ▲ Next.js 16.2.2
+2026-04-10T09:48:45: - Local:         http://localhost:3000
+2026-04-10T09:48:45: - Network:       http://161.97.118.187:3000
+2026-04-10T09:48:45: ✓ Ready in 331ms
+2026-04-10T10:24:03: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T10:24:04: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T10:28:06: ▲ Next.js 16.2.2
+2026-04-10T10:28:06: - Local:         http://localhost:3000
+2026-04-10T10:28:06: - Network:       http://161.97.118.187:3000
+2026-04-10T10:28:06: ✓ Ready in 331ms
+2026-04-10T10:29:22: ▲ Next.js 16.2.2
+2026-04-10T10:29:22: - Local:         http://localhost:3000
+2026-04-10T10:29:22: - Network:       http://161.97.118.187:3000
+2026-04-10T10:29:22: ✓ Ready in 277ms
+2026-04-10T10:51:22: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T10:51:23: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T10:53:24: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T10:53:25: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T10:59:15: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T10:59:17: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:01:54: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:01:55: [avatar proxy] Response status: 200, body length: 186
+2026-04-10T11:07:23: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:07:24: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:14:30: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:14:31: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:17:23: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:17:25: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:17:56: ▲ Next.js 16.2.2
+2026-04-10T11:17:56: - Local:         http://localhost:3000
+2026-04-10T11:17:56: - Network:       http://161.97.118.187:3000
+2026-04-10T11:17:56: ✓ Ready in 413ms
+2026-04-10T11:19:26: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:19:27: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:20:29: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:20:31: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:20:49: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T11:20:49: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T11:20:49:     at ignore-listed frames
+2026-04-10T11:24:21: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:24:22: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:25:03: Avatar status proxy error: SyntaxError: Unexpected token '<', "<html>
+2026-04-10T11:25:03: <h"... is not valid JSON
+2026-04-10T11:25:03:     at JSON.parse (<anonymous>)
+2026-04-10T11:25:07: Avatar status proxy error: SyntaxError: Unexpected token '<', "<html>
+2026-04-10T11:25:07: <h"... is not valid JSON
+2026-04-10T11:25:07:     at JSON.parse (<anonymous>)
+2026-04-10T11:25:10: Avatar status proxy error: SyntaxError: Unexpected token '<', "<html>
+2026-04-10T11:25:10: <h"... is not valid JSON
+2026-04-10T11:25:10:     at JSON.parse (<anonymous>)
+2026-04-10T11:25:13: Avatar status proxy error: SyntaxError: Unexpected token '<', "<html>
+2026-04-10T11:25:13: <h"... is not valid JSON
+2026-04-10T11:25:13:     at JSON.parse (<anonymous>)
+2026-04-10T11:26:13: Avatar status proxy error: SyntaxError: Unexpected token '<', "<html>
+2026-04-10T11:26:13: <h"... is not valid JSON
+2026-04-10T11:26:13:     at JSON.parse (<anonymous>)
+2026-04-10T11:26:16: Avatar status proxy error: SyntaxError: Unexpected token '<', "<html>
+2026-04-10T11:26:16: <h"... is not valid JSON
+2026-04-10T11:26:16:     at JSON.parse (<anonymous>)
+2026-04-10T11:26:20: Avatar status proxy error: SyntaxError: Unexpected token '<', "<html>
+2026-04-10T11:26:20: <h"... is not valid JSON
+2026-04-10T11:26:20:     at JSON.parse (<anonymous>)
+2026-04-10T11:26:23: Avatar status proxy error: SyntaxError: Unexpected token '<', "<html>
+2026-04-10T11:26:23: <h"... is not valid JSON
+2026-04-10T11:26:23:     at JSON.parse (<anonymous>)
+2026-04-10T11:28:17: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:28:19: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:31:10: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:31:12: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:35:36: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:35:37: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:37:17: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T11:37:17: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T11:37:17:     at ignore-listed frames
+2026-04-10T11:37:17: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T11:37:17: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T11:37:17:     at ignore-listed frames
+2026-04-10T11:49:34: ▲ Next.js 16.2.2
+2026-04-10T11:49:34: - Local:         http://localhost:3000
+2026-04-10T11:49:34: - Network:       http://161.97.118.187:3000
+2026-04-10T11:49:34: ✓ Ready in 582ms
+2026-04-10T11:53:44: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:53:45: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:56:29: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T11:56:29: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T11:56:29:     at ignore-listed frames
+2026-04-10T11:56:29: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T11:56:29: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T11:56:29:     at ignore-listed frames
+2026-04-10T11:56:29: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T11:56:29: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T11:56:29:     at ignore-listed frames
+2026-04-10T11:58:14: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:58:16: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T12:07:08: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T12:07:10: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T12:10:25: ▲ Next.js 16.2.2
+2026-04-10T12:10:25: - Local:         http://localhost:3000
+2026-04-10T12:10:25: - Network:       http://161.97.118.187:3000
+2026-04-10T12:10:25: ✓ Ready in 357ms
+2026-04-10T12:13:30: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T12:13:31: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T12:20:38: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T12:20:38: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T12:20:38:     at ignore-listed frames
+2026-04-10T12:20:39: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T12:20:39: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T12:20:39:     at ignore-listed frames
+2026-04-10T12:20:39: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T12:20:39: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T12:20:39:     at ignore-listed frames
+2026-04-10T12:48:22: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T12:48:23: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T12:52:56: ▲ Next.js 16.2.2
+2026-04-10T12:52:56: - Local:         http://localhost:3000
+2026-04-10T12:52:56: - Network:       http://161.97.118.187:3000
+2026-04-10T12:52:56: ✓ Ready in 615ms
+2026-04-10T12:54:36: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T12:54:37: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T13:12:29: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T13:12:30: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T13:13:13: Error: Failed to find Server Action "s4qdrh7xy". This request might be from an older or newer deployment.
+2026-04-10T13:13:13: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T13:13:13:     at ignore-listed frames
+2026-04-10T13:18:32: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T13:18:32: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T13:18:32:     at ignore-listed frames
+2026-04-10T13:22:17: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T13:22:18: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T13:23:46: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T13:23:46: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T13:23:46:     at ignore-listed frames
+2026-04-10T13:28:06: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T13:28:06: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T13:28:06:     at ignore-listed frames
+2026-04-10T13:33:00: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T13:33:02: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T13:35:03: Error: Failed to find Server Action "e0bwden28". This request might be from an older or newer deployment.
+2026-04-10T13:35:03: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T13:35:03:     at ignore-listed frames
+2026-04-10T13:40:01: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T13:40:01: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T13:40:01:     at ignore-listed frames
+2026-04-10T13:45:21: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T13:45:21: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T13:45:21:     at ignore-listed frames
+2026-04-10T13:49:36: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T13:49:36: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T13:49:36:     at ignore-listed frames
+2026-04-10T13:52:45: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T13:52:46: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T13:56:32: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T13:56:34: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T15:38:14: Error: Failed to find Server Action "n". This request might be from an older or newer deployment.
+2026-04-10T15:38:14: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T15:38:14:     at ignore-listed frames
+2026-04-10T16:36:56: Error: Failed to find Server Action "n". This request might be from an older or newer deployment.
+2026-04-10T16:36:56: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T16:36:56:     at ignore-listed frames
+2026-04-10T17:34:30: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T17:34:30: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T17:34:30:     at ignore-listed frames
+2026-04-10T18:33:31: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T18:33:31: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T18:33:31:     at ignore-listed frames
+2026-04-10T18:35:33: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T18:35:33: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T18:35:33:     at ignore-listed frames
+2026-04-10T18:35:34: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T18:35:34: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T18:35:34:     at ignore-listed frames
+2026-04-10T18:35:34: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T18:35:34: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T18:35:34:     at ignore-listed frames
+2026-04-10T18:35:35: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T18:35:35: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T18:35:35:     at ignore-listed frames
+2026-04-10T18:35:35: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T18:35:35: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T18:35:35:     at ignore-listed frames
+2026-04-10T18:35:35: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T18:35:35: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T18:35:35:     at ignore-listed frames
+2026-04-10T19:49:31: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T19:49:31: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T19:49:31:     at ignore-listed frames
+2026-04-10T22:53:48: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-10T22:53:48: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-10T22:53:48:     at ignore-listed frames
+2026-04-11T00:05:20: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T00:05:20: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T00:05:20:     at ignore-listed frames
+2026-04-11T01:22:04: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T01:22:04: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T01:22:04:     at ignore-listed frames
+2026-04-11T01:22:05: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T01:22:05: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T01:22:05:     at ignore-listed frames
+2026-04-11T03:36:54: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T03:36:54: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T03:36:54:     at ignore-listed frames
+2026-04-11T04:16:07: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T04:16:07: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T04:16:07:     at ignore-listed frames
+2026-04-11T04:28:22: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T04:28:24: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T04:35:15: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T04:35:15: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T04:35:15:     at ignore-listed frames
+2026-04-11T04:35:33: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T04:35:33: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T04:35:33:     at ignore-listed frames
+2026-04-11T04:35:52: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T04:35:52: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T04:35:52:     at ignore-listed frames
+2026-04-11T04:36:12: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T04:36:12: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T04:36:12:     at ignore-listed frames
+2026-04-11T04:36:33: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T04:36:33: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T04:36:33:     at ignore-listed frames
+2026-04-11T04:36:54: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T04:36:54: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T04:36:54:     at ignore-listed frames
+2026-04-11T04:38:07: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T04:38:07: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T04:38:07:     at ignore-listed frames
+2026-04-11T04:49:14: ▲ Next.js 16.2.2
+2026-04-11T04:49:14: - Local:         http://localhost:3000
+2026-04-11T04:49:14: - Network:       http://161.97.118.187:3000
+2026-04-11T04:49:14: ✓ Ready in 368ms
+2026-04-11T04:53:49: ▲ Next.js 16.2.2
+2026-04-11T04:53:49: - Local:         http://localhost:3000
+2026-04-11T04:53:49: - Network:       http://161.97.118.187:3000
+2026-04-11T04:53:49: ✓ Ready in 355ms
+2026-04-11T05:06:04: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T05:06:04: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T05:06:04:     at ignore-listed frames
+2026-04-11T05:06:05: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T05:06:05: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T05:06:05:     at ignore-listed frames
+2026-04-11T05:31:20: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T05:31:22: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T05:40:10: ▲ Next.js 16.2.2
+2026-04-11T05:40:10: - Local:         http://localhost:3000
+2026-04-11T05:40:10: - Network:       http://161.97.118.187:3000
+2026-04-11T05:40:10: ✓ Ready in 381ms
+2026-04-11T05:41:27: ▲ Next.js 16.2.2
+2026-04-11T05:41:27: - Local:         http://localhost:3000
+2026-04-11T05:41:27: - Network:       http://161.97.118.187:3000
+2026-04-11T05:41:27: ✓ Ready in 260ms
+2026-04-11T05:43:02: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T05:43:09: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T06:16:52: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T06:16:52: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T06:16:52:     at ignore-listed frames
+2026-04-11T06:49:21: ▲ Next.js 16.2.2
+2026-04-11T06:49:21: - Local:         http://localhost:3000
+2026-04-11T06:49:21: - Network:       http://161.97.118.187:3000
+2026-04-11T06:49:21: ✓ Ready in 383ms
+2026-04-11T06:51:56: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T06:51:57: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T07:00:39: ▲ Next.js 16.2.2
+2026-04-11T07:00:39: - Local:         http://localhost:3000
+2026-04-11T07:00:39: - Network:       http://161.97.118.187:3000
+2026-04-11T07:00:39: ✓ Ready in 352ms
+2026-04-11T08:23:18: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T08:23:18: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T08:23:18:     at ignore-listed frames
+2026-04-11T09:10:06: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T09:10:06: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T09:10:06:     at ignore-listed frames
+2026-04-11T10:58:31: Error: Failed to find Server Action "1". This request might be from an older or newer deployment.
+2026-04-11T10:58:31: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T10:58:31:     at ignore-listed frames
+2026-04-11T10:59:01: Error: Failed to find Server Action "1". This request might be from an older or newer deployment.
+2026-04-11T10:59:01: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T10:59:01:     at ignore-listed frames
+2026-04-11T11:10:51: Error: Failed to find Server Action "1". This request might be from an older or newer deployment.
+2026-04-11T11:10:51: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T11:10:51:     at ignore-listed frames
+2026-04-11T11:11:38: Error: Failed to find Server Action "1". This request might be from an older or newer deployment.
+2026-04-11T11:11:38: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T11:11:38:     at ignore-listed frames
+2026-04-11T11:12:44: Error: Failed to find Server Action "1". This request might be from an older or newer deployment.
+2026-04-11T11:12:44: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T11:12:44:     at ignore-listed frames
+2026-04-11T11:24:06: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T11:24:06: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T11:24:06:     at ignore-listed frames
+2026-04-11T11:25:46: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T11:25:46: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T11:25:46:     at ignore-listed frames
+2026-04-11T11:25:46: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T11:25:46: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T11:25:46:     at ignore-listed frames
+2026-04-11T11:25:47: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T11:25:47: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T11:25:47:     at ignore-listed frames
+2026-04-11T11:25:48: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T11:25:48: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T11:25:48:     at ignore-listed frames
+2026-04-11T11:25:48: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T11:25:48: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T11:25:48:     at ignore-listed frames
+2026-04-11T11:25:48: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T11:25:48: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T11:25:48:     at ignore-listed frames
+2026-04-11T11:54:32: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T11:54:33: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T12:08:10: Error: Failed to find Server Action "1". This request might be from an older or newer deployment.
+2026-04-11T12:08:10: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T12:08:10:     at ignore-listed frames
+2026-04-11T12:08:38: Error: Failed to find Server Action "1". This request might be from an older or newer deployment.
+2026-04-11T12:08:38: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T12:08:38:     at ignore-listed frames
+2026-04-11T12:27:48: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T12:27:49: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T12:34:09: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T12:34:11: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T12:37:05: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T12:37:06: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T13:00:22: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T13:00:23: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T13:01:28: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T13:01:30: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T13:09:04: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T13:09:04: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T13:09:04:     at ignore-listed frames
+2026-04-11T13:09:04: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T13:09:04: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T13:09:04:     at ignore-listed frames
+2026-04-11T13:10:18: ▲ Next.js 16.2.2
+2026-04-11T13:10:18: - Local:         http://localhost:3000
+2026-04-11T13:10:18: - Network:       http://161.97.118.187:3000
+2026-04-11T13:10:18: ✓ Ready in 931ms
+2026-04-11T13:14:24: ▲ Next.js 16.2.2
+2026-04-11T13:14:24: - Local:         http://localhost:3000
+2026-04-11T13:14:24: - Network:       http://161.97.118.187:3000
+2026-04-11T13:14:24: ✓ Ready in 311ms
+2026-04-11T13:21:29: ▲ Next.js 16.2.2
+2026-04-11T13:21:29: - Local:         http://localhost:3000
+2026-04-11T13:21:29: - Network:       http://161.97.118.187:3000
+2026-04-11T13:21:29: ✓ Ready in 568ms
+2026-04-11T13:22:45: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T13:22:47: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T13:30:06: ▲ Next.js 16.2.2
+2026-04-11T13:30:06: - Local:         http://localhost:3000
+2026-04-11T13:30:06: - Network:       http://161.97.118.187:3000
+2026-04-11T13:30:06: ✓ Ready in 1604ms
+2026-04-11T13:31:10: ▲ Next.js 16.2.2
+2026-04-11T13:31:10: - Local:         http://localhost:3000
+2026-04-11T13:31:10: - Network:       http://161.97.118.187:3000
+2026-04-11T13:31:10: ✓ Ready in 512ms
+2026-04-11T13:37:58: Error: Failed to find Server Action "1". This request might be from an older or newer deployment.
+2026-04-11T13:37:58: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T13:37:58:     at ignore-listed frames
+2026-04-11T13:41:52: Error: Failed to find Server Action "1". This request might be from an older or newer deployment.
+2026-04-11T13:41:52: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T13:41:52:     at ignore-listed frames
+2026-04-11T14:10:23: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T14:10:23: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T14:10:23:     at ignore-listed frames
+2026-04-11T14:54:37: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T14:54:39: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T16:56:40: ▲ Next.js 16.2.2
+2026-04-11T16:56:40: - Local:         http://localhost:3000
+2026-04-11T16:56:40: - Network:       http://161.97.118.187:3000
+2026-04-11T16:56:40: ✓ Ready in 942ms
+2026-04-11T17:35:17: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T17:35:17: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T17:35:17:     at ignore-listed frames
+2026-04-11T18:29:31: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T18:29:32: [avatar proxy] Response status: 400, body length: 144
+2026-04-11T18:47:18: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T18:47:18: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T18:47:18:     at ignore-listed frames
+2026-04-11T18:56:45: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T18:56:45: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T18:56:45:     at ignore-listed frames
+2026-04-11T19:34:06: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T19:34:06: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T19:34:06:     at ignore-listed frames
+2026-04-11T19:34:06: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T19:34:06: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T19:34:06:     at ignore-listed frames
+2026-04-11T19:34:07: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T19:34:07: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T19:34:07:     at ignore-listed frames
+2026-04-11T19:34:07: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T19:34:07: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T19:34:07:     at ignore-listed frames
+2026-04-11T19:34:08: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T19:34:08: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T19:34:08:     at ignore-listed frames
+2026-04-11T19:34:08: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T19:34:08: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T19:34:08:     at ignore-listed frames
+2026-04-11T20:52:12: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T20:52:12: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T20:52:12:     at ignore-listed frames
+2026-04-11T20:52:58: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-11T20:52:58: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-11T20:52:58:     at ignore-listed frames
+2026-04-11T21:04:51: ▲ Next.js 16.2.2
+2026-04-11T21:04:51: - Local:         http://localhost:3000
+2026-04-11T21:04:51: - Network:       http://161.97.118.187:3000
+2026-04-11T21:04:51: ✓ Ready in 262ms

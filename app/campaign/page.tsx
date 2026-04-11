@@ -9,6 +9,8 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Image from "next/image";
 import ChocolateCatchGame from "../components/ChocolateCatchGame";
+import BackgroundMusic, { BackgroundMusicHandle } from "../components/BackgroundMusic";
+import { useRouter } from "next/navigation";
 import {
 	trackAuth,
 	trackCampaign,
@@ -937,7 +939,7 @@ const STAGE_PROGRESS: Record<string, number> = {
 	branded_composites: 95,
 };
 
-function GamePopup({ onFinish }: { onFinish: () => void }) {
+function GamePopup({ onFinish, musicRef }: { onFinish: () => void; musicRef?: React.RefObject<BackgroundMusicHandle | null> }) {
 	const [progress, setProgress] = useState(0);
 	const [status, setStatus] = useState<"generating" | "complete" | "error">("generating");
 	const [errorMsg, setErrorMsg] = useState("");
@@ -970,6 +972,10 @@ function GamePopup({ onFinish }: { onFinish: () => void }) {
 					const userId = 'user_' + Date.now();
 					trackAvatar.generationCompleted(userId, 0);
 					trackConversion.campaignCompleted(userId, 0);
+					// Fade out background music
+					if (musicRef?.current) {
+						musicRef.current.fadeOut();
+					}
 					return;
 				}
 
@@ -1023,16 +1029,23 @@ function GamePopup({ onFinish }: { onFinish: () => void }) {
 				<motion.div
 					initial={{ opacity: 0, scale: 0.9 }}
 					animate={{ opacity: 1, scale: 1 }}
-					className="w-full max-w-[calc(100vw-2rem)] sm:max-w-md bg-[#160A30]/95 border border-red-500/30 rounded-3xl p-4 sm:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center"
+					className="w-full max-w-[calc(100vw-2rem)] sm:max-w-md bg-[#160A30]/95 border border-red-500/30 rounded-3xl p-4 sm:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
+					style={{
+						backgroundImage: 'url(/people.png)',
+						backgroundSize: 'cover',
+						backgroundPosition: 'center',
+						backgroundRepeat: 'no-repeat'
+					}}
 				>
-					<div className="mx-auto w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mb-6">
+					<div className="absolute inset-0 bg-[#160A30]/90 rounded-3xl" />
+					<div className="relative z-10 mx-auto w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mb-6">
 						<AlertCircle size={30} className="text-red-400" />
 					</div>
-					<h3 className="font-playfair text-2xl font-black text-white mb-2">Generation Failed</h3>
-					<p className="text-sm text-gray-300 mb-6">{errorMsg}</p>
+					<h3 className="relative z-10 font-playfair text-2xl font-black text-white mb-2">Generation Failed</h3>
+					<p className="relative z-10 text-sm text-gray-300 mb-6">{errorMsg}</p>
 					<button
 						onClick={onFinish}
-						className="px-6 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 transition-colors"
+						className="relative z-10 px-6 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 transition-colors"
 					>
 						Continue Anyway
 					</button>
@@ -1047,32 +1060,40 @@ function GamePopup({ onFinish }: { onFinish: () => void }) {
 				<motion.div
 					initial={{ opacity: 0, scale: 0.9 }}
 					animate={{ opacity: 1, scale: 1 }}
-					className="w-full max-w-[calc(100vw-1.5rem)] sm:max-w-md bg-[#160A30]/95 border border-yellow-500/30 rounded-3xl p-4 sm:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center"
+					className="w-full max-w-[calc(100vw-1.5rem)] sm:max-w-md bg-[#160A30]/95 border border-yellow-500/30 rounded-3xl p-4 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden cursor-pointer"
+					onClick={onFinish}
+					style={{
+						backgroundImage: 'url(/people.png)',
+						backgroundSize: 'cover',
+						backgroundPosition: 'center',
+						backgroundRepeat: 'no-repeat'
+					}}
 				>
-					<div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.5)] mb-4 mt-2">
-						<Sparkles size={30} className="text-white" />
+					<div className="absolute inset-0 bg-[#160A30]/90 rounded-3xl" />
+					<div className="relative z-10 mx-auto w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.5)] mb-3">
+						<Sparkles size={24} className="text-white" />
 					</div>
 
-					<h3 className="font-playfair text-2xl font-black text-white leading-tight mb-2">
+					<h3 className="relative z-10 font-playfair text-xl font-black text-white leading-tight mb-2">
 						Your Avatar is Ready!
 					</h3>
 
 					{previewUrl && (
-						<div className="my-4 rounded-xl overflow-hidden border border-yellow-500/20 shadow-lg">
-							<img src={previewUrl} alt="Your generated avatar" className="w-full h-auto" />
+						<div className="relative z-10 my-3 rounded-xl overflow-hidden border border-yellow-500/20 shadow-lg max-h-48">
+							<img src={previewUrl} alt="Your generated avatar" className="w-full h-auto object-cover" />
 						</div>
 					)}
 
-					<div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl px-4 py-3 mb-4">
-						<p className="text-yellow-400 font-bold text-sm tracking-wide uppercase mb-1">Pending Admin Approval</p>
-						<p className="text-blue-200/70 text-xs">Your avatar has been submitted for review. Once approved, it will appear on the vote page.</p>
+					<div className="relative z-10 bg-yellow-500/10 border border-yellow-500/30 rounded-xl px-3 py-2 mb-3">
+						<p className="text-yellow-400 font-bold text-xs tracking-wide uppercase mb-0.5">Pending Admin Approval</p>
+						<p className="text-blue-200/70 text-[11px]">Your avatar has been submitted for review. Once approved, it will appear on the vote page.</p>
 					</div>
 
 					<button
 						onClick={onFinish}
-						className="px-6 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 transition-colors text-sm"
+						className="relative z-10 px-6 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 transition-colors text-sm"
 					>
-						Done
+						View Gallery
 					</button>
 				</motion.div>
 			</div>
@@ -1080,42 +1101,51 @@ function GamePopup({ onFinish }: { onFinish: () => void }) {
 	}
 
 	return (
-		<div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-[#0A0515]/80 backdrop-blur-md">
+		<div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-3 bg-[#0A0515]/80 backdrop-blur-md">
 			<motion.div
 				initial={{ opacity: 0, scale: 0.9 }}
 				animate={{ opacity: 1, scale: 1 }}
-				className="w-full max-w-[calc(100vw-1.5rem)] sm:max-w-md bg-[#160A30]/95 border border-yellow-500/30 rounded-3xl p-4 sm:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
+				className="w-full max-w-[calc(100vw-1rem)] lg:max-w-6xl h-[calc(100vh-1rem)] flex flex-col bg-[#160A30]/95 border border-yellow-500/30 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
+				style={{
+					backgroundImage: 'url(/people.png)',
+					backgroundSize: 'cover',
+					backgroundPosition: 'center',
+					backgroundRepeat: 'no-repeat'
+				}}
 			>
-				<div className="absolute top-0 left-0 w-full h-1 bg-white/10">
+				<div className="absolute inset-0 bg-[#160A30]/90 rounded-3xl" />
+				<div className="absolute top-0 left-0 w-full h-1 bg-white/10 z-20">
 					<div className="h-full bg-gradient-to-r from-yellow-500 to-amber-500 transition-all duration-75 ease-linear" style={{ width: `${progress}%` }} />
 				</div>
 
-				<div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center shadow-[0_0_20px_rgba(234,179,8,0.5)] mb-6 mt-4">
-					<Sparkles size={30} className="text-[#160A30] animate-pulse" />
+				<div className="relative z-10 flex-1 flex flex-col p-4 sm:p-6 pt-5 overflow-hidden">
+					<div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center shadow-[0_0_20px_rgba(234,179,8,0.5)] mb-3">
+						<Sparkles size={24} className="text-[#160A30] animate-pulse" />
+					</div>
+
+					<h3 className="font-playfair text-xl sm:text-2xl font-black text-white leading-tight mb-2">
+						{queuePosition !== null && queuePosition > 0 ? "In Queue..." : "Generating Avatar..."}
+					</h3>
+					<p className="text-xs sm:text-sm text-blue-200/70 mb-3 max-w-[280px] mx-auto">
+						{queuePosition !== null && queuePosition > 0
+							? `You're in position ${queuePosition}. Your avatar will be generated soon!`
+							: "The AI is working its magic! Play this quick mini-game while you wait."}
+					</p>
+
+					{queuePosition !== null && queuePosition > 0 ? (
+						<div className="w-full border-2 border-yellow-500/30 rounded-xl bg-yellow-500/10 p-6 mb-6">
+							<div className="text-6xl font-black text-yellow-400 mb-2">#{queuePosition}</div>
+							<p className="text-xs text-yellow-200/70 uppercase tracking-widest">Queue Position</p>
+							<p className="text-xs text-blue-200/60 mt-3">Processing one at a time to ensure quality</p>
+						</div>
+					) : (
+						<div className="w-full flex-1 flex items-center justify-center min-h-0">
+							<ChocolateCatchGame progress={progress} />
+						</div>
+					)}
+
+					<p className="text-yellow-400/80 font-bold text-xs tracking-widest uppercase mt-2">{progress}% — {stageName}</p>
 				</div>
-
-				<h3 className="font-playfair text-2xl font-black text-white leading-tight mb-2">
-					{queuePosition !== null && queuePosition > 0 ? "In Queue..." : "Generating Avatar..."}
-				</h3>
-				<p className="text-sm text-blue-200/70 mb-8 max-w-[280px] mx-auto">
-					{queuePosition !== null && queuePosition > 0
-						? `You're in position ${queuePosition}. Your avatar will be generated soon!`
-						: "The AI is working its magic! Play this quick mini-game while you wait."}
-				</p>
-
-				{queuePosition !== null && queuePosition > 0 ? (
-					<div className="w-full border-2 border-yellow-500/30 rounded-xl bg-yellow-500/10 p-6 mb-6">
-						<div className="text-6xl font-black text-yellow-400 mb-2">#{queuePosition}</div>
-						<p className="text-xs text-yellow-200/70 uppercase tracking-widest">Queue Position</p>
-						<p className="text-xs text-blue-200/60 mt-3">Processing one at a time to ensure quality</p>
-					</div>
-				) : (
-					<div className="w-full mb-6">
-						<ChocolateCatchGame progress={progress} />
-					</div>
-				)}
-
-				<p className="text-yellow-400/80 font-bold text-xs tracking-widest uppercase">{progress}% — {stageName}</p>
 			</motion.div>
 		</div>
 	);
@@ -1129,12 +1159,14 @@ function AnalyticsTracker({ pageName }: { pageName: string }) {
 
 // ─── Main Page Component ──────────────────────────────────────────────────────
 function CampaignPageContent() {
+	const router = useRouter();
 	const [step, setStep] = useState(1);
 	const [unlockedStep, setUnlockedStep] = useState(1);
 	const [dir, setDir] = useState(1);
 	const [showGamePopup, setShowGamePopup] = useState(false);
 	const [isGenerating, setIsGenerating] = useState(false);
 	const stepStartTime = useRef<number>(Date.now());
+	const musicRef = useRef<BackgroundMusicHandle>(null);
 
 	function goNext() {
 		setDir(1);
@@ -1202,10 +1234,19 @@ function CampaignPageContent() {
 				<div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
 			</div>
 
+			{/* Background Music */}
+			<BackgroundMusic ref={musicRef} src="/game.mp3" volume={0.25} />
+
 			{/* Game Popup Overlay */}
 			<AnimatePresence>
 				{showGamePopup && (
-					<GamePopup onFinish={() => setShowGamePopup(false)} />
+					<GamePopup
+						onFinish={() => {
+							setShowGamePopup(false);
+							router.push('/vote');
+						}}
+						musicRef={musicRef}
+					/>
 				)}
 			</AnimatePresence>
 

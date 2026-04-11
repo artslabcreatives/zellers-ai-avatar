@@ -146,3 +146,159 @@
 2026-04-10T09:39:55: [avatar proxy] Response status: 200, body length: 183
 2026-04-10T09:43:54: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
 2026-04-10T09:43:56: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T09:48:45: ▲ Next.js 16.2.2
+2026-04-10T09:48:45: - Local:         http://localhost:3000
+2026-04-10T09:48:45: - Network:       http://161.97.118.187:3000
+2026-04-10T09:48:45: ✓ Ready in 331ms
+2026-04-10T10:24:03: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T10:24:04: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T10:28:06: ▲ Next.js 16.2.2
+2026-04-10T10:28:06: - Local:         http://localhost:3000
+2026-04-10T10:28:06: - Network:       http://161.97.118.187:3000
+2026-04-10T10:28:06: ✓ Ready in 331ms
+2026-04-10T10:29:22: ▲ Next.js 16.2.2
+2026-04-10T10:29:22: - Local:         http://localhost:3000
+2026-04-10T10:29:22: - Network:       http://161.97.118.187:3000
+2026-04-10T10:29:22: ✓ Ready in 277ms
+2026-04-10T10:51:22: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T10:51:23: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T10:53:24: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T10:53:25: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T10:59:15: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T10:59:17: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:01:54: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:01:55: [avatar proxy] Response status: 200, body length: 186
+2026-04-10T11:07:23: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:07:24: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:14:30: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:14:31: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:17:23: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:17:25: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:17:56: ▲ Next.js 16.2.2
+2026-04-10T11:17:56: - Local:         http://localhost:3000
+2026-04-10T11:17:56: - Network:       http://161.97.118.187:3000
+2026-04-10T11:17:56: ✓ Ready in 413ms
+2026-04-10T11:19:26: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:19:27: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:20:29: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:20:31: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:24:21: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:24:22: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:28:17: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:28:19: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:31:10: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:31:12: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:35:36: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:35:37: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:49:34: ▲ Next.js 16.2.2
+2026-04-10T11:49:34: - Local:         http://localhost:3000
+2026-04-10T11:49:34: - Network:       http://161.97.118.187:3000
+2026-04-10T11:49:34: ✓ Ready in 582ms
+2026-04-10T11:53:44: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:53:45: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T11:58:14: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T11:58:16: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T12:07:08: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T12:07:10: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T12:10:25: ▲ Next.js 16.2.2
+2026-04-10T12:10:25: - Local:         http://localhost:3000
+2026-04-10T12:10:25: - Network:       http://161.97.118.187:3000
+2026-04-10T12:10:25: ✓ Ready in 357ms
+2026-04-10T12:13:30: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T12:13:31: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T12:48:22: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T12:48:23: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T12:52:56: ▲ Next.js 16.2.2
+2026-04-10T12:52:56: - Local:         http://localhost:3000
+2026-04-10T12:52:56: - Network:       http://161.97.118.187:3000
+2026-04-10T12:52:56: ✓ Ready in 615ms
+2026-04-10T12:54:36: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T12:54:37: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T13:12:29: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T13:12:30: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T13:22:17: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T13:22:18: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T13:33:00: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T13:33:02: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T13:52:45: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T13:52:46: [avatar proxy] Response status: 200, body length: 183
+2026-04-10T13:56:32: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-10T13:56:34: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T04:28:22: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T04:28:24: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T04:49:14: ▲ Next.js 16.2.2
+2026-04-11T04:49:14: - Local:         http://localhost:3000
+2026-04-11T04:49:14: - Network:       http://161.97.118.187:3000
+2026-04-11T04:49:14: ✓ Ready in 368ms
+2026-04-11T04:53:49: ▲ Next.js 16.2.2
+2026-04-11T04:53:49: - Local:         http://localhost:3000
+2026-04-11T04:53:49: - Network:       http://161.97.118.187:3000
+2026-04-11T04:53:49: ✓ Ready in 355ms
+2026-04-11T05:31:20: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T05:31:22: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T05:40:10: ▲ Next.js 16.2.2
+2026-04-11T05:40:10: - Local:         http://localhost:3000
+2026-04-11T05:40:10: - Network:       http://161.97.118.187:3000
+2026-04-11T05:40:10: ✓ Ready in 381ms
+2026-04-11T05:41:27: ▲ Next.js 16.2.2
+2026-04-11T05:41:27: - Local:         http://localhost:3000
+2026-04-11T05:41:27: - Network:       http://161.97.118.187:3000
+2026-04-11T05:41:27: ✓ Ready in 260ms
+2026-04-11T05:43:02: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T05:43:09: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T06:49:21: ▲ Next.js 16.2.2
+2026-04-11T06:49:21: - Local:         http://localhost:3000
+2026-04-11T06:49:21: - Network:       http://161.97.118.187:3000
+2026-04-11T06:49:21: ✓ Ready in 383ms
+2026-04-11T06:51:56: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T06:51:57: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T07:00:39: ▲ Next.js 16.2.2
+2026-04-11T07:00:39: - Local:         http://localhost:3000
+2026-04-11T07:00:39: - Network:       http://161.97.118.187:3000
+2026-04-11T07:00:39: ✓ Ready in 352ms
+2026-04-11T11:54:32: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T11:54:33: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T12:27:48: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T12:27:49: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T12:34:09: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T12:34:11: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T12:37:05: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T12:37:06: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T13:00:22: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T13:00:23: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T13:01:28: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T13:01:30: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T13:10:18: ▲ Next.js 16.2.2
+2026-04-11T13:10:18: - Local:         http://localhost:3000
+2026-04-11T13:10:18: - Network:       http://161.97.118.187:3000
+2026-04-11T13:10:18: ✓ Ready in 931ms
+2026-04-11T13:14:24: ▲ Next.js 16.2.2
+2026-04-11T13:14:24: - Local:         http://localhost:3000
+2026-04-11T13:14:24: - Network:       http://161.97.118.187:3000
+2026-04-11T13:14:24: ✓ Ready in 311ms
+2026-04-11T13:21:29: ▲ Next.js 16.2.2
+2026-04-11T13:21:29: - Local:         http://localhost:3000
+2026-04-11T13:21:29: - Network:       http://161.97.118.187:3000
+2026-04-11T13:21:29: ✓ Ready in 568ms
+2026-04-11T13:22:45: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T13:22:47: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T13:30:06: ▲ Next.js 16.2.2
+2026-04-11T13:30:06: - Local:         http://localhost:3000
+2026-04-11T13:30:06: - Network:       http://161.97.118.187:3000
+2026-04-11T13:30:06: ✓ Ready in 1604ms
+2026-04-11T13:31:10: ▲ Next.js 16.2.2
+2026-04-11T13:31:10: - Local:         http://localhost:3000
+2026-04-11T13:31:10: - Network:       http://161.97.118.187:3000
+2026-04-11T13:31:10: ✓ Ready in 512ms
+2026-04-11T14:54:37: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T14:54:39: [avatar proxy] Response status: 200, body length: 183
+2026-04-11T16:56:40: ▲ Next.js 16.2.2
+2026-04-11T16:56:40: - Local:         http://localhost:3000
+2026-04-11T16:56:40: - Network:       http://161.97.118.187:3000
+2026-04-11T16:56:40: ✓ Ready in 942ms
+2026-04-11T18:29:31: [avatar proxy] POST https://api.aiavuruduwithzellers.com/avatar/generate
+2026-04-11T18:29:32: [avatar proxy] Response status: 400, body length: 144
+2026-04-11T21:04:51: ▲ Next.js 16.2.2
+2026-04-11T21:04:51: - Local:         http://localhost:3000
+2026-04-11T21:04:51: - Network:       http://161.97.118.187:3000
+2026-04-11T21:04:51: ✓ Ready in 262ms
