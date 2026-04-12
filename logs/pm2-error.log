@@ -446,3 +446,144 @@
 2026-04-11T20:52:58: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
 2026-04-11T20:52:58: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
 2026-04-11T20:52:58:     at ignore-listed frames
+2026-04-11T21:55:27: [avatar proxy] Non-JSON response: <html>
+2026-04-11T21:55:27: <head><title>502 Bad Gateway</title></head>
+2026-04-11T21:55:27: <body>
+2026-04-11T21:55:27: <center><h1>502 Bad Gateway</h1></center>
+2026-04-11T21:55:27: <hr><center>nginx/1.24.0 (Ubuntu)</center>
+2026-04-11T21:55:27: </body>
+2026-04-11T21:55:27: </html>
+2026-04-11T21:55:27: 
+2026-04-12T03:13:00: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T03:13:00: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T03:13:00:     at ignore-listed frames
+2026-04-12T04:04:52: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T04:04:52: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T04:04:52:     at ignore-listed frames
+2026-04-12T04:07:05: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T04:07:05: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T04:07:05:     at ignore-listed frames
+2026-04-12T05:01:39: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T05:01:39: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T05:01:39:     at ignore-listed frames
+2026-04-12T05:17:51: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T05:17:51: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T05:17:51:     at ignore-listed frames
+2026-04-12T05:17:52: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T05:17:52: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T05:17:52:     at ignore-listed frames
+2026-04-12T05:17:53: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T05:17:53: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T05:17:53:     at ignore-listed frames
+2026-04-12T05:17:53: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T05:17:53: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T05:17:53:     at ignore-listed frames
+2026-04-12T05:17:53: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T05:17:53: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T05:17:53:     at ignore-listed frames
+2026-04-12T05:17:54: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T05:17:54: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T05:17:54:     at ignore-listed frames
+2026-04-12T05:53:02: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T05:53:02: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T05:53:02:     at ignore-listed frames
+2026-04-12T06:41:51: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T06:41:51: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T06:41:51:     at ignore-listed frames
+2026-04-12T06:41:51: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T06:41:51: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T06:41:51:     at ignore-listed frames
+2026-04-12T06:41:51: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T06:41:51: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T06:41:51:     at ignore-listed frames
+2026-04-12T08:01:41: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T08:01:41: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T08:01:41:     at ignore-listed frames
+2026-04-12T08:01:41: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T08:01:41: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T08:01:41:     at ignore-listed frames
+2026-04-12T08:01:41: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T08:01:41: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T08:01:41:     at ignore-listed frames
+2026-04-12T08:28:20: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T08:28:20: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T08:28:20:     at ignore-listed frames
+2026-04-12T08:29:46: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T08:29:46: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T08:29:46:     at ignore-listed frames
+2026-04-12T08:31:39: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T08:31:39: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T08:31:39:     at ignore-listed frames
+2026-04-12T08:33:29: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T08:33:29: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T08:33:29:     at ignore-listed frames
+2026-04-12T08:36:19: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T08:36:19: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T08:36:19:     at ignore-listed frames
+2026-04-12T08:36:19: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T08:36:19: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T08:36:19:     at ignore-listed frames
+2026-04-12T08:36:20: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T08:36:20: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T08:36:20:     at ignore-listed frames
+2026-04-12T08:36:20: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T08:36:20: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T08:36:20:     at ignore-listed frames
+2026-04-12T08:36:20: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T08:36:20: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T08:36:20:     at ignore-listed frames
+2026-04-12T08:36:20: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T08:36:20: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T08:36:20:     at ignore-listed frames
+2026-04-12T08:53:01: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T08:53:01: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T08:53:01:     at ignore-listed frames
+2026-04-12T09:47:40: ⨯ Error: ENOENT: no such file or directory, open '/var/www/zellers-ai-avatar/.next/BUILD_ID'
+2026-04-12T09:47:40:     at ignore-listed frames {
+2026-04-12T09:47:40:   errno: -2,
+2026-04-12T09:47:40:   code: 'ENOENT',
+2026-04-12T09:47:40:   syscall: 'open',
+2026-04-12T09:47:40:   path: '/var/www/zellers-ai-avatar/.next/BUILD_ID'
+2026-04-12T09:47:40: }
+2026-04-12T09:47:40: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/zellers-ai-avatar/.next/server/pages/500.html'
+2026-04-12T09:47:40:     at ignore-listed frames
+2026-04-12T09:47:41: ⨯ Error: ENOENT: no such file or directory, open '/var/www/zellers-ai-avatar/.next/BUILD_ID'
+2026-04-12T09:47:41:     at ignore-listed frames {
+2026-04-12T09:47:41:   errno: -2,
+2026-04-12T09:47:41:   code: 'ENOENT',
+2026-04-12T09:47:41:   syscall: 'open',
+2026-04-12T09:47:41:   path: '/var/www/zellers-ai-avatar/.next/BUILD_ID'
+2026-04-12T09:47:41: }
+2026-04-12T09:47:41: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/zellers-ai-avatar/.next/server/pages/500.html'
+2026-04-12T09:47:41:     at ignore-listed frames
+2026-04-12T09:47:50: Voting status check error: [TypeError: fetch failed] {
+2026-04-12T09:47:50:   [cause]: AggregateError: 
+2026-04-12T09:47:50:       at ignore-listed frames {
+2026-04-12T09:47:50:     code: 'ECONNREFUSED',
+2026-04-12T09:47:50:     [errors]: [ [Error], [Error] ]
+2026-04-12T09:47:50:   }
+2026-04-12T09:47:50: }
+2026-04-12T10:06:28: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T10:06:28: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T10:06:28:     at ignore-listed frames
+2026-04-12T10:29:43: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T10:29:43: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T10:29:43:     at ignore-listed frames
+2026-04-12T10:58:13: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T10:58:13: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T10:58:13:     at ignore-listed frames
+2026-04-12T11:19:42: Upload proxy error: SyntaxError: Unexpected token '<', "<html>
+2026-04-12T11:19:42: <h"... is not valid JSON
+2026-04-12T11:19:42:     at JSON.parse (<anonymous>)
+2026-04-12T12:20:07: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T12:20:07: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T12:20:07:     at ignore-listed frames
+2026-04-12T12:20:07: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T12:20:07: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T12:20:07:     at ignore-listed frames
+2026-04-12T13:50:38: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T13:50:38: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T13:50:38:     at ignore-listed frames
+2026-04-12T15:15:36: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-04-12T15:15:36: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-04-12T15:15:36:     at ignore-listed frames

@@ -553,7 +553,7 @@ function CameraModal({ onCapture, onClose }: { onCapture: (file: File) => void; 
 }
 
 // ─── Step 3: Upload Photo ─────────────────────────────────────────────────────
-function StepGenerate({ onNext, onBack }: { onNext: () => void, onBack: () => void }) {
+function StepGenerate({ onNext, onBack, isRetrying, onRetryDone }: { onNext: () => void, onBack: () => void, isRetrying?: boolean, onRetryDone?: () => void }) {
 	const [status, setStatus] = useState<"idle" | "uploading" | "success" | "error">("idle");
 	const [showCamera, setShowCamera] = useState(false);
 	const [errorMsg, setErrorMsg] = useState("");
@@ -625,8 +625,13 @@ function StepGenerate({ onNext, onBack }: { onNext: () => void, onBack: () => vo
 			trackCampaign.stepCompleted('upload', userId);
 
 			setStatus("success");
-			console.log('➡️ Moving to quiz step in 1.5s');
-			setTimeout(() => onNext(), 1500);
+			if (isRetrying && onRetryDone) {
+				console.log('➡️ Retry mode: triggering new generation in 1.5s');
+				setTimeout(() => onRetryDone(), 1500);
+			} else {
+				console.log('➡️ Moving to quiz step in 1.5s');
+				setTimeout(() => onNext(), 1500);
+			}
 		} catch (err) {
 			console.error("Upload error:", err);
 			setErrorMsg("Network error. Please check your connection.");
@@ -653,46 +658,71 @@ function StepGenerate({ onNext, onBack }: { onNext: () => void, onBack: () => vo
 				{/* State 1: IDLE - Show dual upload options */}
 				{status === "idle" && (
 					<motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, y: -20 }} className="w-full flex flex-col h-full justify-between">
-						<div>
-							<h3 className="font-playfair text-xl font-normal text-gray-100 mb-1 drop-shadow-sm">Select Your Portrait</h3>
-							<p className="text-xs text-gray-400 mb-6 max-w-sm mx-auto">We need a clear, front-facing photo to base your Royal Avatar on.</p>
+						<div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start">
 
-							<input
-								type="file"
-								accept="image/*"
-								ref={fileInputRef}
-								className="hidden"
-								onChange={handleFileChange}
-							/>
-
-							<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-								{/* Option 1: Upload Photo */}
-								<button
-									onClick={() => fileInputRef.current?.click()}
-									className="w-full h-36 border-2 border-white/10 bg-white/5 hover:border-yellow-500/50 hover:bg-yellow-500/10 rounded-2xl flex flex-col items-center justify-center gap-3 transition-all duration-300 backdrop-blur-md group"
-								>
-									<ImageIcon size={36} className="text-gray-400 group-hover:text-yellow-400 transition-colors" />
-									<span className="text-sm font-bold text-gray-300 group-hover:text-white tracking-wide">Upload Photo</span>
-								</button>
-
-								{/* Option 2: Take Selfie */}
-								<button
-									onClick={() => setShowCamera(true)}
-									className="w-full h-36 border-2 border-white/10 bg-white/5 hover:border-yellow-500/50 hover:bg-yellow-500/10 rounded-2xl flex flex-col items-center justify-center gap-3 transition-all duration-300 backdrop-blur-md group"
-								>
-									<Camera size={36} className="text-gray-400 group-hover:text-yellow-400 transition-colors" />
-									<span className="text-sm font-bold text-gray-300 group-hover:text-white tracking-wide">Take a Selfie</span>
-								</button>
+							{/* Left side: Silhouette guide */}
+							<div className="flex flex-col items-center gap-3 shrink-0">
+								<div className="relative w-28 h-44 bg-gray-800/60 border-2 border-dashed border-white/20 rounded-2xl flex items-center justify-center overflow-hidden">
+									<img src="/silhouette.svg" alt="Full body silhouette" className="w-20 h-36 opacity-70 object-contain" />
+								</div>
+								<p className="text-[11px] font-bold text-yellow-400 tracking-wide text-center leading-snug max-w-[110px]">
+									Upload your full image
+								</p>
+								<p className="text-[10px] text-gray-400 text-center leading-snug max-w-[120px]">
+									ඔබව සම්පූර්ණයෙන්ම පෙනෙන Photo එකක් Upload කරන්න
+								</p>
 							</div>
-						</div>
 
-						<div className="mt-8 flex justify-start">
+							{/* Right side: Upload options */}
+							<div className="flex-1 w-full">
+								<h3 className="font-playfair text-xl font-normal text-gray-100 mb-1 drop-shadow-sm">{isRetrying ? "Change Your Photo (Optional)" : "Select Your Portrait"}</h3>
+								<p className="text-xs text-gray-400 mb-6 max-w-sm mx-auto sm:mx-0 sm:text-left">{isRetrying ? "Upload a new full-body photo, or skip and keep your current one. You'll choose a new chocolate next." : "We need a clear, full-body photo to base your Royal Avatar on."}</p>
+
+								<input
+									type="file"
+									accept="image/*"
+									ref={fileInputRef}
+									className="hidden"
+									onChange={handleFileChange}
+								/>
+
+								<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+									{/* Option 1: Upload Photo */}
+									<button
+										onClick={() => fileInputRef.current?.click()}
+										className="w-full h-36 border-2 border-white/10 bg-white/5 hover:border-yellow-500/50 hover:bg-yellow-500/10 rounded-2xl flex flex-col items-center justify-center gap-3 transition-all duration-300 backdrop-blur-md group"
+									>
+										<ImageIcon size={36} className="text-gray-400 group-hover:text-yellow-400 transition-colors" />
+										<span className="text-sm font-bold text-gray-300 group-hover:text-white tracking-wide">Upload Photo</span>
+									</button>
+
+									{/* Option 2: Take Selfie */}
+									<button
+										onClick={() => setShowCamera(true)}
+										className="w-full h-36 border-2 border-white/10 bg-white/5 hover:border-yellow-500/50 hover:bg-yellow-500/10 rounded-2xl flex flex-col items-center justify-center gap-3 transition-all duration-300 backdrop-blur-md group"
+									>
+										<Camera size={36} className="text-gray-400 group-hover:text-yellow-400 transition-colors" />
+										<span className="text-sm font-bold text-gray-300 group-hover:text-white tracking-wide">Take a Selfie</span>
+									</button>
+								</div>
+							</div>{/* end right side */}
+						</div>{/* end two-column flex */}
+
+						<div className="mt-8 flex justify-between items-center">
 							<button
 								onClick={onBack}
 								className="text-xs font-bold tracking-widest text-gray-400 hover:text-white transition-colors flex items-center gap-1.5 uppercase"
 							>
 								<ArrowLeft size={14} /> Back to Profile
 							</button>
+							{isRetrying && onRetryDone && (
+								<button
+									onClick={onRetryDone}
+									className="text-xs font-bold tracking-widest text-yellow-400 hover:text-yellow-300 transition-colors flex items-center gap-1.5 uppercase"
+								>
+									Skip → Choose Chocolate
+								</button>
+							)}
 						</div>
 					</motion.div>
 				)}
@@ -720,7 +750,7 @@ function StepGenerate({ onNext, onBack }: { onNext: () => void, onBack: () => vo
 						<p className="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-b from-green-300 to-green-500 drop-shadow-md mb-2">
 							UPLOAD SUCCESSFUL!
 						</p>
-						<p className="text-sm text-gray-300 font-medium animate-pulse">Proceeding to Final Quiz...</p>
+						<p className="text-sm text-gray-300 font-medium animate-pulse">{isRetrying ? "Heading to chocolate selection..." : "Proceeding to Final Quiz..."}</p>
 					</motion.div>
 				)}
 
@@ -926,6 +956,9 @@ function StepQuiz({ onBack, onShowGamePopup, onTriggerGeneration }: { onBack: ()
 	);
 }
 
+// Maximum generation attempts allowed
+const MAX_ATTEMPTS = 3;
+
 // ─── Post-Quiz Game Modal ─────────────────────────────────────────────────────
 
 const STAGE_PROGRESS: Record<string, number> = {
@@ -939,29 +972,90 @@ const STAGE_PROGRESS: Record<string, number> = {
 	branded_composites: 95,
 };
 
-function GamePopup({ onFinish, musicRef }: { onFinish: () => void; musicRef?: React.RefObject<BackgroundMusicHandle | null> }) {
+function GamePopup({
+	attemptCount,
+	onTryAgain,
+	onSubmit,
+	onFinish,
+	musicRef,
+}: {
+	attemptCount: number;
+	onTryAgain: () => void;
+	onSubmit: () => void;
+	onFinish: () => void;
+	musicRef?: React.RefObject<BackgroundMusicHandle | null>;
+}) {
 	const [progress, setProgress] = useState(0);
-	const [status, setStatus] = useState<"generating" | "complete" | "error">("generating");
+	const [status, setStatus] = useState<"generating" | "complete" | "error" | "submitting" | "submitted">("generating");
 	const [errorMsg, setErrorMsg] = useState("");
 	const [stageName, setStageName] = useState("Starting...");
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const [queuePosition, setQueuePosition] = useState<number | null>(null);
+	const [submitError, setSubmitError] = useState("");
 
 	useEffect(() => {
 		let cancelled = false;
 		let pollTimer: ReturnType<typeof setTimeout>;
+		let abortController: AbortController | null = null;
+
+		// Backoff state
+		let consecutiveErrors = 0;
+		const MAX_CONSECUTIVE_ERRORS = 20; // ~3 min at max backoff before giving up
+		const MAX_TOTAL_MS = 15 * 60 * 1000; // 15 minutes hard cap
+		const startTime = Date.now();
+
+		function nextInterval(isError: boolean, inQueue: boolean): number {
+			if (isError) {
+				// Exponential backoff: 2s, 4s, 8s, 16s, capped at 30s
+				return Math.min(2000 * Math.pow(2, consecutiveErrors - 1), 30_000);
+			}
+			// Poll faster while actively processing, slower while in queue
+			return inQueue ? 5000 : 2000;
+		}
 
 		async function pollStatus() {
-			const token = sessionStorage.getItem("auth_token");
-			if (!token || cancelled) return;
+			if (cancelled) return;
 
+			// Hard overall timeout
+			if (Date.now() - startTime > MAX_TOTAL_MS) {
+				setErrorMsg("Generation timed out. Please try again.");
+				setStatus("error");
+				return;
+			}
+
+			const token = sessionStorage.getItem("auth_token");
+			if (!token) {
+				// No token — retry; user may not have session yet
+				if (!cancelled) pollTimer = setTimeout(pollStatus, 3000);
+				return;
+			}
+
+			abortController = new AbortController();
 			try {
 				const res = await fetch("/api/avatar/status", {
 					headers: { "Authorization": `Bearer ${token}` },
+					signal: abortController.signal,
 				});
-				const data = await res.json();
 
 				if (cancelled) return;
+
+				// Server errors (5xx) — treat as transient, retry with backoff
+				if (!res.ok) {
+					consecutiveErrors++;
+					if (consecutiveErrors >= MAX_CONSECUTIVE_ERRORS) {
+						setErrorMsg("Server is unavailable. Please try again.");
+						setStatus("error");
+						return;
+					}
+					pollTimer = setTimeout(pollStatus, nextInterval(true, false));
+					return;
+				}
+
+				const data = await res.json();
+				if (cancelled) return;
+
+				// Reset error counter on any successful response
+				consecutiveErrors = 0;
 
 				if (data.generationStatus === 'completed') {
 					setProgress(100);
@@ -969,13 +1063,7 @@ function GamePopup({ onFinish, musicRef }: { onFinish: () => void; musicRef?: Re
 					setStatus("complete");
 					setQueuePosition(null);
 					if (data.imageUrl) setPreviewUrl(data.imageUrl);
-					const userId = 'user_' + Date.now();
-					trackAvatar.generationCompleted(userId, 0);
-					trackConversion.campaignCompleted(userId, 0);
-					// Fade out background music
-					if (musicRef?.current) {
-						musicRef.current.fadeOut();
-					}
+					trackAvatar.generationCompleted('user_' + Date.now(), 0);
 					return;
 				}
 
@@ -987,8 +1075,10 @@ function GamePopup({ onFinish, musicRef }: { onFinish: () => void; musicRef?: Re
 				}
 
 				// Update queue position if in queue
+				let inQueue = false;
 				if (data.queuePosition !== undefined && data.queuePosition !== null) {
 					setQueuePosition(data.queuePosition);
+					inQueue = data.queuePosition > 0;
 					if (data.queuePosition === 0) {
 						setStageName("Processing your request...");
 						setProgress(10);
@@ -1000,28 +1090,128 @@ function GamePopup({ onFinish, musicRef }: { onFinish: () => void; musicRef?: Re
 					setQueuePosition(null);
 					// Map stage to progress percentage
 					if (data.currentStage) {
-						const p = STAGE_PROGRESS[data.currentStage] || progress;
-						setProgress((prev) => Math.max(prev, p));
+						const p = STAGE_PROGRESS[data.currentStage];
+						if (p !== undefined) setProgress((prev) => Math.max(prev, p));
 						setStageName(data.currentStage.replace(/_/g, ' '));
 					}
 				}
 
 				// Continue polling
-				pollTimer = setTimeout(pollStatus, 3000);
-			} catch {
-				// Network error — keep retrying
-				if (!cancelled) pollTimer = setTimeout(pollStatus, 5000);
+				if (!cancelled) pollTimer = setTimeout(pollStatus, nextInterval(false, inQueue));
+			} catch (err: unknown) {
+				if (cancelled) return;
+				// Ignore abort errors (component unmounted)
+				if (err instanceof Error && err.name === 'AbortError') return;
+
+				consecutiveErrors++;
+				if (consecutiveErrors >= MAX_CONSECUTIVE_ERRORS) {
+					setErrorMsg("Connection lost. Please refresh and try again.");
+					setStatus("error");
+					return;
+				}
+				// Network error — retry with exponential backoff
+				pollTimer = setTimeout(pollStatus, nextInterval(true, false));
 			}
 		}
 
+		// Resume polling immediately when the tab becomes visible again
+		function handleVisibilityChange() {
+			if (!document.hidden && !cancelled) {
+				clearTimeout(pollTimer);
+				// Poll immediately on tab focus
+				pollStatus();
+			}
+		}
+		document.addEventListener('visibilitychange', handleVisibilityChange);
+
 		// Start polling after a short delay
-		pollTimer = setTimeout(pollStatus, 2000);
+		pollTimer = setTimeout(pollStatus, 1500);
 
 		return () => {
 			cancelled = true;
 			clearTimeout(pollTimer);
+			abortController?.abort();
+			document.removeEventListener('visibilitychange', handleVisibilityChange);
 		};
 	}, []);
+
+	async function handleSubmit() {
+		setSubmitError("");
+		setStatus("submitting");
+		const token = sessionStorage.getItem("auth_token");
+		try {
+			const res = await fetch("/api/avatar/submit", {
+				method: "POST",
+				headers: { "Authorization": `Bearer ${token}` },
+			});
+			const data = await res.json();
+			if (!res.ok) {
+				setSubmitError(data.message || "Failed to submit. Please try again.");
+				setStatus("complete");
+				return;
+			}
+			setStatus("submitted");
+			if (musicRef?.current) musicRef.current.fadeOut();
+			trackConversion.campaignCompleted('user_' + Date.now(), 0);
+			onSubmit();
+		} catch {
+			setSubmitError("Network error. Please try again.");
+			setStatus("complete");
+		}
+	}
+
+	// ─── In-Queue Waiting State (compact popup, no position shown) ───────────────
+	if (status === "generating" && queuePosition !== null && queuePosition > 0) {
+		return (
+			<div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#0A0515]/80 backdrop-blur-md">
+				<motion.div
+					initial={{ opacity: 0, scale: 0.9 }}
+					animate={{ opacity: 1, scale: 1 }}
+					className="w-full max-w-[calc(100vw-2rem)] sm:max-w-sm bg-[#160A30]/95 border border-purple-500/30 rounded-3xl p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
+					style={{ backgroundImage: 'url(/people.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
+				>
+					<div className="absolute inset-0 bg-[#160A30]/92 rounded-3xl" />
+
+					{/* Animated clock icon */}
+					<div className="relative z-10 mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-purple-500/20 to-blue-600/20 border border-purple-400/30 flex items-center justify-center mb-5 shadow-[0_0_30px_rgba(168,85,247,0.25)]">
+						<svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+							<path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z" />
+						</svg>
+					</div>
+
+					<h3 className="relative z-10 font-playfair text-2xl font-black text-white mb-2">
+						You&apos;re In Queue!
+					</h3>
+					<p className="relative z-10 text-sm text-blue-200/70 mb-6 max-w-[260px] mx-auto leading-relaxed">
+						Your avatar is being prepared. Sit tight — we&apos;re working on it!
+					</p>
+
+					{/* Notification card */}
+					<div className="relative z-10 bg-gradient-to-br from-purple-900/40 to-blue-900/40 border border-purple-400/20 rounded-2xl p-4 mb-6 text-left">
+						<div className="flex items-center gap-3 mb-3">
+							<div className="w-9 h-9 rounded-full bg-green-500/20 border border-green-400/30 flex items-center justify-center shrink-0 text-lg">
+								📲
+							</div>
+							<div>
+								<p className="text-white font-bold text-sm">We&apos;ll notify you</p>
+								<p className="text-gray-400 text-xs">via WhatsApp or SMS</p>
+							</div>
+						</div>
+						<p className="text-gray-300 text-xs leading-relaxed">
+							Once your avatar is ready, you&apos;ll receive a link on your registered number. Click the link to preview your image, try again, or submit for the competition.
+						</p>
+					</div>
+
+					{/* Pulse indicator */}
+					<div className="relative z-10 flex items-center justify-center gap-2 text-purple-400/60 text-[11px] uppercase tracking-widest font-bold">
+						<span className="inline-block w-1.5 h-1.5 rounded-full bg-purple-400/60 animate-pulse" />
+						<span>Waiting in queue...</span>
+						<span className="inline-block w-1.5 h-1.5 rounded-full bg-purple-400/60 animate-pulse" />
+					</div>
+				</motion.div>
+			</div>
+		);
+	}
 
 	if (status === "error") {
 		return (
@@ -1029,72 +1219,143 @@ function GamePopup({ onFinish, musicRef }: { onFinish: () => void; musicRef?: Re
 				<motion.div
 					initial={{ opacity: 0, scale: 0.9 }}
 					animate={{ opacity: 1, scale: 1 }}
-					className="w-full max-w-[calc(100vw-2rem)] sm:max-w-md bg-[#160A30]/95 border border-red-500/30 rounded-3xl p-4 sm:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
-					style={{
-						backgroundImage: 'url(/people.png)',
-						backgroundSize: 'cover',
-						backgroundPosition: 'center',
-						backgroundRepeat: 'no-repeat'
-					}}
+					className="w-full max-w-[calc(100vw-2rem)] sm:max-w-sm bg-[#160A30]/95 border border-purple-500/30 rounded-3xl p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
+					style={{ backgroundImage: 'url(/people.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
 				>
-					<div className="absolute inset-0 bg-[#160A30]/90 rounded-3xl" />
-					<div className="relative z-10 mx-auto w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mb-6">
-						<AlertCircle size={30} className="text-red-400" />
+					<div className="absolute inset-0 bg-[#160A30]/92 rounded-3xl" />
+
+					{/* Notification icon */}
+					<div className="relative z-10 mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-purple-500/20 to-blue-600/20 border border-purple-400/30 flex items-center justify-center mb-5 shadow-[0_0_30px_rgba(168,85,247,0.25)]">
+						<svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+							<path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z" />
+						</svg>
 					</div>
-					<h3 className="relative z-10 font-playfair text-2xl font-black text-white mb-2">Generation Failed</h3>
-					<p className="relative z-10 text-sm text-gray-300 mb-6">{errorMsg}</p>
-					<button
-						onClick={onFinish}
-						className="relative z-10 px-6 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 transition-colors"
-					>
-						Continue Anyway
+
+					<h3 className="relative z-10 font-playfair text-2xl font-black text-white mb-2">
+						We&apos;re On It!
+					</h3>
+					<p className="relative z-10 text-sm text-blue-200/70 mb-6 max-w-[260px] mx-auto leading-relaxed">
+						It&apos;s taking a little longer than expected. Our team has been notified and will get your avatar ready soon!
+					</p>
+
+					{/* Notification card */}
+					<div className="relative z-10 bg-gradient-to-br from-purple-900/40 to-blue-900/40 border border-purple-400/20 rounded-2xl p-4 mb-6 text-left">
+						<div className="flex items-center gap-3 mb-3">
+							<div className="w-9 h-9 rounded-full bg-green-500/20 border border-green-400/30 flex items-center justify-center shrink-0 text-lg">
+								📲
+							</div>
+							<div>
+								<p className="text-white font-bold text-sm">We&apos;ll notify you</p>
+								<p className="text-gray-400 text-xs">via WhatsApp or SMS</p>
+							</div>
+						</div>
+						<p className="text-gray-300 text-xs leading-relaxed">
+							Once your avatar is ready, you&apos;ll receive a link on your registered number. Click the link to preview your image, try again, or submit for the competition.
+						</p>
+					</div>
+
+					<button onClick={onFinish} className="relative z-10 w-full py-3 bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl hover:scale-[1.02] shadow-[0_4px_15px_rgba(234,179,8,0.3)] transition-all">
+						OK, GOT IT
 					</button>
 				</motion.div>
 			</div>
 		);
 	}
 
-	if (status === "complete") {
+	if (status === "submitted") {
 		return (
 			<div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-[#0A0515]/80 backdrop-blur-md">
 				<motion.div
 					initial={{ opacity: 0, scale: 0.9 }}
 					animate={{ opacity: 1, scale: 1 }}
-					className="w-full max-w-[calc(100vw-1.5rem)] sm:max-w-md bg-[#160A30]/95 border border-yellow-500/30 rounded-3xl p-4 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden cursor-pointer"
-					onClick={onFinish}
-					style={{
-						backgroundImage: 'url(/people.png)',
-						backgroundSize: 'cover',
-						backgroundPosition: 'center',
-						backgroundRepeat: 'no-repeat'
-					}}
+					className="w-full max-w-[calc(100vw-1.5rem)] sm:max-w-md bg-[#160A30]/95 border border-green-500/30 rounded-3xl p-6 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
+					style={{ backgroundImage: 'url(/people.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
 				>
 					<div className="absolute inset-0 bg-[#160A30]/90 rounded-3xl" />
-					<div className="relative z-10 mx-auto w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.5)] mb-3">
-						<Sparkles size={24} className="text-white" />
+					<div className="relative z-10 mx-auto w-16 h-16 rounded-full bg-green-500/20 border border-green-500/40 flex items-center justify-center mb-4 shadow-[0_0_25px_rgba(34,197,94,0.4)]">
+						<CheckCircle2 size={32} className="text-green-400" />
+					</div>
+					<h3 className="relative z-10 font-playfair text-2xl font-black text-white mb-2">Submitted!</h3>
+					<p className="relative z-10 text-sm text-gray-300 mb-2">Your avatar has been sent to our admin team for approval.</p>
+					<p className="relative z-10 text-xs text-green-400/80 mb-6">You will be notified via SMS/WhatsApp once approved.</p>
+					{previewUrl && (
+						<div className="relative z-10 my-3 rounded-xl overflow-hidden border border-green-500/20 shadow-lg">
+							<img src={previewUrl} alt="Your submitted avatar" className="w-full h-auto object-contain" />
+						</div>
+					)}
+					<button
+						onClick={onFinish}
+						className="relative z-10 w-full py-3 bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl hover:scale-[1.02] shadow-[0_4px_15px_rgba(234,179,8,0.3)] transition-all"
+					>
+						VIEW GALLERY →
+					</button>
+				</motion.div>
+			</div>
+		);
+	}
+
+	if (status === "complete" || status === "submitting") {
+		const canRetry = attemptCount < MAX_ATTEMPTS;
+		return (
+			<div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-[#0A0515]/80 backdrop-blur-md">
+				<motion.div
+					initial={{ opacity: 0, scale: 0.9 }}
+					animate={{ opacity: 1, scale: 1 }}
+					className="w-full max-w-[calc(100vw-1.5rem)] sm:max-w-md bg-[#160A30]/95 border border-yellow-500/30 rounded-3xl p-4 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
+					style={{ backgroundImage: 'url(/people.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
+				>
+					<div className="absolute inset-0 bg-[#160A30]/90 rounded-3xl" />
+
+					{/* Preview badge */}
+					<div className="relative z-10 inline-flex items-center gap-1.5 bg-amber-500/20 border border-amber-500/40 rounded-full px-3 py-1 mb-3">
+						<span className="text-amber-400 text-[10px] font-black tracking-widest uppercase">👁️ PREVIEW — Attempt {attemptCount} of {MAX_ATTEMPTS}</span>
 					</div>
 
-					<h3 className="relative z-10 font-playfair text-xl font-black text-white leading-tight mb-2">
-						Your Avatar is Ready!
+					<h3 className="relative z-10 font-playfair text-xl font-black text-white leading-tight mb-1">
+						Your Avatar Preview
 					</h3>
+					<p className="relative z-10 text-xs text-amber-300/80 mb-3 font-semibold">
+						To enter the competition you must submit below
+					</p>
 
 					{previewUrl && (
-						<div className="relative z-10 my-3 rounded-xl overflow-hidden border border-yellow-500/20 shadow-lg max-h-48">
-							<img src={previewUrl} alt="Your generated avatar" className="w-full h-auto object-cover" />
+						<div className="relative z-10 my-2 rounded-xl overflow-hidden border border-yellow-500/20 shadow-lg">
+							<img src={previewUrl} alt="Your generated avatar preview" className="w-full h-auto object-contain" />
 						</div>
 					)}
 
-					<div className="relative z-10 bg-yellow-500/10 border border-yellow-500/30 rounded-xl px-3 py-2 mb-3">
-						<p className="text-yellow-400 font-bold text-xs tracking-wide uppercase mb-0.5">Pending Admin Approval</p>
-						<p className="text-blue-200/70 text-[11px]">Your avatar has been submitted for review. Once approved, it will appear on the vote page.</p>
+					{/* Entry instruction */}
+					<div className="relative z-10 bg-white/5 border border-white/10 rounded-xl px-3 py-2 mb-3 text-left">
+						<p className="text-yellow-400 font-bold text-[11px] tracking-wide uppercase mb-0.5">⚠️ Not Yet Entered</p>
+						<p className="text-gray-300 text-[11px] leading-snug">
+							This is a <span className="text-white font-bold">preview only</span>. Hit <span className="text-yellow-400 font-bold">"Submit for Competition"</span> below to enter the Zellers Avurudu competition and go to admin approval.
+						</p>
 					</div>
 
-					<button
-						onClick={onFinish}
-						className="relative z-10 px-6 py-2 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 transition-colors text-sm"
-					>
-						View Gallery
-					</button>
+					{submitError && (
+						<p className="relative z-10 text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2 mb-3">{submitError}</p>
+					)}
+
+					<div className="relative z-10 flex flex-col gap-2">
+						{/* Primary: Submit for Competition */}
+						<button
+							onClick={handleSubmit}
+							disabled={status === "submitting"}
+							className="w-full py-3.5 bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl hover:scale-[1.02] shadow-[0_4px_15px_rgba(234,179,8,0.4)] disabled:opacity-50 disabled:scale-100 transition-all flex items-center justify-center gap-2"
+						>
+							{status === "submitting" ? "SUBMITTING…" : <>🏆 SUBMIT FOR COMPETITION</>}
+						</button>
+
+						{/* Secondary: Try Again (available if under max attempts) */}
+						{canRetry && status !== "submitting" && (
+							<button
+								onClick={onTryAgain}
+								className="w-full py-2.5 bg-white/5 border border-white/15 text-gray-300 text-xs font-bold tracking-widest rounded-xl hover:bg-white/10 hover:text-white transition-all"
+							>
+								↺ TRY AGAIN ({MAX_ATTEMPTS - attemptCount} left)
+							</button>
+						)}
+					</div>
 				</motion.div>
 			</div>
 		);
@@ -1124,25 +1385,15 @@ function GamePopup({ onFinish, musicRef }: { onFinish: () => void; musicRef?: Re
 					</div>
 
 					<h3 className="font-playfair text-xl sm:text-2xl font-black text-white leading-tight mb-2">
-						{queuePosition !== null && queuePosition > 0 ? "In Queue..." : "Generating Avatar..."}
+						Generating Avatar...
 					</h3>
 					<p className="text-xs sm:text-sm text-blue-200/70 mb-3 max-w-[280px] mx-auto">
-						{queuePosition !== null && queuePosition > 0
-							? `You're in position ${queuePosition}. Your avatar will be generated soon!`
-							: "The AI is working its magic! Play this quick mini-game while you wait."}
+						The AI is working its magic! Play this quick mini-game while you wait.
 					</p>
 
-					{queuePosition !== null && queuePosition > 0 ? (
-						<div className="w-full border-2 border-yellow-500/30 rounded-xl bg-yellow-500/10 p-6 mb-6">
-							<div className="text-6xl font-black text-yellow-400 mb-2">#{queuePosition}</div>
-							<p className="text-xs text-yellow-200/70 uppercase tracking-widest">Queue Position</p>
-							<p className="text-xs text-blue-200/60 mt-3">Processing one at a time to ensure quality</p>
-						</div>
-					) : (
-						<div className="w-full flex-1 flex items-center justify-center min-h-0">
-							<ChocolateCatchGame progress={progress} />
-						</div>
-					)}
+					<div className="w-full flex-1 flex items-center justify-center min-h-0">
+						<ChocolateCatchGame progress={progress} />
+					</div>
 
 					<p className="text-yellow-400/80 font-bold text-xs tracking-widest uppercase mt-2">{progress}% — {stageName}</p>
 				</div>
@@ -1165,6 +1416,9 @@ function CampaignPageContent() {
 	const [dir, setDir] = useState(1);
 	const [showGamePopup, setShowGamePopup] = useState(false);
 	const [isGenerating, setIsGenerating] = useState(false);
+	const [isRetrying, setIsRetrying] = useState(false);
+	const [attemptCount, setAttemptCount] = useState(0);
+	const [lastFlavourLabel, setLastFlavourLabel] = useState("");
 	const stepStartTime = useRef<number>(Date.now());
 	const musicRef = useRef<BackgroundMusicHandle>(null);
 
@@ -1196,11 +1450,12 @@ function CampaignPageContent() {
 		}
 	}
 
-	// Auto-trigger generation when flavour is selected during quiz
+	// Trigger or re-trigger generation
 	async function handleTriggerGeneration(flavourLabel: string) {
 		const token = sessionStorage.getItem("auth_token");
 		if (!token) return;
 
+		setLastFlavourLabel(flavourLabel);
 		setIsGenerating(true);
 		try {
 			const res = await fetch("/api/avatar/generate", {
@@ -1213,12 +1468,31 @@ function CampaignPageContent() {
 			});
 			const data = await res.json();
 			if (res.ok) {
+				setAttemptCount((prev) => prev + 1);
 				const userId = 'user_' + Date.now();
 				trackAvatar.generationStarted(userId, data.gender || 'unknown');
 			}
 		} catch (err) {
-			console.error("Auto-trigger generation error:", err);
+			console.error("Generation error:", err);
 		}
+	}
+
+	// Called after a retry upload completes — go to quiz so user can (re)select the chocolate
+	function handleRetryUploadDone() {
+		setIsRetrying(false);
+		setDir(1);
+		const nextStep = 4;
+		setStep(nextStep);
+		setUnlockedStep((prev) => Math.max(prev, nextStep));
+	}
+
+	// Called when user clicks "Try Again" in the GamePopup — go to quiz for chocolate reselection
+	// User can also go back from the quiz to upload a new photo (step 3)
+	function handleTryAgain() {
+		setShowGamePopup(false);
+		setIsRetrying(true); // Still true so step 3 shows retry mode if user opts to upload
+		setDir(-1);
+		setStep(4); // Jump straight to quiz for chocolate reselection
 	}
 
 	return (
@@ -1237,13 +1511,26 @@ function CampaignPageContent() {
 			{/* Background Music */}
 			<BackgroundMusic ref={musicRef} src="/game.mp3" volume={0.25} />
 
+			{/* Retry Banner */}
+			{isRetrying && showGamePopup && (
+				<div className="fixed top-0 left-0 right-0 z-[10000] bg-yellow-400 text-black text-[11px] font-black tracking-widest text-center py-2 uppercase shadow-md">
+					↺ Generating Retry Attempt #{attemptCount}
+				</div>
+			)}
+
 			{/* Game Popup Overlay */}
 			<AnimatePresence>
 				{showGamePopup && (
 					<GamePopup
+						key={attemptCount}
+						attemptCount={attemptCount}
+						onTryAgain={handleTryAgain}
+						onSubmit={() => {
+							// Stay on popup to show submitted state; onFinish will redirect
+						}}
 						onFinish={() => {
 							setShowGamePopup(false);
-							router.push('/vote');
+							router.replace('/vote');
 						}}
 						musicRef={musicRef}
 					/>
@@ -1299,7 +1586,7 @@ function CampaignPageContent() {
 							>
 								{step === 1 && <StepVerify onNext={goNext} />}
 								{step === 2 && <StepProfile onNext={goNext} onBack={goBack} />}
-								{step === 3 && <StepGenerate onNext={goNext} onBack={goBack} />}
+								{step === 3 && <StepGenerate onNext={goNext} onBack={goBack} isRetrying={isRetrying} onRetryDone={handleRetryUploadDone} />}
 								{step === 4 && <StepQuiz onShowGamePopup={() => setShowGamePopup(true)} onBack={goBack} onTriggerGeneration={handleTriggerGeneration} />}
 							</motion.div>
 						</AnimatePresence>

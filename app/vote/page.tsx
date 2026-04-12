@@ -33,7 +33,7 @@ type PaginationMeta = {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 // Campaign ends April 22, 2026
-const TARGET_DATE = new Date("2026-04-22T23:59:59");
+const TARGET_DATE = new Date("2026-04-16T17:00:00");
 
 const FILTERS: { key: Filter; label: string; dot?: string }[] = [
 	{ key: "all", label: "All" },
@@ -944,7 +944,7 @@ function VotePageContent() {
 							className="mt-4 bg-yellow-500/10 border border-yellow-500/30 rounded-2xl px-6 py-4 max-w-2xl backdrop-blur-md"
 						>
 							<p className="text-sm sm:text-base text-yellow-200 font-semibold">
-								Voting is currently closed. Please check back later!
+								Voting starts on 16th April at 5:00 PM.
 							</p>
 							<p className="text-xs sm:text-sm text-yellow-300/70 mt-2">
 								You can still browse all the amazing AI avatars created by our community.

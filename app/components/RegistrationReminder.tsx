@@ -99,7 +99,7 @@ export default function RegistrationReminder() {
 							<p className="text-sm text-blue-200/70 leading-relaxed max-w-[280px] mx-auto">
 								Are you the Zellers AI අවුරුදු කුමරා or කුමරිය? <br />
 								Zellers AI අවුරුදු කුමරා කුමරිය ඔබද?
-								<span className="text-yellow-400 font-bold block mt-1 text-lg">Rs. 75,000</span>
+								<span className="text-yellow-400 font-bold block mt-1 text-lg">Win Rs. 75,000</span>
 							</p>
 
 							{/* Call to Action Button */}
@@ -113,11 +113,10 @@ export default function RegistrationReminder() {
 
 							<p className="text-sm text-blue-200/70 leading-relaxed max-w-[280px] mx-auto">
 								Create your AI Avatar based on your own look
-								and stand a chance to win gifts worth up to LKR 75,000!<br /><br />
+								and stand a chance to win LKR 75,000!<br /><br />
 
-								ඔයාගේ පෙනුම AI Avatar එකක් විදියට Create  කරලා,
-								රුපියල් 75,000ක් දක්වා Gifts දිනාගන්න!
-								<span className="text-yellow-400 font-bold block mt-1 text-lg">Rs. 75,000</span>
+								ඔයාගේ පෙනුම AI Avatar එකක් විදියට Create කරලා,රුපියල් 75,000ක් දිනාගන්න.
+								<span className="text-yellow-400 font-bold block mt-1 text-lg">Win Rs. 75,000</span>
 							</p>
 
 

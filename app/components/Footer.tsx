@@ -79,7 +79,7 @@ export default function Footer() {
 					<span className="text-white font-medium">
 						AI Avurudu look.
 					</span>{" "}
-					Campaign ends April 22th.
+					Results will be announced on April 19th
 				</motion.p>
 
 				{/* Pulsing CTA button */}
@@ -96,7 +96,7 @@ export default function Footer() {
 							boxShadow: "0 0 20px rgba(234,179,8,0.4), 0 0 50px rgba(234,179,8,0.15)",
 						}}
 					>
-						+ ENTER THE CAMPAIGN NOW
+						+ REGISTER NOW
 					</button>
 				</motion.div>
 
@@ -108,7 +108,7 @@ export default function Footer() {
 					transition={{ duration: 0.5, delay: 0.45 }}
 					className="text-xs text-white/50 tracking-widest uppercase font-semibold"
 				>
-					Free to enter · Results announced April 23, 2026
+					Free to enter · Results announced April 19th, 2026
 				</motion.p>
 			</div>
 

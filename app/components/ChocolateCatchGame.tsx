@@ -30,6 +30,8 @@ export default function ChocolateCatchGame({ progress }: ChocolateCatchGameProps
 	const [basketX, setBasketX] = useState(150);
 	const [gameStarted, setGameStarted] = useState(false);
 	const [canvasDimensions, setCanvasDimensions] = useState({ width: 300, height: 350 });
+	const [showInstructions, setShowInstructions] = useState(true);
+	const [instructionsFading, setInstructionsFading] = useState(false);
 
 	const chocolatesRef = useRef<Chocolate[]>([]);
 	const basketXRef = useRef(150);
@@ -86,6 +88,16 @@ export default function ChocolateCatchGame({ progress }: ChocolateCatchGameProps
 
 		return () => {
 			window.removeEventListener('resize', updateCanvasSize);
+		};
+	}, []);
+
+	// Instructions splash timer
+	useEffect(() => {
+		const fadeTimer = setTimeout(() => setInstructionsFading(true), 3000);
+		const hideTimer = setTimeout(() => setShowInstructions(false), 3800);
+		return () => {
+			clearTimeout(fadeTimer);
+			clearTimeout(hideTimer);
 		};
 	}, []);
 
@@ -264,27 +276,34 @@ export default function ChocolateCatchGame({ progress }: ChocolateCatchGameProps
 	return (
 		<div ref={containerRef} className="relative w-full h-full flex flex-col">
 			{/* Top bar - Target chocolate and score */}
-			<div className="flex justify-between items-center mb-2 px-4">
-				<div className="flex items-center gap-2 bg-black/40 rounded-lg px-3 py-1.5">
-					<span className="text-yellow-400 text-xs font-bold">SCORE:</span>
-					<span className="text-white text-sm font-black">{score}</span>
+			<div className="flex justify-between items-start mb-2 px-4">
+				<div className="flex flex-col gap-1">
+					<div className="flex items-center gap-2 bg-black/40 rounded-lg px-3 py-1.5">
+						<span className="text-yellow-400 text-xs font-bold">SCORE:</span>
+						<span className="text-white text-sm font-black">{score}</span>
+					</div>
 				</div>
 
-				<div className="flex items-center gap-2 bg-black/40 rounded-lg px-3 py-1.5 border-2 border-yellow-500/50">
-					<span className="text-yellow-400 text-xs font-bold">CATCH:</span>
-					<div
-						className="bg-white/10 rounded border border-white/20 flex items-center justify-center p-1"
-						style={{ width: `${CHOCOLATE_WIDTH}px`, height: `${CHOCOLATE_HEIGHT}px` }}
-					>
-						{targetChocolate && (
-							<img
-								src={targetChocolate.image}
-								alt={targetChocolate.name}
-								className="object-contain"
-								style={{ width: '100%', height: '100%' }}
-							/>
-						)}
+				<div className="flex flex-col items-end gap-1">
+					<div className="flex items-center gap-2 bg-black/40 rounded-lg px-3 py-1.5 border-2 border-yellow-500/50">
+						<span className="text-yellow-400 text-xs font-bold">CATCH:</span>
+						<div
+							className="bg-white/10 rounded border border-white/20 flex items-center justify-center p-1"
+							style={{ width: `${CHOCOLATE_WIDTH}px`, height: `${CHOCOLATE_HEIGHT}px` }}
+						>
+							{targetChocolate && (
+								<img
+									src={targetChocolate.image}
+									alt={targetChocolate.name}
+									className="object-contain"
+									style={{ width: '100%', height: '100%' }}
+								/>
+							)}
+						</div>
 					</div>
+					<p className="text-white/70 text-[10px] font-semibold leading-tight text-right px-1">
+						Catch only the matching<br />chocolate shown above ↑
+					</p>
 				</div>
 			</div>
 
@@ -304,6 +323,28 @@ export default function ChocolateCatchGame({ progress }: ChocolateCatchGameProps
 						← → or Touch to Move
 					</p>
 				</div>
+
+				{/* Instructions splash overlay */}
+				{showInstructions && (
+					<div
+						className="absolute inset-0 flex flex-col items-center justify-center rounded-xl pointer-events-none"
+						style={{
+							background: 'rgba(0,0,0,0.72)',
+							transition: 'opacity 0.8s ease',
+							opacity: instructionsFading ? 0 : 1,
+						}}
+					>
+						<p className="text-yellow-400 text-3xl font-black tracking-wide drop-shadow-lg text-center px-4 leading-tight">
+							🍫 CATCH THE<br />CHOCOLATE!
+						</p>
+						<p className="text-white text-base font-bold text-center mt-3 px-6 leading-snug">
+							Move your basket to catch<br />only the matching chocolate<br />shown in the top right
+						</p>
+						<p className="text-white/60 text-sm font-semibold mt-3">
+							← → keys or touch to move
+						</p>
+					</div>
+				)}
 			</div>
 		</div>
 	);

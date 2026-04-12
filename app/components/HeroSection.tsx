@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 
 const floatVariants = {
 	animate: {
@@ -32,6 +33,21 @@ const fadeUp = {
 };
 
 export default function HeroSection() {
+	const [avatarCount, setAvatarCount] = useState<number | null>(null);
+
+	useEffect(() => {
+		const controller = new AbortController();
+		fetch("/api/posts?page=1", { signal: controller.signal })
+			.then((r) => r.json())
+			.then((data) => {
+				if (data.success && typeof data.totalPosts === "number") {
+					setAvatarCount(data.totalPosts);
+				}
+			})
+			.catch(() => {});
+		return () => controller.abort();
+	}, []);
+
 	return (
 		/* Reduced pt-24 to pt-12 to pull the whole section up */
 		<section className="relative min-h-[85vh] sm:min-h-screen flex items-center justify-center overflow-hidden bg-transparent px-3 sm:px-4 pt-8 sm:pt-12 pb-10 sm:pb-16">
@@ -136,10 +152,12 @@ export default function HeroSection() {
 								<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
 								<span className="relative inline-flex rounded-full h-2 sm:h-2.5 w-2 sm:w-2.5 bg-green-500"></span>
 							</span>
-							<span className="text-blue-100 font-medium drop-shadow-sm">3,247 AVATARS CREATED</span>
+							<span className="text-blue-100 font-medium drop-shadow-sm">
+							{avatarCount !== null ? `${avatarCount.toLocaleString()} AVATARS CREATED` : "AVATARS CREATED"}
+						</span>
 						</div>
 						<span className="hidden sm:inline text-white/30">|</span>
-						<span className="text-yellow-400 font-bold drop-shadow-sm w-full sm:w-auto mt-1 sm:mt-0">VOTE IS LIVE</span>
+						<span className="text-yellow-400 font-bold drop-shadow-sm w-full sm:w-auto mt-1 sm:mt-0"></span>
 					</motion.div>
 				</div>
 
