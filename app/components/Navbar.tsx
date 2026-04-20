@@ -28,15 +28,9 @@ export default function Navbar() {
 			<div className="flex items-center gap-1.5 sm:gap-3">
 				<Link
 					href="/vote"
-					className="text-xs sm:text-sm font-semibold tracking-widest text-gray-300 hover:text-yellow-400 transition-colors duration-200 px-2 sm:px-4 py-2 rounded-full hover:bg-white/5"
-				>
-					VOTE
-				</Link>
-				<Link
-					href="/campaign"
 					className="text-xs sm:text-sm font-bold tracking-wide text-black bg-linear-to-r from-yellow-500 to-amber-400 rounded-full px-3 sm:px-6 py-2 hover:scale-105 transition-transform duration-200 glow-gold-box shadow-lg"
 				>
-					ENTER NOW
+					VOTE
 				</Link>
 			</div>
 		</motion.nav>

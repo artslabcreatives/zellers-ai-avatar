@@ -7,7 +7,6 @@ import HowItWorks from "./components/HowItWorks";
 import MeetTheAvatars from "./components/MeetTheAvatars";
 import AvuruduPrizes from "./components/AvuruduPrizes";
 import Footer from "./components/Footer";
-import RegistrationReminder from "./components/RegistrationReminder";
 import { useAnalytics } from "@/lib/useAnalytics";
 
 function AnalyticsTracker({ pageName }: { pageName: string }) {
@@ -24,7 +23,6 @@ function HomeContent() {
 			<MeetTheAvatars />
 			<AvuruduPrizes />
 			<Footer />
-			<RegistrationReminder />
 		</main>
 	);
 }

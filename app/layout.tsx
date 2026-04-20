@@ -51,6 +51,18 @@ export default function RootLayout({
 					></iframe>
 				</noscript>
 				{/* End Google Tag Manager (noscript) */}
+				{/* Facebook Pixel (noscript) */}
+				<noscript>
+					{/* eslint-disable-next-line @next/next/no-img-element */}
+					<img
+						height="1"
+						width="1"
+						style={{ display: "none" }}
+						src="https://www.facebook.com/tr?id=711983798616091&ev=PageView&noscript=1"
+						alt=""
+					/>
+				</noscript>
+				{/* End Facebook Pixel (noscript) */}
 				<LoadingScreen />
 				{children}
 			</body>

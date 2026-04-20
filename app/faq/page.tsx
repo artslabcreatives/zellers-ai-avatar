@@ -8,7 +8,7 @@ import Link from "next/link";
 
 const FAQS = [
 	{
-		q: "What is the Zellers AI Avurudu Campaign?",
+		q: "What is the Zellers AI Avurudu?",
 		a: "It's a free-to-enter competition where you upload a selfie, answer a short quiz, and our AI transforms you into a legendary Avurudu Kumara or Kumariya avatar. Top voted avatars win exciting prizes from Zellers Chocolates.",
 	},
 	{
@@ -106,7 +106,7 @@ export default function FAQPage() {
 					<h1 className="font-playfair text-3xl sm:text-4xl md:text-5xl font-normal text-gray-100 tracking-tight">
 						Frequently Asked <span className="text-yellow-400">Questions</span>
 					</h1>
-					<p className="text-sm text-gray-500 mt-3">Everything you need to know about the AI Avurudu Campaign.</p>
+					<p className="text-sm text-gray-500 mt-3">Everything you need to know about the AI Avurudu.</p>
 				</motion.div>
 
 				<div className="space-y-3">

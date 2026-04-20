@@ -2,14 +2,15 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Send, CheckCircle2 } from "lucide-react";
+import { Mail, Phone, MapPin, Globe, Send, CheckCircle2 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Link from "next/link";
 
 const CONTACT_INFO = [
-	{ icon: Mail, label: "Email", value: "support@zellers.lk", href: "mailto:support@zellers.lk" },
-	{ icon: Phone, label: "Hotline", value: "+94 11 234 5678", href: "tel:+94112345678" },
-	{ icon: MapPin, label: "Address", value: "Zellers Chocolates (Pvt) Ltd, Colombo 03, Sri Lanka", href: "#" },
+	{ icon: MapPin, label: "Address", value: "House of Maliban, 389, Galle Road, Ratmalana, Sri Lanka", href: "https://maps.google.com/?q=389+Galle+Road+Ratmalana+Sri+Lanka" },
+	{ icon: Phone, label: "Customer Care", value: "1383", href: "tel:1383" },
+	{ icon: Mail, label: "Email", value: "cic@malibangroup.lk", href: "mailto:cic@malibangroup.lk" },
+	{ icon: Globe, label: "Website", value: "www.malibangroup.lk", href: "https://www.malibangroup.lk" },
 ];
 
 export default function ContactPage() {

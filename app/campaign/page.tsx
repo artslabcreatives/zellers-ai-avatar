@@ -4,9 +4,10 @@ export const dynamic = 'force-dynamic';
 
 import { useState, useEffect, useRef, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, Smartphone, User, Star, Sparkles, CheckCircle2, Camera, ArrowLeft, Check, UploadCloud, Gamepad2, Image as ImageIcon, X, AlertCircle } from "lucide-react";
+import { ChevronRight, Smartphone, User, Star, Sparkles, CheckCircle2, Camera, ArrowLeft, Check, UploadCloud, Gamepad2, Image as ImageIcon, X, AlertCircle, Download, Copy, Check as CheckIcon } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import UserDashboard, { type Generation } from "../components/UserDashboard";
 import Image from "next/image";
 import ChocolateCatchGame from "../components/ChocolateCatchGame";
 import BackgroundMusic, { BackgroundMusicHandle } from "../components/BackgroundMusic";
@@ -164,9 +165,10 @@ function StepVerify({ onNext }: { onNext: () => void }) {
 			}
 
 			if (waRes.ok) {
-				setChannel("whatsapp");
+				const resolvedChannel = waData.channel === 'sms' ? 'sms' : 'whatsapp';
+				setChannel(resolvedChannel);
 				setOtpSent(true);
-				trackAuth.otpRequested(formattedPhone, 'whatsapp');
+				trackAuth.otpRequested(formattedPhone, resolvedChannel);
 				return;
 			}
 
@@ -368,6 +370,9 @@ function StepProfile({ onNext, onBack }: { onNext: () => void, onBack: () => voi
 				trackError.apiError('/api/user/profile', res.status, data.message);
 			} else {
 				console.log('✅ PROFILE SAVED SUCCESSFULLY:', data);
+				// Save name & gender so SubmittedCard can personalise the share caption
+				sessionStorage.setItem("user_display_name", form.displayName);
+				sessionStorage.setItem("user_gender", form.gender);
 				trackCampaign.profileCreated(data.userId || 'unknown', form.gender, form.name);
 				trackCampaign.stepCompleted('profile', data.userId);
 				console.log('➡️ Moving to upload step');
@@ -972,6 +977,141 @@ const STAGE_PROGRESS: Record<string, number> = {
 	branded_composites: 95,
 };
 
+// ─── Gender-specific share caption ───────────────────────────────────────────
+function getShareCaption(displayName?: string | null, gender?: string | null): string {
+	const name = displayName || "them";
+	if (gender === "female") {
+		return `Vote for ${name} to become the First ever අවුරුදු කුමරිය in the AI අවුරුදු With Zellers Contest.\n\nCreate your own AI Avatar and enter the competition:\n👉 aiavuruduwithzellers.com/campaign\n\n#ZellersAvurudu #AIAvatar #Avurudu2026 #Zellers`;
+	}
+	return `Vote for ${name} to become the First-ever අවුරුදු කුමරා in the AI අවුරුදු With Zellers Contest.\n\nCreate your own AI Avatar and enter the competition:\n👉 aiavuruduwithzellers.com/campaign\n\n#ZellersAvurudu #AIAvatar #Avurudu2026 #Zellers`;
+}
+
+// ─── Submitted state card ─────────────────────────────────────────────────────
+function SubmittedCard({ previewUrl, onFinish }: { previewUrl: string | null; onFinish: () => void }) {
+	const [captionCopied, setCaptionCopied] = useState(false);
+	const [downloading, setDownloading] = useState(false);
+
+	const displayName = typeof window !== "undefined" ? sessionStorage.getItem("user_display_name") : null;
+	const gender = typeof window !== "undefined" ? sessionStorage.getItem("user_gender") : null;
+	const caption = getShareCaption(displayName, gender);
+
+	async function handleCopyCaption() {
+		try {
+			await navigator.clipboard.writeText(caption);
+			setCaptionCopied(true);
+			setTimeout(() => setCaptionCopied(false), 2500);
+		} catch {
+			// Fallback for older browsers
+			const ta = document.createElement("textarea");
+			ta.value = caption;
+			ta.style.position = "fixed";
+			ta.style.opacity = "0";
+			document.body.appendChild(ta);
+			ta.focus();
+			ta.select();
+			document.execCommand("copy");
+			document.body.removeChild(ta);
+			setCaptionCopied(true);
+			setTimeout(() => setCaptionCopied(false), 2500);
+		}
+	}
+
+	async function handleDownload() {
+		if (!previewUrl) return;
+		setDownloading(true);
+		try {
+			const res = await fetch(`/api/images/download?url=${encodeURIComponent(previewUrl)}`);
+			if (!res.ok) throw new Error("Download failed");
+			const blob = await res.blob();
+			const blobUrl = URL.createObjectURL(blob);
+			const a = document.createElement("a");
+			a.href = blobUrl;
+			a.download = "zellers-avurudu-avatar.jpg";
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+			setTimeout(() => URL.revokeObjectURL(blobUrl), 200);
+		} catch {
+			// Fallback: open in new tab
+			window.open(previewUrl, "_blank");
+		} finally {
+			setDownloading(false);
+		}
+	}
+
+	return (
+		<div className="fixed inset-0 z-[9999] overflow-y-auto bg-[#0A0515]/80 backdrop-blur-md">
+			<div className="min-h-full flex items-start justify-center pt-20 pb-20 px-3 sm:px-4">
+			<motion.div
+				initial={{ opacity: 0, scale: 0.9 }}
+				animate={{ opacity: 1, scale: 1 }}
+				className="w-full max-w-md bg-[#160A30]/95 border border-green-500/30 rounded-3xl p-5 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
+				style={{ backgroundImage: "url(/people.png)", backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat" }}
+			>
+				<div className="absolute inset-0 bg-[#160A30]/90 rounded-3xl" />
+
+				{/* Success icon */}
+				<div className="relative z-10 mx-auto w-14 h-14 rounded-full bg-green-500/20 border border-green-500/40 flex items-center justify-center mb-3 shadow-[0_0_25px_rgba(34,197,94,0.4)]">
+					<CheckCircle2 size={28} className="text-green-400" />
+				</div>
+				<h3 className="relative z-10 font-playfair text-2xl font-black text-white mb-1">Submitted!</h3>
+				<p className="relative z-10 text-sm text-gray-300 mb-1">Your avatar is with our admin team for review.</p>
+				<p className="relative z-10 text-xs text-green-400/80 mb-4">You&apos;ll be notified via WhatsApp or SMS once approved.</p>
+
+				{/* Avatar image */}
+				{previewUrl && (
+					<div className="relative z-10 mb-4 rounded-xl overflow-hidden border border-green-500/20 shadow-lg">
+						<img src={previewUrl} alt="Your submitted avatar" className="w-full h-auto object-contain" />
+					</div>
+				)}
+
+				{/* Share / Download section */}
+				<div className="relative z-10 bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-left">
+					<p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-3">Share your avatar 📲</p>
+
+					{/* Caption preview */}
+					<div className="bg-black/30 border border-white/10 rounded-xl p-3 mb-3">
+						<p className="text-gray-300 text-[11px] leading-relaxed whitespace-pre-line">{caption}</p>
+						<div className="flex gap-2">
+							{/* Copy Caption */}
+							<button
+								onClick={handleCopyCaption}
+								className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold tracking-wide transition-all ${captionCopied
+									? "bg-green-500/20 border border-green-500/40 text-green-300"
+									: "bg-white/10 border border-white/20 text-white hover:bg-white/15"
+									}`}
+							>
+								{captionCopied ? <><CheckIcon size={13} /> Copied!</> : <><Copy size={13} /> Copy Caption</>}
+							</button>
+
+							{/* Download Photo */}
+							{previewUrl && (
+								<button
+									onClick={handleDownload}
+									disabled={downloading}
+									className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-white/10 border border-white/20 text-white rounded-xl text-xs font-bold tracking-wide hover:bg-white/15 transition-all disabled:opacity-50"
+								>
+									<Download size={13} />
+									{downloading ? "Saving…" : "Save Photo"}
+								</button>
+							)}
+						</div>
+					</div>
+				</div>
+
+				{/* View gallery */}
+				<button
+					onClick={onFinish}
+					className="relative z-10 w-full py-3 bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl hover:scale-[1.02] shadow-[0_4px_15px_rgba(234,179,8,0.3)] transition-all"
+				>
+					VIEW GALLERY →
+				</button>
+			</motion.div>
+			</div>
+		</div>
+	);
+}
+
 function GamePopup({
 	attemptCount,
 	onTryAgain,
@@ -1163,11 +1303,12 @@ function GamePopup({
 	// ─── In-Queue Waiting State (compact popup, no position shown) ───────────────
 	if (status === "generating" && queuePosition !== null && queuePosition > 0) {
 		return (
-			<div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#0A0515]/80 backdrop-blur-md">
+			<div className="fixed inset-0 z-[9999] overflow-y-auto bg-[#0A0515]/80 backdrop-blur-md">
+				<div className="min-h-full flex items-start justify-center pt-20 pb-20 px-4">
 				<motion.div
 					initial={{ opacity: 0, scale: 0.9 }}
 					animate={{ opacity: 1, scale: 1 }}
-					className="w-full max-w-[calc(100vw-2rem)] sm:max-w-sm bg-[#160A30]/95 border border-purple-500/30 rounded-3xl p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
+					className="w-full max-w-sm bg-[#160A30]/95 border border-purple-500/30 rounded-3xl p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
 					style={{ backgroundImage: 'url(/people.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
 				>
 					<div className="absolute inset-0 bg-[#160A30]/92 rounded-3xl" />
@@ -1209,17 +1350,19 @@ function GamePopup({
 						<span className="inline-block w-1.5 h-1.5 rounded-full bg-purple-400/60 animate-pulse" />
 					</div>
 				</motion.div>
+				</div>
 			</div>
 		);
 	}
 
 	if (status === "error") {
 		return (
-			<div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#0A0515]/80 backdrop-blur-md">
+			<div className="fixed inset-0 z-[9999] overflow-y-auto bg-[#0A0515]/80 backdrop-blur-md">
+				<div className="min-h-full flex items-start justify-center pt-20 pb-20 px-4">
 				<motion.div
 					initial={{ opacity: 0, scale: 0.9 }}
 					animate={{ opacity: 1, scale: 1 }}
-					className="w-full max-w-[calc(100vw-2rem)] sm:max-w-sm bg-[#160A30]/95 border border-purple-500/30 rounded-3xl p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
+					className="w-full max-w-sm bg-[#160A30]/95 border border-purple-500/30 rounded-3xl p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
 					style={{ backgroundImage: 'url(/people.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
 				>
 					<div className="absolute inset-0 bg-[#160A30]/92 rounded-3xl" />
@@ -1258,50 +1401,26 @@ function GamePopup({
 						OK, GOT IT
 					</button>
 				</motion.div>
+				</div>
 			</div>
 		);
 	}
 
 	if (status === "submitted") {
 		return (
-			<div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-[#0A0515]/80 backdrop-blur-md">
-				<motion.div
-					initial={{ opacity: 0, scale: 0.9 }}
-					animate={{ opacity: 1, scale: 1 }}
-					className="w-full max-w-[calc(100vw-1.5rem)] sm:max-w-md bg-[#160A30]/95 border border-green-500/30 rounded-3xl p-6 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
-					style={{ backgroundImage: 'url(/people.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
-				>
-					<div className="absolute inset-0 bg-[#160A30]/90 rounded-3xl" />
-					<div className="relative z-10 mx-auto w-16 h-16 rounded-full bg-green-500/20 border border-green-500/40 flex items-center justify-center mb-4 shadow-[0_0_25px_rgba(34,197,94,0.4)]">
-						<CheckCircle2 size={32} className="text-green-400" />
-					</div>
-					<h3 className="relative z-10 font-playfair text-2xl font-black text-white mb-2">Submitted!</h3>
-					<p className="relative z-10 text-sm text-gray-300 mb-2">Your avatar has been sent to our admin team for approval.</p>
-					<p className="relative z-10 text-xs text-green-400/80 mb-6">You will be notified via SMS/WhatsApp once approved.</p>
-					{previewUrl && (
-						<div className="relative z-10 my-3 rounded-xl overflow-hidden border border-green-500/20 shadow-lg">
-							<img src={previewUrl} alt="Your submitted avatar" className="w-full h-auto object-contain" />
-						</div>
-					)}
-					<button
-						onClick={onFinish}
-						className="relative z-10 w-full py-3 bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl hover:scale-[1.02] shadow-[0_4px_15px_rgba(234,179,8,0.3)] transition-all"
-					>
-						VIEW GALLERY →
-					</button>
-				</motion.div>
-			</div>
+			<SubmittedCard previewUrl={previewUrl} onFinish={onFinish} />
 		);
 	}
 
 	if (status === "complete" || status === "submitting") {
 		const canRetry = attemptCount < MAX_ATTEMPTS;
 		return (
-			<div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 bg-[#0A0515]/80 backdrop-blur-md">
+			<div className="fixed inset-0 z-[9999] overflow-y-auto bg-[#0A0515]/80 backdrop-blur-md">
+				<div className="min-h-full flex items-start justify-center pt-20 pb-20 px-3 sm:px-4">
 				<motion.div
 					initial={{ opacity: 0, scale: 0.9 }}
 					animate={{ opacity: 1, scale: 1 }}
-					className="w-full max-w-[calc(100vw-1.5rem)] sm:max-w-md bg-[#160A30]/95 border border-yellow-500/30 rounded-3xl p-4 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
+					className="w-full max-w-md bg-[#160A30]/95 border border-yellow-500/30 rounded-3xl p-4 shadow-[0_20px_60px_rgba(0,0,0,0.8)] text-center relative overflow-hidden"
 					style={{ backgroundImage: 'url(/people.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
 				>
 					<div className="absolute inset-0 bg-[#160A30]/90 rounded-3xl" />
@@ -1318,6 +1437,48 @@ function GamePopup({
 						To enter the competition you must submit below
 					</p>
 
+					{submitError && (
+						<p className="relative z-10 text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2 mb-3">{submitError}</p>
+					)}
+
+					<div className="relative z-10 flex flex-col gap-2 mb-3">
+						{/* Primary: Submit for Competition — prominent, pulsing */}
+						<div className="relative">
+							{status !== "submitting" && (
+								<motion.div
+									aria-hidden
+									animate={{ scale: [1, 1.04, 1], opacity: [0.5, 0.8, 0.5] }}
+									transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+									className="absolute inset-0 rounded-xl bg-gradient-to-r from-yellow-400 to-amber-500 blur-md"
+								/>
+							)}
+							<button
+								onClick={handleSubmit}
+								disabled={status === "submitting"}
+								className="relative w-full py-4 bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl hover:brightness-110 shadow-[0_4px_20px_rgba(234,179,8,0.5)] disabled:opacity-50 disabled:shadow-none transition-all flex items-center justify-center gap-2"
+							>
+								{status === "submitting" ? "SUBMITTING…" : <><span className="text-base">🏆</span> SUBMIT FOR COMPETITION</>}
+							</button>
+						</div>
+
+						{/* Contest explanation */}
+						{status !== "submitting" && (
+							<p className="text-center text-[11px] text-amber-200/70 leading-snug px-1">
+								Enter your AI avatar into the <strong className="text-amber-300">Zellers Avurudu contest</strong>. The best avatars win exciting prizes!
+							</p>
+						)}
+
+						{/* Secondary: Try Again (available if under max attempts) */}
+						{canRetry && status !== "submitting" && (
+							<button
+								onClick={onTryAgain}
+								className="w-full py-2.5 bg-white/5 border border-white/15 text-gray-400 text-xs font-bold tracking-widest rounded-xl hover:bg-white/10 hover:text-gray-300 transition-all mt-1"
+							>
+								↺ TRY AGAIN ({MAX_ATTEMPTS - attemptCount} left)
+							</button>
+						)}
+					</div>
+
 					{previewUrl && (
 						<div className="relative z-10 my-2 rounded-xl overflow-hidden border border-yellow-500/20 shadow-lg">
 							<img src={previewUrl} alt="Your generated avatar preview" className="w-full h-auto object-contain" />
@@ -1325,38 +1486,14 @@ function GamePopup({
 					)}
 
 					{/* Entry instruction */}
-					<div className="relative z-10 bg-white/5 border border-white/10 rounded-xl px-3 py-2 mb-3 text-left">
+					<div className="relative z-10 bg-white/5 border border-white/10 rounded-xl px-3 py-2 mt-3 text-left">
 						<p className="text-yellow-400 font-bold text-[11px] tracking-wide uppercase mb-0.5">⚠️ Not Yet Entered</p>
 						<p className="text-gray-300 text-[11px] leading-snug">
-							This is a <span className="text-white font-bold">preview only</span>. Hit <span className="text-yellow-400 font-bold">"Submit for Competition"</span> below to enter the Zellers Avurudu competition and go to admin approval.
+							This is a <span className="text-white font-bold">preview only</span>. Hit <span className="text-yellow-400 font-bold">"Submit for Competition"</span> above to enter the Zellers Avurudu competition and go to admin approval.
 						</p>
 					</div>
-
-					{submitError && (
-						<p className="relative z-10 text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2 mb-3">{submitError}</p>
-					)}
-
-					<div className="relative z-10 flex flex-col gap-2">
-						{/* Primary: Submit for Competition */}
-						<button
-							onClick={handleSubmit}
-							disabled={status === "submitting"}
-							className="w-full py-3.5 bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl hover:scale-[1.02] shadow-[0_4px_15px_rgba(234,179,8,0.4)] disabled:opacity-50 disabled:scale-100 transition-all flex items-center justify-center gap-2"
-						>
-							{status === "submitting" ? "SUBMITTING…" : <>🏆 SUBMIT FOR COMPETITION</>}
-						</button>
-
-						{/* Secondary: Try Again (available if under max attempts) */}
-						{canRetry && status !== "submitting" && (
-							<button
-								onClick={onTryAgain}
-								className="w-full py-2.5 bg-white/5 border border-white/15 text-gray-300 text-xs font-bold tracking-widest rounded-xl hover:bg-white/10 hover:text-white transition-all"
-							>
-								↺ TRY AGAIN ({MAX_ATTEMPTS - attemptCount} left)
-							</button>
-						)}
-					</div>
 				</motion.div>
+				</div>
 			</div>
 		);
 	}
@@ -1421,6 +1558,12 @@ function CampaignPageContent() {
 	const [lastFlavourLabel, setLastFlavourLabel] = useState("");
 	const stepStartTime = useRef<number>(Date.now());
 	const musicRef = useRef<BackgroundMusicHandle>(null);
+	// Dashboard state for returning users
+	const [showDashboard, setShowDashboard] = useState(false);
+	const [userGenerations, setUserGenerations] = useState<Generation[]>([]);
+	const [canStartNewAttempt, setCanStartNewAttempt] = useState(false);
+	const [dashboardDisplayName, setDashboardDisplayName] = useState("");
+	const [dashboardGender, setDashboardGender] = useState("");
 
 	function goNext() {
 		setDir(1);
@@ -1477,6 +1620,45 @@ function CampaignPageContent() {
 		}
 	}
 
+	// Called after OTP verification succeeds — check if returning user has generations
+	async function handleVerifySuccess() {
+		const token = sessionStorage.getItem("auth_token");
+		if (!token) { goNext(); return; }
+		try {
+			const res = await fetch("/api/user/generations", {
+				headers: { "Authorization": `Bearer ${token}` },
+			});
+			if (res.ok) {
+				const data = await res.json();
+				if (data.generations && data.generations.length > 0) {
+					setUserGenerations(data.generations);
+					setCanStartNewAttempt(!!data.canStartNewAttempt);
+					// Store for personalised captions in the returning-user dashboard
+					if (data.displayName) {
+						setDashboardDisplayName(data.displayName);
+						sessionStorage.setItem("user_display_name", data.displayName);
+					}
+					if (data.gender) {
+						setDashboardGender(data.gender);
+						sessionStorage.setItem("user_gender", data.gender);
+					}
+					setShowDashboard(true);
+					return;
+				}
+			}
+		} catch { /* on error fall through to normal flow */ }
+		goNext();
+	}
+
+	// Called when user clicks "Start New Attempt" from the dashboard
+	function handleStartNewAttempt() {
+		setShowDashboard(false);
+		setDir(1);
+		// Skip profile (already saved) — jump straight to UPLOAD (step 3)
+		setStep(3);
+		setUnlockedStep((prev) => Math.max(prev, 3));
+	}
+
 	// Called after a retry upload completes — go to quiz so user can (re)select the chocolate
 	function handleRetryUploadDone() {
 		setIsRetrying(false);
@@ -1496,109 +1678,133 @@ function CampaignPageContent() {
 	}
 
 	return (
-		<div className="min-h-screen bg-transparent flex flex-col font-sans relative">
-
-			{/* ─── EXPERT UI: Unified Fixed Mesh Gradient Background ─── */}
-			<div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#1E0B4B]">
-				<div className="absolute -top-[20%] -right-[10%] w-[300px] sm:w-[600px] md:w-[800px] h-[300px] sm:h-[600px] md:h-[800px] rounded-full bg-[#00E5FF]/35 blur-[80px] sm:blur-[120px] md:blur-[160px]" />
-				<div className="absolute -bottom-[20%] -left-[10%] w-[300px] sm:w-[600px] md:w-[800px] h-[300px] sm:h-[600px] md:h-[800px] rounded-full bg-[#00E5FF]/35 blur-[80px] sm:blur-[120px] md:blur-[160px]" />
-				<div className="absolute top-[10%] left-[20%] w-[250px] sm:w-[500px] h-[250px] sm:h-[500px] rounded-full bg-[#9D00FF]/30 blur-[100px] sm:blur-[140px]" />
-				<div className="absolute bottom-[20%] right-[20%] w-[250px] sm:w-[500px] h-[250px] sm:h-[500px] rounded-full bg-[#6A00F4]/30 blur-[100px] sm:blur-[140px]" />
-				<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] sm:w-[400px] h-[200px] sm:h-[400px] rounded-full bg-yellow-500/10 blur-[80px] sm:blur-[100px]" />
-				<div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
-			</div>
-
-			{/* Background Music */}
-			<BackgroundMusic ref={musicRef} src="/game.mp3" volume={0.25} />
-
-			{/* Retry Banner */}
-			{isRetrying && showGamePopup && (
-				<div className="fixed top-0 left-0 right-0 z-[10000] bg-yellow-400 text-black text-[11px] font-black tracking-widest text-center py-2 uppercase shadow-md">
-					↺ Generating Retry Attempt #{attemptCount}
-				</div>
-			)}
-
-			{/* Game Popup Overlay */}
+		<>
+			{/* ─── Dashboard for returning users ─────────────────────────── */}
 			<AnimatePresence>
-				{showGamePopup && (
-					<GamePopup
-						key={attemptCount}
-						attemptCount={attemptCount}
-						onTryAgain={handleTryAgain}
-						onSubmit={() => {
-							// Stay on popup to show submitted state; onFinish will redirect
-						}}
-						onFinish={() => {
-							setShowGamePopup(false);
-							router.replace('/vote');
-						}}
-						musicRef={musicRef}
-					/>
+				{showDashboard && (
+					<motion.div
+						key="dashboard"
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0, transition: { duration: 0.2 } }}
+						className="fixed inset-0 z-[9000] overflow-y-auto"
+					>
+						<Navbar />
+						<UserDashboard
+							generations={userGenerations}
+							canStartNewAttempt={canStartNewAttempt}
+							onStartNewAttempt={handleStartNewAttempt}
+							displayName={dashboardDisplayName}
+							gender={dashboardGender}
+						/>
+					</motion.div>
 				)}
 			</AnimatePresence>
 
-			<Navbar />
+			<div className={`min-h-screen bg-transparent flex flex-col font-sans relative${showDashboard ? " invisible" : ""}`}>
 
-			<div className="flex-1 flex items-center justify-center px-3 sm:px-4 py-12 sm:py-16 pt-24 sm:pt-28 relative z-10 w-full">
+				{/* ─── EXPERT UI: Unified Fixed Mesh Gradient Background ─── */}
+				<div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#1E0B4B]">
+					<div className="absolute -top-[20%] -right-[10%] w-[300px] sm:w-[600px] md:w-[800px] h-[300px] sm:h-[600px] md:h-[800px] rounded-full bg-[#00E5FF]/35 blur-[80px] sm:blur-[120px] md:blur-[160px]" />
+					<div className="absolute -bottom-[20%] -left-[10%] w-[300px] sm:w-[600px] md:w-[800px] h-[300px] sm:h-[600px] md:h-[800px] rounded-full bg-[#00E5FF]/35 blur-[80px] sm:blur-[120px] md:blur-[160px]" />
+					<div className="absolute top-[10%] left-[20%] w-[250px] sm:w-[500px] h-[250px] sm:h-[500px] rounded-full bg-[#9D00FF]/30 blur-[100px] sm:blur-[140px]" />
+					<div className="absolute bottom-[20%] right-[20%] w-[250px] sm:w-[500px] h-[250px] sm:h-[500px] rounded-full bg-[#6A00F4]/30 blur-[100px] sm:blur-[140px]" />
+					<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] sm:w-[400px] h-[200px] sm:h-[400px] rounded-full bg-yellow-500/10 blur-[80px] sm:blur-[100px]" />
+					<div className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+				</div>
 
-				<div className="relative w-full max-w-lg">
+				{/* Background Music */}
+				<BackgroundMusic ref={musicRef} src="/game.mp3" volume={0.25} />
 
-					{/* Header Title Area */}
-					<motion.div
-						initial={{ opacity: 0, y: -20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.6, ease: "easeOut" }}
-						className="text-center mb-10"
-					>
-						<div className="inline-flex items-center justify-center gap-2 px-4 py-1.5 rounded-full bg-yellow-400/10 border border-yellow-400/30 mb-4 backdrop-blur-md shadow-sm">
-							<Sparkles size={14} className="text-yellow-400" />
-							<span className="text-[10px] font-bold tracking-[0.25em] text-yellow-400 uppercase">Avurudu Campaign</span>
-						</div>
-						<h1 className="font-playfair text-2xl sm:text-3xl md:text-4xl font-normal tracking-wide text-white mb-2 drop-shadow-lg">
-							REVEAL YOUR <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-500">ROYAL</span> SELF
-						</h1>
-						<p className="text-xs sm:text-sm text-gray-300 px-2 sm:px-4 font-medium max-w-md mx-auto">
-							Complete the steps below to generate your legendary AI Avatar and enter the Zellers competition.
-						</p>
-					</motion.div>
+				{/* Retry Banner */}
+				{isRetrying && showGamePopup && (
+					<div className="fixed top-0 left-0 right-0 z-[10000] bg-yellow-400 text-black text-[11px] font-black tracking-widest text-center py-2 uppercase shadow-md">
+						↺ Generating Retry Attempt #{attemptCount}
+					</div>
+				)}
 
-					{/* Step Indicator */}
-					<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
-						<StepIndicator current={step} unlocked={unlockedStep} onStepClick={goToStep} />
-					</motion.div>
+				{/* Game Popup Overlay */}
+				<AnimatePresence>
+					{showGamePopup && (
+						<GamePopup
+							key={attemptCount}
+							attemptCount={attemptCount}
+							onTryAgain={handleTryAgain}
+							onSubmit={() => {
+								// Stay on popup to show submitted state; onFinish will redirect
+							}}
+							onFinish={() => {
+								setShowGamePopup(false);
+								router.replace('/vote');
+							}}
+							musicRef={musicRef}
+						/>
+					)}
+				</AnimatePresence>
 
-					{/* Interactive Form Card */}
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 0.3 }}
-						className="bg-white/5 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-2xl sm:rounded-[2rem] p-3 sm:p-6 md:p-8 backdrop-blur-2xl overflow-hidden mt-4 w-full"
-					>
-						<AnimatePresence mode="wait" custom={dir}>
-							<motion.div
-								key={step}
-								custom={dir}
-								variants={slideVariants}
-								initial="enter"
-								animate="center"
-								exit="exit"
-								className="w-full"
-							>
-								{step === 1 && <StepVerify onNext={goNext} />}
-								{step === 2 && <StepProfile onNext={goNext} onBack={goBack} />}
-								{step === 3 && <StepGenerate onNext={goNext} onBack={goBack} isRetrying={isRetrying} onRetryDone={handleRetryUploadDone} />}
-								{step === 4 && <StepQuiz onShowGamePopup={() => setShowGamePopup(true)} onBack={goBack} onTriggerGeneration={handleTriggerGeneration} />}
-							</motion.div>
-						</AnimatePresence>
-					</motion.div>
+				<Navbar />
 
+				<div className="flex-1 flex items-center justify-center px-3 sm:px-4 py-12 sm:py-16 pt-24 sm:pt-28 relative z-10 w-full">
+
+					<div className="relative w-full max-w-lg">
+
+						{/* Header Title Area */}
+						<motion.div
+							initial={{ opacity: 0, y: -20 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.6, ease: "easeOut" }}
+							className="text-center mb-10"
+						>
+							<div className="inline-flex items-center justify-center gap-2 px-4 py-1.5 rounded-full bg-yellow-400/10 border border-yellow-400/30 mb-4 backdrop-blur-md shadow-sm">
+								<Sparkles size={14} className="text-yellow-400" />
+								<span className="text-[10px] font-bold tracking-[0.25em] text-yellow-400 uppercase"></span>
+							</div>
+							<h1 className="font-playfair text-2xl sm:text-3xl md:text-4xl font-normal tracking-wide text-white mb-2 drop-shadow-lg">
+								REVEAL YOUR <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-500">ROYAL</span> SELF
+							</h1>
+							<p className="text-xs sm:text-sm text-gray-300 px-2 sm:px-4 font-medium max-w-md mx-auto">
+								Complete the steps below to generate your legendary AI Avatar and enter the Zellers competition.
+							</p>
+						</motion.div>
+
+						{/* Step Indicator */}
+						<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
+							<StepIndicator current={step} unlocked={unlockedStep} onStepClick={goToStep} />
+						</motion.div>
+
+						{/* Interactive Form Card */}
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ delay: 0.3 }}
+							className="bg-white/5 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-2xl sm:rounded-[2rem] p-3 sm:p-6 md:p-8 backdrop-blur-2xl overflow-hidden mt-4 w-full"
+						>
+							<AnimatePresence mode="wait" custom={dir}>
+								<motion.div
+									key={step}
+									custom={dir}
+									variants={slideVariants}
+									initial="enter"
+									animate="center"
+									exit="exit"
+									className="w-full"
+								>
+									{step === 1 && <StepVerify onNext={handleVerifySuccess} />}
+									{step === 2 && <StepProfile onNext={goNext} onBack={goBack} />}
+									{step === 3 && <StepGenerate onNext={goNext} onBack={goBack} isRetrying={isRetrying} onRetryDone={handleRetryUploadDone} />}
+									{step === 4 && <StepQuiz onShowGamePopup={() => setShowGamePopup(true)} onBack={goBack} onTriggerGeneration={handleTriggerGeneration} />}
+								</motion.div>
+							</AnimatePresence>
+						</motion.div>
+
+					</div>
+				</div>
+
+				<div className="relative z-10">
+					{/* <Footer /> */}
 				</div>
 			</div>
-
-			<div className="relative z-10">
-				{/* <Footer /> */}
-			</div>
-		</div>
+		</>
 	);
 }
 

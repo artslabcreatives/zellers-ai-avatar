@@ -77,7 +77,7 @@ export default function RegistrationReminder() {
 							{/* Note: Update this src to your actual promotional image */}
 							<Image
 								src="/loading.jpeg"
-								alt="Avurudu Campaign"
+								alt=""
 								fill
 								className="object-cover opacity-80"
 							/>

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const BASE_URL = process.env.API_KEY?.replace(/\/$/, "");
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
 	if (!BASE_URL) {
 		return NextResponse.json({ success: false, message: "Server configuration error." }, { status: 500 });
 	}
@@ -10,17 +10,9 @@ export async function POST(req: NextRequest) {
 		const token = req.headers.get("authorization");
 		if (!token) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
 
-		// Forward the request body (may contain postId for dashboard submissions)
-		let body: Record<string, unknown> = {};
-		try {
-			const raw = await req.text();
-			if (raw) body = JSON.parse(raw);
-		} catch { /* no body is fine */ }
-
-		const res = await fetch(`${BASE_URL}/avatar/submit`, {
-			method: "POST",
-			headers: { "Content-Type": "application/json", "Authorization": token },
-			body: JSON.stringify(body),
+		const res = await fetch(`${BASE_URL}/user/generations`, {
+			method: "GET",
+			headers: { "Authorization": token },
 		});
 		const text = await res.text();
 		let data;
@@ -29,6 +21,6 @@ export async function POST(req: NextRequest) {
 		}
 		return NextResponse.json(data, { status: res.status });
 	} catch {
-		return NextResponse.json({ success: false, message: "Failed to submit avatar." }, { status: 500 });
+		return NextResponse.json({ success: false, message: "Failed to fetch generations." }, { status: 500 });
 	}
 }

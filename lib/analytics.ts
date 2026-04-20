@@ -1,4 +1,4 @@
-// Google Analytics & Tag Manager Event Tracking Utility
+// Google Analytics & Tag Manager & Facebook Pixel Event Tracking Utility
 
 declare global {
 	interface Window {
@@ -8,6 +8,8 @@ declare global {
 			config?: Record<string, any>
 		) => void;
 		dataLayer?: any[];
+		fbq?: (...args: any[]) => void;
+		_fbq?: (...args: any[]) => void;
 	}
 }
 
@@ -86,6 +88,27 @@ export function trackEvent({
 }
 
 /**
+ * Track a Facebook Pixel standard or custom event
+ */
+export function trackFBEvent(
+	eventName: string,
+	params?: Record<string, any>,
+	isCustom = false
+): void {
+	try {
+		if (typeof window !== "undefined" && window.fbq) {
+			if (isCustom) {
+				window.fbq("trackCustom", eventName, params);
+			} else {
+				window.fbq("track", eventName, params);
+			}
+		}
+	} catch (error) {
+		console.error("Facebook Pixel tracking error:", error);
+	}
+}
+
+/**
  * Track page views
  */
 export function trackPageView(url: string, title?: string): void {
@@ -109,6 +132,9 @@ export function trackPageView(url: string, title?: string): void {
 				timestamp: new Date().toISOString(),
 			});
 		}
+
+		// Facebook Pixel — PageView on every route change
+		trackFBEvent("PageView");
 	} catch (error) {
 		console.error("Page view tracking error:", error);
 	}
@@ -125,6 +151,8 @@ export const trackAuth = {
 			label: method,
 			metadata: { phone_partial: phone.slice(-4) },
 		});
+		// User initiates contact — they're starting the registration journey
+		trackFBEvent("Contact");
 	},
 
 	otpVerified: (phone: string, method: "sms" | "whatsapp") => {
@@ -152,6 +180,8 @@ export const trackAuth = {
 			userId,
 			metadata: { conversion: true },
 		});
+		// OTP verified = registration complete
+		trackFBEvent("CompleteRegistration", { currency: "LKR", value: 0 });
 	},
 };
 
@@ -166,6 +196,12 @@ export const trackCampaign = {
 			label: step,
 			userId,
 		});
+		// First step started = user showing strong intent (Lead)
+		if (step === "verify") {
+			trackFBEvent("Lead");
+		}
+		// Campaign page viewed = ViewContent
+		trackFBEvent("ViewContent", { content_name: `campaign_step_${step}`, content_category: "campaign" });
 	},
 
 	stepCompleted: (step: string, userId?: string) => {
@@ -203,6 +239,8 @@ export const trackCampaign = {
 			userId,
 			metadata: { gender, name_length: name.length },
 		});
+		// Profile setup complete = registration with status
+		trackFBEvent("CompleteRegistration", { status: true, currency: "LKR", value: 0 });
 	},
 };
 
@@ -217,6 +255,8 @@ export const trackAvatar = {
 			userId,
 			metadata: { file_size_kb: Math.round(fileSize / 1024) },
 		});
+		// Uploading a photo = customizing their product (avatar)
+		trackFBEvent("CustomizeProduct");
 	},
 
 	uploadCompleted: (userId: string, fileSize: number, duration: number) => {
@@ -258,6 +298,8 @@ export const trackAvatar = {
 			value: duration,
 			metadata: { generation_duration_seconds: duration },
 		});
+		// Avatar is ready — user has their product
+		trackFBEvent("ViewContent", { content_name: "avatar_generated", content_category: "avatar" });
 	},
 
 	generationFailed: (userId: string, error: string) => {
@@ -289,6 +331,8 @@ export const trackQuiz = {
 			category: "quiz",
 			userId,
 		});
+		// Starting quiz = customizing their avatar product
+		trackFBEvent("CustomizeProduct");
 	},
 
 	questionAnswered: (
@@ -325,6 +369,8 @@ export const trackQuiz = {
 			userId,
 			metadata: { selected_flavor: flavor },
 		});
+		// Quiz submitted = user has filled out a lead-gen form fully
+		trackFBEvent("Lead", { currency: "LKR", value: 0 });
 	},
 };
 
@@ -339,6 +385,11 @@ export const trackVoting = {
 			label: filter,
 			metadata: { page_number: page },
 		});
+		// Vote gallery = content viewing page
+		trackFBEvent("ViewContent", {
+			content_name: "vote_gallery",
+			content_category: "voting",
+		});
 	},
 
 	searchPerformed: (query: string, resultsCount: number) => {
@@ -348,6 +399,8 @@ export const trackVoting = {
 			value: resultsCount,
 			metadata: { query_length: query.length, results_count: resultsCount },
 		});
+		// Standard Search event
+		trackFBEvent("Search", { search_string: query });
 	},
 
 	filterChanged: (filter: string) => {
@@ -374,6 +427,8 @@ export const trackVoting = {
 			userId,
 			metadata: { target_post_id: targetPostId, conversion: true },
 		});
+		// Successful vote = completed sign-up/lead action
+		trackFBEvent("Lead", { currency: "LKR", value: 0 });
 	},
 
 	voteFailed: (userId: string, targetPostId: string, reason: string) => {
@@ -401,6 +456,8 @@ export const trackVoting = {
 			label: platform,
 			metadata: { post_id: postId },
 		});
+		// Share = custom event (no direct standard event maps)
+		trackFBEvent("Share", { platform, content_id: postId }, true);
 	},
 };
 
@@ -431,6 +488,8 @@ export const trackNavigation = {
 			label: ctaText,
 			metadata: { location },
 		});
+		// CTA click = user is taking initiative (Lead intent)
+		trackFBEvent("Lead", { currency: "LKR", value: 0 });
 	},
 
 	scrollDepth: (percentage: number, page: string) => {
@@ -524,6 +583,8 @@ export const trackConversion = {
 				conversion_complete: true,
 			},
 		});
+		// Full campaign completion = highest-value conversion
+		trackFBEvent("CompleteRegistration", { status: true, currency: "LKR", value: 0 });
 	},
 
 	firstVoteCast: (userId: string) => {
@@ -533,6 +594,8 @@ export const trackConversion = {
 			userId,
 			metadata: { milestone: "first_vote" },
 		});
+		// First vote = engaged user action
+		trackFBEvent("Lead", { currency: "LKR", value: 0 });
 	},
 };
 

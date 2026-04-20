@@ -7,7 +7,7 @@ import Link from "next/link";
 const SECTIONS = [
 	{
 		title: "1. Eligibility",
-		body: "The Zellers AI Avurudu Campaign is open to residents of Sri Lanka aged 18 and above.",
+		body: "The Zellers AI Avurudu is open to residents of Sri Lanka aged 18 and above.",
 	},
 	{
 		title: "2. Campaign Period",
@@ -19,7 +19,7 @@ const SECTIONS = [
 	},
 	{
 		title: "4. Voting",
-		body: "Each verified participant may cast one vote. Votes cannot be transferred. Zellers reserves the right to disqualify entries suspected of fraudulent voting activity.",
+		body: "Each verified participant may cast one vote. Votes cannot be transferred. Zellers reserves the right to disqualify entries suspected of fraudulent voting activity. Minimum required votes to be eligible for the AI අවුරුදු කුමරා and කුමරිය contest is 1,000 votes.",
 	},
 	{
 		title: "5. Prizes",
@@ -31,7 +31,7 @@ const SECTIONS = [
 	},
 	{
 		title: "7. Disqualification",
-		body: "Zellers reserves the right to disqualify any participant who tampers with the entry process, acts in an unsportsmanlike manner, or violates any of these terms.",
+		body: "Zellers reserves the right to disqualify any participant who tampers with the entry process, acts in an unsportsmanlike manner, photos that do not belong to individual who submitted, or violates any of these terms.",
 	},
 
 ];
