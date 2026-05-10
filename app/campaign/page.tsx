@@ -132,6 +132,7 @@ function StepVerify({ onNext }: { onNext: () => void }) {
 	const [error, setError] = useState("");
 	const [cooldown, setCooldown] = useState(0);
 	const [channel, setChannel] = useState<"whatsapp" | "sms" | null>(null);
+	const [agreed, setAgreed] = useState(false);
 
 	useEffect(() => {
 		trackCampaign.stepStarted('verify');
@@ -259,6 +260,43 @@ function StepVerify({ onNext }: { onNext: () => void }) {
 			</div>
 
 			<AnimatePresence>
+				{phone.length >= 9 && (
+					<motion.div
+						initial={{ opacity: 0, height: 0 }}
+						animate={{ opacity: 1, height: "auto" }}
+						exit={{ opacity: 0, height: 0 }}
+						className="overflow-hidden"
+					>
+						<label className="flex items-start gap-3 cursor-pointer group">
+							<div className="relative mt-0.5 shrink-0" onClick={() => {
+								const next = !agreed;
+								if (!next) {
+									setAgreed(false);
+									setOtpSent(false);
+									setOtp("");
+									setPhone("");
+									setError("");
+									setChannel(null);
+								} else {
+									setAgreed(true);
+								}
+							}}>
+								<div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all duration-200 ${agreed ? "border-yellow-400 bg-yellow-500/20" : "border-white/20 bg-white/5"}`}>
+									{agreed && <Check size={12} className="text-yellow-400" strokeWidth={3} />}
+								</div>
+							</div>
+							<span className="text-xs text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors select-none">
+								I agree to the{" "}
+								<a href="/terms" target="_blank" rel="noopener noreferrer" className="text-yellow-400 hover:text-yellow-300 underline underline-offset-2" onClick={(e) => e.stopPropagation()}>
+									Terms &amp; Conditions
+								</a>
+							</span>
+						</label>
+					</motion.div>
+				)}
+			</AnimatePresence>
+
+			<AnimatePresence>
 				{otpSent && (
 					<motion.div
 						initial={{ opacity: 0, height: 0 }}
@@ -310,7 +348,7 @@ function StepVerify({ onNext }: { onNext: () => void }) {
 			{!otpSent ? (
 				<button
 					onClick={handleSendOtp}
-					disabled={phone.length < 9 || loading || cooldown > 0}
+					disabled={phone.length < 9 || !agreed || loading || cooldown > 0}
 					className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl py-4 hover:scale-[1.02] shadow-[0_4px_15px_rgba(234,179,8,0.3)] disabled:opacity-40 disabled:scale-100 disabled:cursor-not-allowed transition-all duration-300"
 				>
 					{loading ? "CHECKING…" : cooldown > 0 ? `WAIT ${cooldown}s` : "SEND OTP"}
@@ -1564,6 +1602,15 @@ function CampaignPageContent() {
 	const [canStartNewAttempt, setCanStartNewAttempt] = useState(false);
 	const [dashboardDisplayName, setDashboardDisplayName] = useState("");
 	const [dashboardGender, setDashboardGender] = useState("");
+	// Registration status
+	const [registrationOpen, setRegistrationOpen] = useState<boolean | null>(null);
+
+	useEffect(() => {
+		fetch("/api/votes/registration-status")
+			.then(r => r.json())
+			.then(d => setRegistrationOpen(d.registrationOpen ?? true))
+			.catch(() => setRegistrationOpen(true));
+	}, []);
 
 	function goNext() {
 		setDir(1);
@@ -1675,6 +1722,35 @@ function CampaignPageContent() {
 		setIsRetrying(true); // Still true so step 3 shows retry mode if user opts to upload
 		setDir(-1);
 		setStep(4); // Jump straight to quiz for chocolate reselection
+	}
+
+	if (registrationOpen === false) {
+		return (
+			<div className="min-h-screen bg-[#1E0B4B] flex flex-col">
+				<div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+					<div className="absolute -top-[20%] -right-[10%] w-[600px] h-[600px] rounded-full bg-[#00E5FF]/25 blur-[160px]" />
+					<div className="absolute -bottom-[20%] -left-[10%] w-[600px] h-[600px] rounded-full bg-[#9D00FF]/20 blur-[160px]" />
+				</div>
+				<Navbar />
+				<div className="flex-1 flex items-center justify-center px-4 py-20">
+					<div className="text-center max-w-sm">
+						<div className="w-16 h-16 rounded-full bg-red-500/20 border border-red-500/30 flex items-center justify-center mx-auto mb-6">
+							<AlertCircle size={28} className="text-red-400" />
+						</div>
+						<h1 className="text-2xl font-black text-white mb-3">Registration Closed</h1>
+						<p className="text-gray-400 text-sm leading-relaxed mb-8">
+							Contest registration is currently closed. Check back soon or visit the vote page to support your favourite avatar.
+						</p>
+						<a
+							href="/vote"
+							className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-sm font-black tracking-widest rounded-xl px-6 py-3.5 hover:brightness-110 transition-all shadow-[0_4px_15px_rgba(234,179,8,0.3)]"
+						>
+							View Gallery &amp; Vote
+						</a>
+					</div>
+				</div>
+			</div>
+		);
 	}
 
 	return (
